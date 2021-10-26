@@ -80,9 +80,9 @@ BEGIN
             VALUE "CompanyName", "Dani24"
             VALUE "FileDescription", "8-ball Pinball made with Box2D and SDL2"
             VALUE "FileVersion", "0.1.0.0"
-            VALUE "InternalName", "8ball-Pi.exe"
+            VALUE "InternalName", "8ball-Pinball.exe"
             VALUE "LegalCopyright", "Copyright (C) 2021"
-            VALUE "OriginalFilename", "8ball-Pi.exe"
+            VALUE "OriginalFilename", "8ball-Pinball.exe"
             VALUE "ProductName", "8-ball Pinball"
             VALUE "ProductVersion", "0.1.0.0"
         END
