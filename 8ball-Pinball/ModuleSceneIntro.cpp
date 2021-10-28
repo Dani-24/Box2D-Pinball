@@ -35,7 +35,7 @@ bool ModuleSceneIntro::Start()
 	rick = App->textures->Load("pinball/rick_head.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
-	tablero = App->textures->Load("pinball/tablero.png");
+	CreateSpring();
 
 	CreateBG();
 
@@ -61,9 +61,9 @@ void ModuleSceneIntro::BallManager() {
 	for (int i = 0; i < 21; i++) {
 		if (i == 0) {
 			ballLightAnim.PushBack({ 0,0,N,N });
-			ballLightAnim.PushBack({ N,0,N,N });
+			ballLightAnim.PushBack({ N+3,0,N,N });
 			ballLightAnim.PushBack({ 0,0,N,N });
-			ballLightAnim.PushBack({ N,0,N,N });
+			ballLightAnim.PushBack({ N+3,0,N,N });
 			ballLightAnim.PushBack({ 0,0,N,N });
 		}
 		ballLightAnim.PushBack({ 0,0,N,N });
@@ -73,7 +73,33 @@ void ModuleSceneIntro::BallManager() {
 	ballLightAnim.speed = 0.15f;
 }
 
+void ModuleSceneIntro::CreateSpring()
+{
+	springY = 700;
+	springTop = App->physics->CreateRectangle(512, springY, 38, 10);
+	springBot = App->physics->CreateRectangle(512, 755, 38, 10);
+	springBot->body->SetType(b2_staticBody);
+	b2DistanceJointDef SpringJointDef;
+
+	SpringJointDef.bodyA = springTop->body;
+	SpringJointDef.bodyB = springBot->body;
+
+	SpringJointDef.localAnchorA.Set(0, 0);
+	SpringJointDef.localAnchorB.Set(0, 0);
+
+	SpringJointDef.length = 1.5f;
+
+	SpringJointDef.collideConnected = true;
+
+	SpringJointDef.frequencyHz = 7.0f;
+	SpringJointDef.dampingRatio = 0.05f;
+
+	b2PrismaticJoint* SpringJoint = (b2PrismaticJoint*)App->physics->world->CreateJoint(&SpringJointDef);
+}
+
 void ModuleSceneIntro::CreateBG() {
+	tablero = App->textures->Load("pinball/tablero.png");
+
 	int tableroExterno[88] = {
 	120, 102,
 	160, 102,
@@ -133,6 +159,11 @@ bool ModuleSceneIntro::CleanUp()
 
 update_status ModuleSceneIntro::Update()
 {
+	if (App->input->GetKey(SDL_SCANCODE_DOWN == KEY_REPEAT)) 
+	{
+		
+	}
+
 	// If user presses SPACE, enable RayCast
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{

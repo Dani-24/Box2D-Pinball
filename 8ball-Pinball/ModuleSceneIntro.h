@@ -24,6 +24,8 @@ public:
 	void BallManager();
 	void CreateBG();
 
+	void CreateSpring();
+
 public:
 
 	// Lists of physics objects
@@ -32,6 +34,10 @@ public:
 	p2List<PhysBody*> ricks;
 
 	PhysBody* tableroColliders;
+
+	PhysBody* springTop;
+	PhysBody* springBot;
+	int springY;
 
 	// Textures
 	SDL_Texture* ball;
@@ -46,7 +52,7 @@ public:
 
 	Animation ballLightAnim;
 
-	int N = 24;
+	int N = 39;
 
 	// FX
 	uint bonus_fx;
