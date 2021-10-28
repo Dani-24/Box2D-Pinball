@@ -174,8 +174,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 	App->audio->PlayFx(bonus_fx);
 
-	/*
-	if(bodyA)
+	
+	/*if(bodyA)
 	{
 		bodyA->GetPosition(x, y);
 		App->renderer->DrawCircle(x, y, 50, 100, 100, 100);
