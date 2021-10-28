@@ -16,8 +16,8 @@
 class PhysBody
 {
 public:
-	PhysBody() : listener(NULL), body(NULL)
-	{}
+	PhysBody();
+	~PhysBody();
 
 	void GetPosition(int& x, int &y) const;
 	float GetRotation() const;
@@ -34,14 +34,21 @@ public:
 class ModulePhysics : public Module, public b2ContactListener // TODO
 {
 public:
+	
+	// Constructors & Destructors
 	ModulePhysics(Application* app, bool start_enabled = true);
 	~ModulePhysics();
 
+	// Main module steps
 	bool Start();
 	update_status PreUpdate();
 	update_status PostUpdate();
 	bool CleanUp();
 
+	// Create main ground
+	void CreateScenarioGround();
+
+	// Create basic physics objects
 	PhysBody* CreateCircle(int x, int y, int radius);
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
@@ -52,8 +59,16 @@ public:
 
 private:
 
+	// Debug mode
 	bool debug;
+
+	// Box2D World
 	b2World* world;
-	b2MouseJoint* mouse_joint;
+
+	// Main ground
 	b2Body* ground;
+
+	// Mouse joint
+	b2MouseJoint* mouse_joint;
+	b2Body* mouse_body;
 };

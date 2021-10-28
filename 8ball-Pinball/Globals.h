@@ -21,12 +21,12 @@ enum update_status
 };
 
 // Configuration -----------
-#define SCREEN_WIDTH 1380
-#define SCREEN_HEIGHT 1920
-#define SCREEN_SIZE 0.4
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 768
+#define SCREEN_SIZE 1
 #define WIN_FULLSCREEN false
 #define WIN_RESIZABLE false
 #define WIN_BORDERLESS false
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC true
-#define TITLE "Box2D Pinball"
+#define TITLE "CITM | Physics II | Box2D Tutorial"
