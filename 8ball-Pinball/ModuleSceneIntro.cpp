@@ -13,7 +13,6 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	// Initialise all the internal class variables, at least to NULL pointer
 	circle = box = rick = NULL;
 	ray_on = false;
-	sensed = false;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -36,16 +35,61 @@ bool ModuleSceneIntro::Start()
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
 	tablero = App->textures->Load("pinball/tablero.png");
-
-	// Create a big red sensor on the bottom of the screen.
-	// This sensor will not make other objects collide with it, but it can tell if it is "colliding" with something else
-	lower_ground_sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
-
-	// Add this module (ModuleSceneIntro) as a listener for collisions with the sensor.
-	// In ModulePhysics::PreUpdate(), we iterate over all sensors and (if colliding) we call the function ModuleSceneIntro::OnCollision()
-	lower_ground_sensor->listener = this;
+	
+	CreateBG();
 
 	return ret;
+}
+
+void ModuleSceneIntro::CreateBG() {
+	int tableroExterno[88] = {
+	120, 102,
+	160, 102,
+	160, -446,
+	155, -478,
+	147, -506,
+	136, -531,
+	123, -549,
+	96, -571,
+	59, -587,
+	35, -594,
+	10, -599,
+	-212, -599,
+	-248, -590,
+	-280, -573,
+	-313, -597,
+	-347, -568,
+	-315, -539,
+	-327, -526,
+	-341, -505,
+	-347, -489,
+	-351, -471,
+	-351, -235,
+	-347, -217,
+	-339, -203,
+	-311, -175,
+	-334, -152,
+	-346, -138,
+	-351, -123,
+	-351, 102,
+	-305, 102,
+	-305, 62,
+	-200, 102,
+	-200, 148,
+	-96, 148,
+	-96, 102,
+	9, 62,
+	9, 102,
+	56, 102,
+	56, -152,
+	35, -169,
+	84, -210,
+	84, -362,
+	120, -348,
+	120, 78
+	};
+
+	tableroColliders = App->physics->CreateSolidChain(372, 658, tableroExterno, 88);
 }
 
 bool ModuleSceneIntro::CleanUp()
@@ -69,9 +113,9 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	// If user presses 1, create a new circle object
-	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
 	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
+		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 12));
 
 		// Add this module (ModuleSceneIntro) as a "listener" interested in collisions with circles.
 		// If Box2D detects a collision with this last generated circle, it will automatically callback the function ModulePhysics::BeginContact()

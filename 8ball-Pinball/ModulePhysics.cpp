@@ -20,6 +20,7 @@ ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app,
 	ground = NULL;
 	mouse_joint = NULL;
 	mouse_body = NULL;
+
 	debug = true;
 }
 
@@ -40,11 +41,11 @@ bool ModulePhysics::Start()
 	world->SetContactListener(this);
 
 	// Create the main static ground of the scenario: a big circle in the middle of the screen
-	CreateScenarioGround();
-
 	// Create a static, shapeless ground body
 	// This will be used to create joints like a mouse joint
 	b2BodyDef bd;
+
+	CreateScenarioGround();
 	ground = world->CreateBody(&bd); // Add the static ground body to the World
 
 	return true;
@@ -113,13 +114,13 @@ update_status ModulePhysics::PostUpdate()
 					{
 						v = b->GetWorldPoint(polygonShape->GetVertex(i));
 						if(i > 0)
-							App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
+							App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 255, 255);
 
 						prev = v;
 					}
 
 					v = b->GetWorldPoint(polygonShape->GetVertex(0));
-					App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
+					App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 255, 255);
 				}
 				break;
 
@@ -133,12 +134,12 @@ update_status ModulePhysics::PostUpdate()
 					{
 						v = b->GetWorldPoint(shape->m_vertices[i]);
 						if(i > 0)
-							App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
+							App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 0, 0);
 						prev = v;
 					}
 
 					v = b->GetWorldPoint(shape->m_vertices[0]);
-					App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
+					App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 0, 0);
 				}
 				break;
 
@@ -155,8 +156,6 @@ update_status ModulePhysics::PostUpdate()
 				break;
 			}
 
-			// TODO 1: If mouse button 1 is pressed ...
-			// App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN
 			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
 			{
 				// test if the current body contains mouse position
@@ -166,13 +165,6 @@ update_status ModulePhysics::PostUpdate()
 
 					// If a body was selected we will attach a mouse joint to it
 					// so we can pull it around
-
-					// TODO 2: If a body was selected, create a mouse joint
-					// using mouse_joint class property
-
-					// NOTE: you do TODO2 here or also in the original handout's location. 
-					// It doesn't matter unless you are triggering several objects at once;
-					// I leave it to you to add safety checks to avoid re-defining several mouse joints.
 
 					// The variable "b2Body* mouse_body;" is defined in the header ModulePhysics.h 
 					// We need to keep this body throughout several game frames; you cannot define it as a local variable here. 
@@ -199,10 +191,6 @@ update_status ModulePhysics::PostUpdate()
 		}
 	}
 
-
-
-	// TODO 3: If the player keeps pressing the mouse button, update
-	// target position and draw a red line between both anchor points
 	if (mouse_body != nullptr && mouse_joint != nullptr)
 	{
 		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT)
@@ -218,7 +206,6 @@ update_status ModulePhysics::PostUpdate()
 		}
 	}
 
-	// TODO 4: If the player releases the mouse button, destroy the joint
 	if (mouse_body != nullptr && mouse_joint != nullptr)
 	{
 		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP)
@@ -249,7 +236,7 @@ bool ModulePhysics::CleanUp()
 void ModulePhysics::CreateScenarioGround()
 {
 	// Get coordinates of the screen center and radius
-	int x = SCREEN_WIDTH / 2;
+	int x = SCREEN_WIDTH * 2;
 	int y = SCREEN_HEIGHT / 1.5f;
 	int diameter = SCREEN_WIDTH / 2;
 
@@ -386,6 +373,45 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 	b2ChainShape shape;
 	b2Vec2* p = new b2Vec2[size / 2];
 	for(uint i = 0; i < size / 2; ++i)
+	{
+		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);
+		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);
+	}
+	shape.CreateLoop(p, size / 2);
+
+	// Create FIXTURE
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+
+	// Add fixture to the BODY
+	b->CreateFixture(&fixture);
+
+	// Clean-up temp array
+	delete p;
+
+	// Create our custom PhysBody class
+	PhysBody* pbody = new PhysBody();
+	pbody->body = b;
+	b->SetUserData(pbody);
+	pbody->width = pbody->height = 0;
+
+	// Return our PhysBody class
+	return pbody;
+}
+
+PhysBody* ModulePhysics::CreateSolidChain(int x, int y, int* points, int size) {
+	// Create BODY at position x,y
+	b2BodyDef body;
+	body.type = b2_staticBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	// Add BODY to the world
+	b2Body* b = world->CreateBody(&body);
+
+	// Create SHAPE
+	b2ChainShape shape;
+	b2Vec2* p = new b2Vec2[size / 2];
+	for (uint i = 0; i < size / 2; ++i)
 	{
 		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);
 		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);
