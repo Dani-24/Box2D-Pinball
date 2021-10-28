@@ -11,7 +11,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 {
 
 	// Initialise all the internal class variables, at least to NULL pointer
-	circle = box = rick = NULL;
+	ball = box = rick = NULL;
 	ray_on = false;
 }
 
@@ -29,16 +29,48 @@ bool ModuleSceneIntro::Start()
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	// Load textures
-	circle = App->textures->Load("pinball/wheel.png"); 
+	BallManager();
+	
 	box = App->textures->Load("pinball/crate.png");
 	rick = App->textures->Load("pinball/rick_head.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
 	tablero = App->textures->Load("pinball/tablero.png");
-	
+
 	CreateBG();
 
 	return ret;
+}
+
+void ModuleSceneIntro::BallManager() {
+	ball = App->textures->Load("pinball/8ball.png");
+
+	/*
+	On :
+
+	ballLightAnim.PushBack({0,0,N,N});
+
+	Off :
+
+	ballLightAnim.PushBack({N,0,N,N});
+
+	*/
+	
+	// Order 1
+
+	for (int i = 0; i < 21; i++) {
+		if (i == 0) {
+			ballLightAnim.PushBack({ 0,0,N,N });
+			ballLightAnim.PushBack({ N,0,N,N });
+			ballLightAnim.PushBack({ 0,0,N,N });
+			ballLightAnim.PushBack({ N,0,N,N });
+			ballLightAnim.PushBack({ 0,0,N,N });
+		}
+		ballLightAnim.PushBack({ 0,0,N,N });
+	}
+
+	ballLightAnim.loop = true;
+	ballLightAnim.speed = 0.15f;
 }
 
 void ModuleSceneIntro::CreateBG() {
@@ -113,13 +145,13 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	// If user presses 1, create a new circle object
-	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
+	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 12));
+		balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), (N/2)));
 
 		// Add this module (ModuleSceneIntro) as a "listener" interested in collisions with circles.
 		// If Box2D detects a collision with this last generated circle, it will automatically callback the function ModulePhysics::BeginContact()
-		circles.getLast()->data->listener = this;
+		balls.getLast()->data->listener = this;
 	}
 
 	// If user presses 2, create a new box object
@@ -183,20 +215,21 @@ update_status ModuleSceneIntro::Update()
 	// Declare a vector. We will draw the normal to the hit surface (if we hit something)
 	fVector normal(0.0f, 0.0f);
 
+	ballLightAnim.Update();
+	SDL_Rect rect = ballLightAnim.GetCurrentFrame();
+
 	// All draw functions ------------------------------------------------------
 
 	App->renderer->Blit(tablero, 0, 0);
 
-	// Circles
-	p2List_item<PhysBody*>* c = circles.getFirst();
+	// Balls
+	p2List_item<PhysBody*>* c = balls.getFirst();
 	while(c != NULL)
 	{
 		int x, y;
 		c->data->GetPosition(x, y);
 
-		// If mouse is over this circle, paint the circle's texture
-		if(c->data->Contains(App->input->GetMouseX(), App->input->GetMouseY()))
-			App->renderer->Blit(circle, x, y, NULL, 1.0f, c->data->GetRotation());
+		App->renderer->Blit(ball, x, y, &rect, 1.0f, c->data->GetRotation());
 
 		c = c->next;
 	}
