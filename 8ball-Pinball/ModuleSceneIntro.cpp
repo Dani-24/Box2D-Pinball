@@ -22,7 +22,7 @@ ModuleSceneIntro::~ModuleSceneIntro()
 
 bool ModuleSceneIntro::Start()
 {
-	LOG("Loading Intro assets");
+	LOG("Loading Intro assets :D");
 	bool ret = true;
 
 	// Set camera position
@@ -75,8 +75,7 @@ void ModuleSceneIntro::BallManager() {
 
 void ModuleSceneIntro::CreateSpring()
 {
-	springY = 700;
-	springTop = App->physics->CreateRectangle(512, springY, 38, 10);
+	springTop = App->physics->CreateRectangle(512, 700, 38, 10);
 	springBot = App->physics->CreateRectangle(512, 755, 38, 10);
 	springBot->body->SetType(b2_staticBody);
 	b2DistanceJointDef SpringJointDef;
@@ -159,10 +158,16 @@ bool ModuleSceneIntro::CleanUp()
 
 update_status ModuleSceneIntro::Update()
 {
-	if (App->input->GetKey(SDL_SCANCODE_DOWN == KEY_REPEAT)) 
+
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 	{
-		
+		springForce += 10;
+		springTop->body->ApplyForceToCenter(b2Vec2(0,springForce), 1);
 	}
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
+		springForce = 0;
+	}
+
 
 	// If user presses SPACE, enable RayCast
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)

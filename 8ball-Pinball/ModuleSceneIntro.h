@@ -37,7 +37,8 @@ public:
 
 	PhysBody* springTop;
 	PhysBody* springBot;
-	int springY;
+
+	int springForce = 0;
 
 	// Textures
 	SDL_Texture* ball;
