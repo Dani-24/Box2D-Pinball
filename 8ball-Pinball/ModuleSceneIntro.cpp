@@ -75,7 +75,7 @@ void ModuleSceneIntro::BallManager() {
 
 void ModuleSceneIntro::CreateSpring()
 {
-	springTop = App->physics->CreateRectangle(512, 700, 38, 10);
+	springTop = App->physics->CreateRectangle(512, 700, 37, 10);
 	springBot = App->physics->CreateRectangle(512, 755, 38, 10);
 	springBot->body->SetType(b2_staticBody);
 	b2DistanceJointDef SpringJointDef;
@@ -97,56 +97,211 @@ void ModuleSceneIntro::CreateSpring()
 }
 
 void ModuleSceneIntro::CreateBG() {
+
+	// Load BG texture
 	tablero = App->textures->Load("pinball/tablero.png");
 
-	int tableroExterno[88] = {
-	120, 102,
-	160, 102,
-	160, -446,
-	155, -478,
-	147, -506,
-	136, -531,
-	123, -549,
-	96, -571,
-	59, -587,
-	35, -594,
-	10, -599,
-	-212, -599,
-	-248, -590,
-	-280, -573,
-	-313, -597,
-	-347, -568,
-	-315, -539,
-	-327, -526,
-	-341, -505,
-	-347, -489,
-	-351, -471,
-	-351, -235,
-	-347, -217,
-	-339, -203,
-	-311, -175,
-	-334, -152,
-	-346, -138,
-	-351, -123,
-	-351, 102,
-	-305, 102,
-	-305, 62,
-	-200, 102,
-	-200, 148,
-	-96, 148,
-	-96, 102,
-	9, 62,
-	9, 102,
-	56, 102,
-	56, -152,
-	35, -169,
-	84, -210,
-	84, -362,
-	120, -348,
-	120, 78
+	// BG Collider Chains
+	int tableroExterno[96] = {
+	492, 760,
+	531, 760,
+	531, 215,
+	529, 193,
+	523, 166,
+	515, 143,
+	502, 117,
+	485, 94,
+	466, 77,
+	445, 67,
+	421, 61,
+	393, 60,
+	157, 60,
+	139, 63,
+	115, 72,
+	93, 85,
+	59, 60,
+	24, 90,
+	56, 119,
+	43, 133,
+	31, 152,
+	24, 169,
+	21, 186,
+	21, 417,
+	22, 428,
+	26, 443,
+	35, 457,
+	62, 482,
+	38, 506,
+	27, 520,
+	22, 531,
+	20, 549,
+	20, 760,
+	67, 760,
+	67, 720,
+	172, 760,
+	172, 848,
+	277, 848,
+	277, 760,
+	381, 720,
+	381, 760,
+	428, 760,
+	428, 506,
+	407, 489,
+	456, 449,
+	456, 296,
+	492, 310,
+	492, 755
+	};
+	int tableroTrianguloIz[8] = {
+	118, 576,
+	118, 630,
+	152, 652,
+	119, 578
+	};
+	int tableroTrianguloDer[8] = {
+	329, 577,
+	329, 629,
+	294, 652,
+	328, 579
+	};
+	int tableroColchonetaDer[20] = {
+	286, 283,
+	286, 215,
+	289, 212,
+	292, 212,
+	295, 215,
+	295, 288,
+	264, 310,
+	259, 309,
+	258, 304,
+	283, 286
+	};
+	int tableroEsponja[30] = {
+	96, 446,
+	127, 415,
+	125, 413,
+	96, 443,
+	73, 420,
+	66, 410,
+	63, 402,
+	62, 397,
+	62, 377,
+	60, 377,
+	60, 397,
+	62, 407,
+	67, 416,
+	74, 424,
+	93, 443
+	};
+	int tableroInterruptoresTop[26] = {
+	266, 100,
+	182, 116,
+	182, 146,
+	184, 145,
+	184, 140,
+	223, 133,
+	223, 138,
+	225, 137,
+	225, 132,
+	264, 124,
+	264, 129,
+	266, 128,
+	266, 102
+	};
+	int tableroCarrilDer[16] = {
+	294, 698,
+	294, 702,
+	380, 669,
+	380, 589,
+	375, 587,
+	370, 589,
+	370, 669,
+	296, 697
+	};
+	int tableroCarrilIz[16] = {
+	67, 669,
+	67, 589,
+	72, 587,
+	77, 589,
+	77, 669,
+	150, 698,
+	150, 702,
+	70, 670
+	};
+	int tableroBloqueDer[24] = {
+	323, 417,
+	323, 352,
+	326, 346,
+	332, 342,
+	340, 341,
+	348, 342,
+	361, 348,
+	386, 361,
+	409, 373,
+	409, 420,
+	367, 455,
+	327, 420
+	};
+	int tableroCurvaDer[36] = {
+	492, 264,
+	492, 228,
+	487, 198,
+	479, 173,
+	464, 145,
+	446, 125,
+	428, 113,
+	405, 105,
+	386, 104,
+	386, 128,
+	395, 130,
+	412, 140,
+	426, 152,
+	440, 172,
+	450, 196,
+	455, 220,
+	456, 246,
+	488, 262
+	};
+	int tableroInicioRailes[48] = {
+	66, 308,
+	66, 214,
+	72, 214,
+	72, 224,
+	76, 234,
+	84, 241,
+	93, 242,
+	102, 241,
+	110, 234,
+	114, 224,
+	115, 214,
+	121, 214,
+	121, 283,
+	147, 304,
+	146, 307,
+	141, 308,
+	117, 289,
+	103, 291,
+	89, 301,
+	82, 313,
+	103, 332,
+	102, 336,
+	97, 337,
+	68, 310
 	};
 
-	tableroColliders = App->physics->CreateSolidChain(372, 658, tableroExterno, 88);
+	// BG Collider Chains Creation
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroExterno, 96);
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroTrianguloIz, 8);
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroTrianguloDer, 8);
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroColchonetaDer, 20);
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroEsponja, 30);
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroInterruptoresTop, 26);
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroCarrilDer, 16);
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroCarrilIz, 16);
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroBloqueDer, 24);
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroCurvaDer, 36);
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroInicioRailes, 48);
+
 }
 
 bool ModuleSceneIntro::CleanUp()
@@ -161,8 +316,10 @@ update_status ModuleSceneIntro::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 	{
-		springForce += 10;
-		springTop->body->ApplyForceToCenter(b2Vec2(0,springForce), 1);
+		if (springForce < 300) {
+			springForce += 10;
+		}
+		springTop->body->ApplyForceToCenter(b2Vec2(0, springForce), 1);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
 		springForce = 0;
