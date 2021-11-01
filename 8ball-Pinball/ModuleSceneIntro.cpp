@@ -60,8 +60,11 @@ bool ModuleSceneIntro::Start()
 
 	// Fx
 
-	collision_fx = App->audio->LoadFx("pinball/audio/fx/collision.wav");
-
+	collision1Fx = App->audio->LoadFx("pinball/audio/fx/collider1.wav");
+	collision2Fx = App->audio->LoadFx("pinball/audio/fx/collider2.wav");
+	collision3Fx = App->audio->LoadFx("pinball/audio/fx/collider3.wav");
+	collision4Fx = App->audio->LoadFx("pinball/audio/fx/collider4.wav");
+	collision5Fx = App->audio->LoadFx("pinball/audio/fx/collider5.wav");
 
 	return ret;
 }
@@ -339,7 +342,6 @@ bool ModuleSceneIntro::CleanUp()
 
 update_status ModuleSceneIntro::Update()
 {
-
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 	{
 		if (springForce < 300) {
@@ -350,7 +352,6 @@ update_status ModuleSceneIntro::Update()
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
 		springForce = 0;
 	}
-
 
 	// If user presses SPACE, enable RayCast
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
@@ -507,7 +508,28 @@ update_status ModuleSceneIntro::Update()
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	// Play Audio FX on every collision, regardless of who is colliding
-	App->audio->PlayFx(collision_fx);
+	int fx = rand() % 5;
+
+	switch (fx)
+	{
+	case 0:
+		App->audio->PlayFx(collision1Fx);
+		break;
+	case 1:
+		App->audio->PlayFx(collision2Fx);
+		break;
+	case 2:
+		App->audio->PlayFx(collision3Fx);
+		break;
+	case 3:
+		App->audio->PlayFx(collision4Fx);
+		break;
+	case 4:
+		App->audio->PlayFx(collision5Fx);
+		break;
+	}
+
+	
 
 	// Do something else. You can also check which bodies are colliding (sensor? ball? player?)
 }
