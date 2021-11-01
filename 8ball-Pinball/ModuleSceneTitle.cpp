@@ -52,9 +52,9 @@ bool ModuleSceneTitle::CleanUp()
 
 update_status ModuleSceneTitle::Update()
 {
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
+	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
 		App->fade->FadeToBlack(this, (Module*)App->scene_intro, 60);
-	}
+	//}
 
 	// - - Printing "thangs" - -
 

@@ -338,14 +338,18 @@ void ModuleSceneIntro::CreateBG() {
 
 void ModuleSceneIntro::CreateFlippers() {
 	// Flippers (not dolphins) x, y, width and height
-	int x = 150;
-	int y = 700;
-	int w = 50;
+	int x1 = 148;
+	int y1 = 700;
+
+	int x2 = 297;
+	int y2 = 700;
+
+	int w = 55;
 	int h = 10;
 
-	// Left flipper
-	flipperLeft = App->physics->CreateRectangle(x, y, w, h);
-	flipperLeftPoint = App->physics->CreateCircle(x, y, 2);
+	// --- Left flipper ---
+	flipperLeft = App->physics->CreateRectangle(x1, y1, w, h);
+	flipperLeftPoint = App->physics->CreateCircle(x1, y2, 2);
 	flipperLeftPoint->body->SetType(b2_staticBody);
 
 	// Flipper Joint (flipper rectangle x flipper circle to give it some movement)
@@ -357,14 +361,33 @@ void ModuleSceneIntro::CreateFlippers() {
 	flipperLeftJoint.enableLimit = true;
 	flipperLeftJoint.lowerAngle = -30 * DEGTORAD;
 	flipperLeftJoint.upperAngle = 30 * DEGTORAD;
-	flipperLeftJoint.localAnchorA.Set(PIXEL_TO_METERS(-30), 0);
+	flipperLeftJoint.localAnchorA.Set(PIXEL_TO_METERS(-33), 0);
 	flipperLeftJoint.localAnchorB.Set(0, 0);
 	b2RevoluteJoint* joint_leftFlipper = (b2RevoluteJoint*)App->physics->world->CreateJoint(&flipperLeftJoint);
+
+	// --- Right flipper ---
+	flipperRight = App->physics->CreateRectangle(x2, y2, w, h);
+	flipperRightPoint = App->physics->CreateCircle(x2, y2, 2);
+	flipperRightPoint->body->SetType(b2_staticBody);
+
+	// Flipper Joint
+	b2RevoluteJointDef flipperRightJoint;
+
+	flipperRightJoint.bodyA = flipperRight->body;
+	flipperRightJoint.bodyB = flipperRightPoint->body;
+	flipperRightJoint.referenceAngle = 0 * DEGTORAD;
+	flipperRightJoint.enableLimit = true;
+	flipperRightJoint.lowerAngle = -30 * DEGTORAD;
+	flipperRightJoint.upperAngle = 30 * DEGTORAD;
+	flipperRightJoint.localAnchorA.Set(PIXEL_TO_METERS(33), 0);
+	flipperRightJoint.localAnchorB.Set(0, 0);
+	b2RevoluteJoint* joint_rightFlipper = (b2RevoluteJoint*)App->physics->world->CreateJoint(&flipperRightJoint);
 
 }
 
 update_status ModuleSceneIntro::Update()
 {
+	// Spring
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 	{
 		if (springForce < 300) {
@@ -376,8 +399,26 @@ update_status ModuleSceneIntro::Update()
 		springForce = 0;
 	}
 
-	// If user presses SPACE, enable RayCast
-	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	// Flippers
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
+		flipperLeft->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
+		flipperRight->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
+	}
+
+	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	{
+		LOG("Creating 8ball at: X = %d Y = %d", App->input->GetMouseX(), App->input->GetMouseY());
+
+		balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), (N/2)));
+
+		// If Box2D detects a collision with this last generated circle, it will automatically callback the function ModulePhysics::BeginContact()
+		balls.getLast()->data->listener = this;
+	}
+
+	// If user presses SPACE, enable RayCast for no reason bc this truly do nothing more than printing a line xD
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		// Enable raycast mode
 		ray_on = !ray_on;
@@ -385,18 +426,6 @@ update_status ModuleSceneIntro::Update()
 		// Origin point of the raycast is be the mouse current position now (will not change)
 		ray.x = App->input->GetMouseX();
 		ray.y = App->input->GetMouseY();
-	}
-
-	// If user presses 1, create a new circle object
-	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{
-		LOG("Creating 8ball at: X = %d Y = %d", App->input->GetMouseX(), App->input->GetMouseY());
-
-		balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), (N/2)));
-
-		// Add this module (ModuleSceneIntro) as a "listener" interested in collisions with circles.
-		// If Box2D detects a collision with this last generated circle, it will automatically callback the function ModulePhysics::BeginContact()
-		balls.getLast()->data->listener = this;
 	}
 
 	// Prepare for raycast ------------------------------------------------------

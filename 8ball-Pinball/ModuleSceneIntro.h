@@ -46,6 +46,7 @@ public:
 	PhysBody* flipperRight;
 	PhysBody* flipperLeftPoint;
 	PhysBody* flipperRightPoint;
+	int flipperforce = -250;
 
 	// -------- Textures --------
 
