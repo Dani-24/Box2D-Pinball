@@ -11,45 +11,55 @@ class ModuleSceneIntro : public Module
 {
 public:
 
-	// Constructors & Destructors
+	// -------- Constructors & Destructors --------
 	ModuleSceneIntro(Application* app, bool start_enabled);
 	~ModuleSceneIntro();
 
-	// Main module steps
+	// -------- Main module steps --------
 	bool Start();
 	update_status Update();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
+	// -------- Extra functions --------
 	void BallManager();
 	void CreateBG();
-
 	void CreateSpring();
+	void CreateFlippers();
 
 public:
 
-	// Lists of physics objects
+	// -------- Lists of physics objects --------
 	p2List<PhysBody*> balls;
 	p2List<PhysBody*> boxes;
 	p2List<PhysBody*> ricks;
 
 	PhysBody* tableroColliders;
 
+	// Spring
 	PhysBody* springTop;
 	PhysBody* springBot;
-
 	int springForce = 0;
 
-	// Textures
+	// Flippers
+	PhysBody* flipperLeft;
+	PhysBody* flipperRight;
+	PhysBody* flipperLeftPoint;
+	PhysBody* flipperRightPoint;
+
+	// -------- Textures --------
+
+	// Items
 	SDL_Texture* ball;
 
+	// Background
 	SDL_Texture* tableroBG;
 	SDL_Texture* tableroNoBG;
 	SDL_Texture* tableroParticles;
 
 	float scrollerBG[2];
 
-	// Animation
+	// -------- Animation --------
 
 	Animation* currentAnim;
 
@@ -57,7 +67,7 @@ public:
 
 	int N = 38;	// Ball Sprite Coord.
 
-	// FX
+	// -------- FX --------
 	uint collision1Fx;
 	uint collision2Fx;
 	uint collision3Fx;
@@ -66,7 +76,7 @@ public:
 
 	int music;
 
-	// Raycast
+	// -------- Raycast --------
 	p2Point<int> ray;
 	bool ray_on;
 

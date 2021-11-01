@@ -29,12 +29,11 @@ bool ModuleSceneIntro::Start()
 	// Set camera position
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
-	// Load textures
+	// Load textures & configure each item
 	BallManager();
-
 	CreateSpring();
-
 	CreateBG();
+	CreateFlippers();
 
 	// Load Audio
 
@@ -102,6 +101,8 @@ void ModuleSceneIntro::CreateSpring()
 	springTop = App->physics->CreateRectangle(512, 700, 37, 10);
 	springBot = App->physics->CreateRectangle(512, 755, 38, 10);
 	springBot->body->SetType(b2_staticBody);
+
+	// Create a Joint to Join the top and the bot from the spring
 	b2DistanceJointDef SpringJointDef;
 
 	SpringJointDef.bodyA = springTop->body;
@@ -335,11 +336,31 @@ void ModuleSceneIntro::CreateBG() {
 	scrollerBG[1] = 552;
 }
 
-bool ModuleSceneIntro::CleanUp()
-{
-	LOG("Unloading Intro scene");
+void ModuleSceneIntro::CreateFlippers() {
+	// Flippers (not dolphins) x, y, width and height
+	int x = 150;
+	int y = 700;
+	int w = 50;
+	int h = 10;
 
-	return true;
+	// Left flipper
+	flipperLeft = App->physics->CreateRectangle(x, y, w, h);
+	flipperLeftPoint = App->physics->CreateCircle(x, y, 2);
+	flipperLeftPoint->body->SetType(b2_staticBody);
+
+	// Flipper Joint (flipper rectangle x flipper circle to give it some movement)
+	b2RevoluteJointDef flipperLeftJoint;
+
+	flipperLeftJoint.bodyA = flipperLeft->body;
+	flipperLeftJoint.bodyB = flipperLeftPoint->body;
+	flipperLeftJoint.referenceAngle = 0 * DEGTORAD;
+	flipperLeftJoint.enableLimit = true;
+	flipperLeftJoint.lowerAngle = -30 * DEGTORAD;
+	flipperLeftJoint.upperAngle = 30 * DEGTORAD;
+	flipperLeftJoint.localAnchorA.Set(PIXEL_TO_METERS(-30), 0);
+	flipperLeftJoint.localAnchorB.Set(0, 0);
+	b2RevoluteJoint* joint_leftFlipper = (b2RevoluteJoint*)App->physics->world->CreateJoint(&flipperLeftJoint);
+
 }
 
 update_status ModuleSceneIntro::Update()
@@ -468,4 +489,11 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	}
 
 	// Do something else. You can also check which bodies are colliding (sensor? ball? player?)
+}
+
+bool ModuleSceneIntro::CleanUp()
+{
+	LOG("Unloading Intro scene");
+
+	return true;
 }
