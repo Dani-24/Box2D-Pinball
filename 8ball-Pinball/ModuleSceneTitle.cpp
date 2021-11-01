@@ -23,7 +23,7 @@ bool ModuleSceneTitle::Start()
 	bool ret = true;
 
 	// Load Textures
-	octoling = App->textures->Load("pinball/octoling.png");
+	octoling = App->textures->Load("pinball/sprites/octoling.png");
 
 	// Load Sprite Animations
 	int N = 0;
@@ -33,6 +33,11 @@ bool ModuleSceneTitle::Start()
 	}
 	octoAnim.speed = 0.25f;
 	octoAnim.loop = true;
+
+	// Load Audio
+
+	App->audio->PlayMusic("pinball/audio/music_title.ogg",0.5f);
+
 
 	return ret;
 }

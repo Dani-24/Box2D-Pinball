@@ -53,10 +53,12 @@ public:
 
 	Animation ballLightAnim;
 
-	int N = 39;
+	int N = 38;	// Ball Sprite Coord.
 
 	// FX
 	uint bonus_fx;
+
+	int music;
 
 	// Raycast
 	p2Point<int> ray;

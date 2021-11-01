@@ -32,19 +32,38 @@ bool ModuleSceneIntro::Start()
 	// Load textures
 	BallManager();
 	
-	box = App->textures->Load("pinball/crate.png");
-	rick = App->textures->Load("pinball/rick_head.png");
-	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
+	box = App->textures->Load("pinball/sprites/crate.png");
+	rick = App->textures->Load("pinball/sprites/rick_head.png");
+	bonus_fx = App->audio->LoadFx("pinball/audio/fx/bonus.wav");
 
 	CreateSpring();
 
 	CreateBG();
 
+	// Load Music
+
+	// Randomize Music
+	srand(SDL_GetTicks());
+	music = rand() % 3;
+
+	switch (music)
+	{
+	case 0:
+		App->audio->PlayMusic("pinball/audio/music_#8_Regret.ogg");
+		break;
+	case 1:
+		App->audio->PlayMusic("pinball/audio/music_#9_Party.ogg");
+		break;
+	case 2:
+		App->audio->PlayMusic("pinball/audio/music_#11_Above.ogg");
+		break;
+	}
+
 	return ret;
 }
 
 void ModuleSceneIntro::BallManager() {
-	ball = App->textures->Load("pinball/8ball.png");
+	ball = App->textures->Load("pinball/sprites/8ball.png");
 
 	/*
 	On :
@@ -57,8 +76,8 @@ void ModuleSceneIntro::BallManager() {
 
 	*/
 	
-	// Order 1
-
+	// Ball light Animation
+	
 	for (int i = 0; i < 21; i++) {
 		if (i == 0) {
 			ballLightAnim.PushBack({ 0,0,N,N });
@@ -100,7 +119,7 @@ void ModuleSceneIntro::CreateSpring()
 void ModuleSceneIntro::CreateBG() {
 
 	// Load BG texture
-	tablero = App->textures->Load("pinball/tablero.png");
+	tablero = App->textures->Load("pinball/sprites/tablero.png");
 
 	// BG Collider Chains
 	int tableroExterno[96] = {
