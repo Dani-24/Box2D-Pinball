@@ -126,7 +126,9 @@ void ModuleSceneIntro::CreateSpring()
 void ModuleSceneIntro::CreateBG() {
 
 	// Load BG texture
-	tablero = App->textures->Load("pinball/sprites/tablero.png");
+	tableroBG = App->textures->Load("pinball/sprites/background/tableroBG.png");
+	tableroNoBG = App->textures->Load("pinball/sprites/background/tableroSinBG.png");
+	tableroParticles = App->textures->Load("pinball/sprites/background/particulasBG.png");
 
 	// BG Collider Chains
 	int tableroExterno[96] = {
@@ -331,6 +333,9 @@ void ModuleSceneIntro::CreateBG() {
 	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroCurvaDer, 36);
 	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroInicioRailes, 48);
 
+	// Set Scroll X distance
+	scrollerBG[0] = 0;
+	scrollerBG[1] = 552;
 }
 
 bool ModuleSceneIntro::CleanUp()
@@ -367,6 +372,8 @@ update_status ModuleSceneIntro::Update()
 	// If user presses 1, create a new circle object
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
+		LOG("Creating 8ball at: X = %d Y = %d", App->input->GetMouseX(), App->input->GetMouseY());
+
 		balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), (N/2)));
 
 		// Add this module (ModuleSceneIntro) as a "listener" interested in collisions with circles.
@@ -440,7 +447,19 @@ update_status ModuleSceneIntro::Update()
 
 	// All draw functions ------------------------------------------------------
 
-	App->renderer->Blit(tablero, 0, 0);
+	// Background 
+	App->renderer->Blit(tableroBG, 0, 0);
+	
+	// BG Scrolling:
+	for (int i = 0; i < 2; i++) {
+		scrollerBG[i] -= 0.3f;
+		if (scrollerBG[i] < -552) {
+			scrollerBG[i] = 552;
+		}
+		App->renderer->Blit(tableroParticles, scrollerBG[i], 0);
+	}
+
+	App->renderer->Blit(tableroNoBG, 0, 0);
 
 	// Balls
 	p2List_item<PhysBody*>* c = balls.getFirst();
@@ -528,8 +547,6 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		App->audio->PlayFx(collision5Fx);
 		break;
 	}
-
-	
 
 	// Do something else. You can also check which bodies are colliding (sensor? ball? player?)
 }

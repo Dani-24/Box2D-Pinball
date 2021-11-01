@@ -45,7 +45,11 @@ public:
 	SDL_Texture* box;
 	SDL_Texture* rick;
 
-	SDL_Texture* tablero;
+	SDL_Texture* tableroBG;
+	SDL_Texture* tableroNoBG;
+	SDL_Texture* tableroParticles;
+
+	float scrollerBG[2];
 
 	// Animation
 
