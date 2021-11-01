@@ -10,7 +10,6 @@
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-
 	// Initialise all the internal class variables, at least to NULL pointer
 	ball = NULL;
 	ray_on = false;
@@ -26,16 +25,16 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading Intro assets :D");
 	bool ret = true;
 
-	// Set camera position
+	// --- Set camera position ---
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
-	// Load textures & configure each item
+	// --- Load textures & configure each item --- 
 	BallManager();
 	CreateSpring();
 	CreateBG();
 	CreateFlippers();
 
-	// Load Audio
+	// --- Load Audio ---
 
 	// Randomize Music
 	srand(SDL_GetTicks());
@@ -407,6 +406,7 @@ update_status ModuleSceneIntro::Update()
 		flipperRight->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
 	}
 
+	// Ball Generator
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
 		LOG("Creating 8ball at: X = %d Y = %d", App->input->GetMouseX(), App->input->GetMouseY());
