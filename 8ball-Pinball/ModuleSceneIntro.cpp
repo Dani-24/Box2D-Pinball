@@ -176,17 +176,19 @@ void ModuleSceneIntro::CreateBG() {
 	492, 310,
 	492, 755
 	};
-	int tableroTrianguloIz[8] = {
-	118, 576,
-	118, 630,
+	int tableroTrianguloIz[10] = {
+	117, 629,
+	117, 622,
+	152, 646,
 	152, 652,
-	119, 578
+	119, 630
 	};
-	int tableroTrianguloDer[8] = {
-	329, 577,
-	329, 629,
+	int tableroTrianguloDer[10] = {
+	294, 646,
 	294, 652,
-	328, 579
+	329, 629,
+	329, 623,
+	296, 645
 	};
 	int tableroColchonetaDer[20] = {
 	286, 283,
@@ -315,8 +317,8 @@ void ModuleSceneIntro::CreateBG() {
 
 	// BG Collider Chains Creation
 	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroExterno, 96);
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroTrianguloIz, 8);
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroTrianguloDer, 8);
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroTrianguloIz, 10);
+	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroTrianguloDer, 10);
 	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroColchonetaDer, 20);
 	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroEsponja, 30);
 	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroInterruptoresTop, 26);
