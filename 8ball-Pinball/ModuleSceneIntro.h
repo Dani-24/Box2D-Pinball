@@ -12,7 +12,7 @@ class ModuleSceneIntro : public Module
 public:
 
 	// Constructors & Destructors
-	ModuleSceneIntro(Application* app, bool start_enabled = true);
+	ModuleSceneIntro(Application* app, bool start_enabled);
 	~ModuleSceneIntro();
 
 	// Main module steps

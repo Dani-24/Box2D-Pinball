@@ -59,6 +59,12 @@
     <ClInclude Include="Animation.h">
       <Filter>Header Files\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleSceneTitle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleFade.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -92,6 +98,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModulePhysics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleSceneTitle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleFade.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

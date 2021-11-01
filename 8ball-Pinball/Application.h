@@ -9,8 +9,10 @@ class ModuleWindow;
 class ModuleTextures;
 class ModuleInput;
 class ModuleAudio;
+class ModuleFade;
 class ModulePlayer;
 class ModuleSceneIntro;
+class ModuleSceneTitle;
 class ModulePhysics;
 
 class Application
@@ -21,7 +23,9 @@ public:
 	ModuleTextures* textures;
 	ModuleInput* input;
 	ModuleAudio* audio;
+	ModuleFade* fade;
 	ModulePlayer* player;
+	ModuleSceneTitle* scene_title;
 	ModuleSceneIntro* scene_intro;
 	ModulePhysics* physics;
 
