@@ -34,13 +34,12 @@ bool ModuleSceneIntro::Start()
 	
 	box = App->textures->Load("pinball/sprites/crate.png");
 	rick = App->textures->Load("pinball/sprites/rick_head.png");
-	bonus_fx = App->audio->LoadFx("pinball/audio/fx/bonus.wav");
 
 	CreateSpring();
 
 	CreateBG();
 
-	// Load Music
+	// Load Audio
 
 	// Randomize Music
 	srand(SDL_GetTicks());
@@ -58,6 +57,11 @@ bool ModuleSceneIntro::Start()
 		App->audio->PlayMusic("pinball/audio/music_#11_Above.ogg");
 		break;
 	}
+
+	// Fx
+
+	collision_fx = App->audio->LoadFx("pinball/audio/fx/collision.wav");
+
 
 	return ret;
 }
@@ -501,7 +505,7 @@ update_status ModuleSceneIntro::Update()
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	// Play Audio FX on every collision, regardless of who is colliding
-	App->audio->PlayFx(bonus_fx);
+	App->audio->PlayFx(collision_fx);
 
 	// Do something else. You can also check which bodies are colliding (sensor? ball? player?)
 }

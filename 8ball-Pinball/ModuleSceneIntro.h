@@ -56,7 +56,7 @@ public:
 	int N = 38;	// Ball Sprite Coord.
 
 	// FX
-	uint bonus_fx;
+	uint collision_fx;
 
 	int music;
 
