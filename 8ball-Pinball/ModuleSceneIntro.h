@@ -42,8 +42,6 @@ public:
 
 	// Textures
 	SDL_Texture* ball;
-	SDL_Texture* box;
-	SDL_Texture* rick;
 
 	SDL_Texture* tableroBG;
 	SDL_Texture* tableroNoBG;

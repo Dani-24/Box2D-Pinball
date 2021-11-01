@@ -26,6 +26,7 @@ bool ModuleSceneTitle::Start()
 	octoling = App->textures->Load("pinball/sprites/octoling.png");
 
 	// Load Sprite Animations
+
 	int N = 0;
 	for (int i = 0; i < 30; i++) {
 		octoAnim.PushBack({ N,0,540,540 });
@@ -55,11 +56,11 @@ update_status ModuleSceneTitle::Update()
 		App->fade->FadeToBlack(this, (Module*)App->scene_intro, 60);
 	}
 
-
-	// Printing thangs
+	// - - Printing "thangs" - -
 
 	octoAnim.Update();
 	SDL_Rect rect = octoAnim.GetCurrentFrame();
+
 	App->renderer->Blit(octoling, 0, 230, &rect);
 
 	return UPDATE_CONTINUE;

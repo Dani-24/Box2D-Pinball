@@ -12,7 +12,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 {
 
 	// Initialise all the internal class variables, at least to NULL pointer
-	ball = box = rick = NULL;
+	ball = NULL;
 	ray_on = false;
 }
 
@@ -31,9 +31,6 @@ bool ModuleSceneIntro::Start()
 
 	// Load textures
 	BallManager();
-	
-	box = App->textures->Load("pinball/sprites/crate.png");
-	rick = App->textures->Load("pinball/sprites/rick_head.png");
 
 	CreateSpring();
 
@@ -381,54 +378,6 @@ update_status ModuleSceneIntro::Update()
 		balls.getLast()->data->listener = this;
 	}
 
-	// If user presses 2, create a new box object
-	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-	{
-		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 100, 50));
-	}
-
-	// If user presses 3, create a new RickHead object
-	if(App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-	{
-		// Pivot 0, 0
-		int rick_head[64] = {
-			14, 36,
-			42, 40,
-			40, 0,
-			75, 30,
-			88, 4,
-			94, 39,
-			111, 36,
-			104, 58,
-			107, 62,
-			117, 67,
-			109, 73,
-			110, 85,
-			106, 91,
-			109, 99,
-			103, 104,
-			100, 115,
-			106, 121,
-			103, 125,
-			98, 126,
-			95, 137,
-			83, 147,
-			67, 147,
-			53, 140,
-			46, 132,
-			34, 136,
-			38, 126,
-			23, 123,
-			30, 114,
-			10, 102,
-			29, 90,
-			0, 75,
-			30, 62
-		};
-
-		ricks.add(App->physics->CreateChain(App->input->GetMouseX(), App->input->GetMouseY(), rick_head, 64));
-	}
-
 	// Prepare for raycast ------------------------------------------------------
 	
 	// The target point of the raycast is the mouse current position (will change over game time)
@@ -442,6 +391,7 @@ update_status ModuleSceneIntro::Update()
 	// Declare a vector. We will draw the normal to the hit surface (if we hit something)
 	fVector normal(0.0f, 0.0f);
 
+	// Update Animations 
 	ballLightAnim.Update();
 	SDL_Rect rect = ballLightAnim.GetCurrentFrame();
 
@@ -470,37 +420,6 @@ update_status ModuleSceneIntro::Update()
 
 		App->renderer->Blit(ball, x, y, &rect, 1.0f, c->data->GetRotation());
 
-		c = c->next;
-	}
-
-	// Boxes
-	c = boxes.getFirst();
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-
-		// Always paint boxes texture
-		App->renderer->Blit(box, x, y, NULL, 1.0f, c->data->GetRotation());
-
-		// Are we hitting this box with the raycast?
-		if(ray_on)
-		{
-			// Test raycast over the box, return fraction and normal vector
-			int hit = c->data->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);
-			if(hit >= 0)
-				ray_hit = hit;
-		}
-		c = c->next;
-	}
-
-	// Rick Heads
-	c = ricks.getFirst();
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(rick, x, y, NULL, 1.0f, c->data->GetRotation());
 		c = c->next;
 	}
 
