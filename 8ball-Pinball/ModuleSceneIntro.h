@@ -31,8 +31,6 @@ public:
 
 	// -------- Lists of physics objects --------
 	p2List<PhysBody*> balls;
-	p2List<PhysBody*> boxes;
-	p2List<PhysBody*> ricks;
 
 	PhysBody* tableroColliders;
 
@@ -50,8 +48,13 @@ public:
 
 	// -------- Textures --------
 
-	// Items
+	// Ball
 	SDL_Texture* ball;
+
+	// Spring
+	SDL_Texture* spring;
+	SDL_Texture* springBase;
+	SDL_Texture* springParticles;
 
 	// Background
 	SDL_Texture* tableroBG;
@@ -62,11 +65,16 @@ public:
 
 	// -------- Animation --------
 
-	Animation* currentAnim;
-
+	// Ball
 	Animation ballLightAnim;
 
-	int N = 38;	// Ball Sprite Coord.
+	int N = 38;	// Ball Sprite width.
+
+	// Spring
+	Animation springAnim;
+	Animation springExplosionAnim;
+
+	bool expl = false;
 
 	// -------- FX --------
 	uint collision1Fx;
@@ -76,6 +84,11 @@ public:
 	uint collision5Fx;
 
 	int music;
+
+	// Spring
+	uint springChargeFx;
+	uint springReleaseFx;
+
 
 	// -------- Raycast --------
 	p2Point<int> ray;

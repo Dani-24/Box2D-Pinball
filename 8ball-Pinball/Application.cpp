@@ -21,8 +21,8 @@ Application::Application()
 	audio = new ModuleAudio(this, true);
 	fade = new ModuleFade(this);
 	player = new ModulePlayer(this, false);
-	scene_title = new ModuleSceneTitle(this, true);
-	scene_intro = new ModuleSceneIntro(this, false);
+	scene_title = new ModuleSceneTitle(this, false);
+	scene_intro = new ModuleSceneIntro(this, true);
 	physics = new ModulePhysics(this);
 
 	// The order of calls is very important!

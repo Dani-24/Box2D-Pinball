@@ -65,6 +65,7 @@ bool ModuleSceneIntro::Start()
 }
 
 void ModuleSceneIntro::BallManager() {
+
 	ball = App->textures->Load("pinball/sprites/8ball.png");
 
 	/*
@@ -97,6 +98,25 @@ void ModuleSceneIntro::BallManager() {
 
 void ModuleSceneIntro::CreateSpring()
 {
+	// --- Spring Texture and Animation ---
+	spring = App->textures->Load("pinball/sprites/fishSpring.png");
+	springBase = App->textures->Load("pinball/sprites/fishBase.png");
+	springParticles = App->textures->Load("pinball/sprites/fishSpringParticle.png");
+
+	springAnim.PushBack({ 0,0,N,N });
+	springAnim.PushBack({ N,0,N,N });
+	springAnim.PushBack({ 2*N,0,N,N });
+	springAnim.PushBack({ 3*N,0,N,N });
+	springAnim.loop = false;
+	springAnim.speed = 0.15f;
+
+	for (int i = 0; i < 9; i++) {
+		springExplosionAnim.PushBack({ i*2*N,0,2*N,2*N });
+	}
+	springExplosionAnim.loop = true;
+	springExplosionAnim.speed = 0.1f;
+
+	// --- Spring Physics ---
 	springTop = App->physics->CreateRectangle(512, 700, 37, 10);
 	springBot = App->physics->CreateRectangle(512, 755, 38, 10);
 	springBot->body->SetType(b2_staticBody);
@@ -393,10 +413,18 @@ update_status ModuleSceneIntro::Update()
 			springForce += 10;
 		}
 		springTop->body->ApplyForceToCenter(b2Vec2(0, springForce), 1);
+
+		springAnim.Update();
+		expl = false;
+		springExplosionAnim.Reset();
 	}
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
 		springForce = 0;
+		
+		springAnim.Reset();
+		expl = true;
 	}
+
 
 	// Flippers
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
@@ -441,13 +469,9 @@ update_status ModuleSceneIntro::Update()
 	// Declare a vector. We will draw the normal to the hit surface (if we hit something)
 	fVector normal(0.0f, 0.0f);
 
-	// Update Animations 
-	ballLightAnim.Update();
-	SDL_Rect rect = ballLightAnim.GetCurrentFrame();
+	// --------------------------- All draw functions -------------------------------------
 
-	// All draw functions ------------------------------------------------------
-
-	// Background 
+	// --- Background ---
 	App->renderer->Blit(tableroBG, 0, 0);
 	
 	// BG Scrolling:
@@ -461,7 +485,11 @@ update_status ModuleSceneIntro::Update()
 
 	App->renderer->Blit(tableroNoBG, 0, 0);
 
-	// Balls
+	// --- Balls ---
+	// Update Animations 
+	ballLightAnim.Update();
+	SDL_Rect rect = ballLightAnim.GetCurrentFrame();
+
 	p2List_item<PhysBody*>* c = balls.getFirst();
 	while(c != NULL)
 	{
@@ -473,7 +501,20 @@ update_status ModuleSceneIntro::Update()
 		c = c->next;
 	}
 
-	// Raycasts -----------------
+	// --- Spring ---
+
+	SDL_Rect rect1 = springAnim.GetCurrentFrame();
+	SDL_Rect rect2 = springExplosionAnim.GetCurrentFrame();
+
+	if (expl == true) {
+		springExplosionAnim.Update();
+		App->renderer->Blit(springParticles, 474, 691, &rect2);
+	}
+
+	App->renderer->Blit(spring, 493, 710, &rect1);
+	App->renderer->Blit(springBase, 493, 721);
+
+	// --- Raycasts ---
 	if(ray_on == true)
 	{
 		// Compute the vector from the raycast origin up to the contact point (if we're hitting anything; otherwise this is the reference length)
@@ -489,7 +530,6 @@ update_status ModuleSceneIntro::Update()
 			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
 	}
 
-	// Keep playing
 	return UPDATE_CONTINUE;
 }
 
