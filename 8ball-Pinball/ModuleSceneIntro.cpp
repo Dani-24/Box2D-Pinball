@@ -83,9 +83,9 @@ void ModuleSceneIntro::BallManager() {
 	for (int i = 0; i < 21; i++) {
 		if (i == 0) {
 			ballLightAnim.PushBack({ 0,0,N,N });
-			ballLightAnim.PushBack({ N+3,0,N,N });
+			ballLightAnim.PushBack({ N+4,0,N,N });
 			ballLightAnim.PushBack({ 0,0,N,N });
-			ballLightAnim.PushBack({ N+3,0,N,N });
+			ballLightAnim.PushBack({ N+4,0,N,N });
 			ballLightAnim.PushBack({ 0,0,N,N });
 		}
 		ballLightAnim.PushBack({ 0,0,N,N });
