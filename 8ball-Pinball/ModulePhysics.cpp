@@ -5,6 +5,7 @@
 #include "ModulePhysics.h"
 #include "p2Point.h"
 #include "math.h"
+#include "ModuleSceneIntro.h"
 
 // Tell the compiler to reference the compiled Box2D libraries
 #ifdef _DEBUG
@@ -438,6 +439,39 @@ PhysBody* ModulePhysics::CreateSolidChain(int x, int y, int* points, int size) {
 	return pbody;
 }
 
+PhysBody* ModulePhysics::CreateCircularBumper(int x, int y, int radius) {
+	// Create Bumper BODY at position x,y
+	b2BodyDef bumper;
+	bumper.type = b2_staticBody;
+	bumper.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	// Add BODY to the world
+	b2Body* b = world->CreateBody(&bumper);
+
+	// Create Bumper SHAPE
+	b2CircleShape bumpershape;
+	bumpershape.m_radius = PIXEL_TO_METERS(radius);
+	bumpershape.m_p.Set(PIXEL_TO_METERS(0), PIXEL_TO_METERS(0));
+
+	// Create Bumper FIXTURE
+	b2FixtureDef fixture;
+	fixture.shape = &bumpershape;
+	fixture.density = 1.0f;
+	fixture.restitution = 1, 1;
+
+	// Add fixture to the Bumper BODY
+	b->CreateFixture(&fixture);
+
+	// Create our custom PhysBody class
+	PhysBody* pbody = new PhysBody();
+	pbody->body = b;
+	b->SetUserData(pbody);
+	pbody->width = pbody->height = radius;
+
+	// Return our PhysBody class
+	return pbody;
+}
+
 // Callback function to collisions with Box2D
 void ModulePhysics::BeginContact(b2Contact* contact)
 {
@@ -448,6 +482,42 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		physA->listener->OnCollision(physA, physB);
 	if(physB && physB->listener != NULL)
 		physB->listener->OnCollision(physB, physA);
+
+	// --- Sensors ---
+
+	// Eh, let's check if EVERY sensor collides with EVERY ball :D
+	p2List_item<PhysBody*>* c = App->scene_intro->balls.getFirst();
+	while (c != NULL)
+	{
+		// Side Kickers
+		if (physA == App->scene_intro->rightSideKicker && physB == c->data) {
+			c->data->body->ApplyForceToCenter(b2Vec2(0, -500), 1);
+		}
+		if (physA == App->scene_intro->leftSideKicker && physB == c->data) {
+			c->data->body->ApplyForceToCenter(b2Vec2(0, -500), 1);
+		}
+
+		// Jump Pads
+		if (physA == App->scene_intro->rightPad && physB == c->data) {
+			c->data->body->ApplyForceToCenter(b2Vec2(-150, -250), 1);
+		}
+		if (physA == App->scene_intro->leftPad && physB == c->data) {
+			c->data->body->ApplyForceToCenter(b2Vec2(150, -250), 1);
+		}
+
+		// Above flipper Jump Pads
+		if (physA == App->scene_intro->leftPlat && physB == c->data) {
+			c->data->body->ApplyForceToCenter(b2Vec2(100, -400), 1);
+		}
+		if (physA == App->scene_intro->rightPlat && physB == c->data) {
+			c->data->body->ApplyForceToCenter(b2Vec2(-100, -400), 1);
+		}
+
+
+		// Next ball, plz
+		c = c->next;
+	}
+
 }
 
 

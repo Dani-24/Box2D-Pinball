@@ -28,11 +28,13 @@ bool ModuleSceneIntro::Start()
 	// --- Set camera position ---
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
-	// --- Load textures & configure each item --- 
+	// --- Load textures & configure each item with methods bc it looks cool --- 
 	BallManager();
 	CreateSpring();
 	CreateBG();
 	CreateFlippers();
+	CreateSensors();
+	CreateBumpers();
 
 	// --- Load Audio ---
 
@@ -113,8 +115,9 @@ void ModuleSceneIntro::CreateSpring()
 	for (int i = 0; i < 9; i++) {
 		springExplosionAnim.PushBack({ i*2*N,0,2*N,2*N });
 	}
-	springExplosionAnim.loop = true;
-	springExplosionAnim.speed = 0.1f;
+	springExplosionAnim.PushBack({ 0,0,0,0 });
+	springExplosionAnim.loop = false;
+	springExplosionAnim.speed = 0.5f;
 
 	// --- Spring Physics ---
 	springTop = App->physics->CreateRectangle(512, 700, 37, 10);
@@ -404,6 +407,46 @@ void ModuleSceneIntro::CreateFlippers() {
 
 }
 
+void ModuleSceneIntro::CreateSensors() {
+	// --- Sensors that move the ball or something like that: ---
+
+	// Side Kickers
+	rightSideKicker = App->physics->CreateRectangleSensor(42, 755, 40, 10);
+	leftSideKicker = App->physics->CreateRectangleSensor(404, 755, 40, 10);
+
+	// Pads
+	leftPad = App->physics->CreateRectangleSensor(0, 0, 34, 5);
+	rightPad = App->physics->CreateRectangleSensor(0, 0, 34, 5);
+
+	b2Vec2 posLeftPad(5.4f, 5.85f);	// X, Y, and Angle to aply a rotation.... Idk what i'm doing but it works  || Ahh bueno que son metros y no pixeles y me da palo cambiarlo :D
+	rightPad->body->SetTransform(posLeftPad, -0.64f);
+
+	b2Vec2 posRightPad(2.65f, 5.8f);
+	leftPad->body->SetTransform(posRightPad, 0.64f);
+
+	// Platforms just above the flippers
+	int LplatX = 134;
+	int LplatY = 635;
+	int RplatX = 312;
+	int RplatY = 635;
+
+	leftPlat = App->physics->CreateRectangleSensor(LplatX, LplatY, 40, 5);
+	rightPlat = App->physics->CreateRectangleSensor(RplatX, RplatY, 40, 5);
+	b2Vec2 posLPlat(PIXEL_TO_METERS(LplatX), PIXEL_TO_METERS(LplatY));
+	b2Vec2 posRPlat(PIXEL_TO_METERS(RplatX), PIXEL_TO_METERS(RplatY));
+
+	leftPlat->body->SetTransform(posLPlat, 0.6f); // who uses radiants having degrees... 90 degrees all the word knows what it means... but 90 radiants??? wtf are 90 radiants?
+	rightPlat->body->SetTransform(posRPlat, -0.6f);
+
+	// --- Sensors that just do what a sensor do ---
+
+}
+
+void ModuleSceneIntro::CreateBumpers() {
+	bumperTop = App->physics->CreateCircularBumper(355, 190, 10);
+	bumperMid = App->physics->CreateCircularBumper(380, 280, 10);
+}
+
 update_status ModuleSceneIntro::Update()
 {
 	// Spring
@@ -424,7 +467,6 @@ update_status ModuleSceneIntro::Update()
 		springAnim.Reset();
 		expl = true;
 	}
-
 
 	// Flippers
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
@@ -506,13 +548,15 @@ update_status ModuleSceneIntro::Update()
 	SDL_Rect rect1 = springAnim.GetCurrentFrame();
 	SDL_Rect rect2 = springExplosionAnim.GetCurrentFrame();
 
+
+	App->renderer->Blit(spring, 493, 710, &rect1);
+	App->renderer->Blit(springBase, 493, 721);
+
 	if (expl == true) {
 		springExplosionAnim.Update();
 		App->renderer->Blit(springParticles, 474, 691, &rect2);
 	}
 
-	App->renderer->Blit(spring, 493, 710, &rect1);
-	App->renderer->Blit(springBase, 493, 721);
 
 	// --- Raycasts ---
 	if(ray_on == true)

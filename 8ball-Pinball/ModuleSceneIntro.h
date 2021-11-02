@@ -26,6 +26,8 @@ public:
 	void CreateBG();
 	void CreateSpring();
 	void CreateFlippers();
+	void CreateSensors();
+	void CreateBumpers();
 
 public:
 
@@ -45,6 +47,20 @@ public:
 	PhysBody* flipperLeftPoint;
 	PhysBody* flipperRightPoint;
 	int flipperforce = -250;
+
+	// Sensors
+	PhysBody* leftSideKicker;
+	PhysBody* rightSideKicker;
+
+	PhysBody* leftPad;
+	PhysBody* rightPad;
+
+	PhysBody* leftPlat;
+	PhysBody* rightPlat;
+
+	// Bumpers
+	PhysBody* bumperTop;
+	PhysBody* bumperMid; // jungler diff
 
 	// -------- Textures --------
 
@@ -93,6 +109,22 @@ public:
 	// -------- Raycast --------
 	p2Point<int> ray;
 	bool ray_on;
-
-
 };
+
+/*
+
+ ,-.       _,---._ __  / \
+ /  )    .-'       `./ /   \
+(  (   ,'            `/    /|
+ \  `-"             \'\   / |
+  `.              ,  \ \ /  |
+   /`.          ,'-`----Y   |
+  (            ;        |   '
+  |  ,-.    ,-'         |  /
+  |  | (   |        hjw | /
+  )  |  \  `.___________|/
+  `--'   `--'
+
+  Meow 
+
+  */
