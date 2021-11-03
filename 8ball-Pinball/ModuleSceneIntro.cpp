@@ -80,17 +80,6 @@ void ModuleSceneIntro::BallManager() {
 
 	ball = App->textures->Load("pinball/sprites/8ball.png");
 
-	/*
-	On :
-
-	ballLightAnim.PushBack({0,0,N,N});
-
-	Off :
-
-	ballLightAnim.PushBack({N,0,N,N});
-
-	*/
-	
 	// Ball light Animation
 	
 	for (int i = 0; i < 21; i++) {
@@ -351,17 +340,17 @@ void ModuleSceneIntro::CreateBG() {
 	};
 
 	// BG Collider Chains Creation
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroExterno, 96);
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroTrianguloIz, 10);
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroTrianguloDer, 10);
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroColchonetaDer, 20);
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroEsponja, 30);
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroInterruptoresTop, 26);
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroCarrilDer, 16);
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroCarrilIz, 16);
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroBloqueDer, 24);
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroCurvaDer, 36);
-	tableroColliders = App->physics->CreateSolidChain(0, 0, tableroInicioRailes, 48);
+	tableroColliders[0] = App->physics->CreateSolidChain(0, 0, tableroExterno, 96);
+	tableroColliders[1] = App->physics->CreateSolidChain(0, 0, tableroTrianguloIz, 10);
+	tableroColliders[2] = App->physics->CreateSolidChain(0, 0, tableroTrianguloDer, 10);
+	tableroColliders[3] = App->physics->CreateSolidChain(0, 0, tableroColchonetaDer, 20);
+	tableroColliders[4] = App->physics->CreateSolidChain(0, 0, tableroEsponja, 30);
+	tableroColliders[5] = App->physics->CreateSolidChain(0, 0, tableroInterruptoresTop, 26);
+	tableroColliders[6] = App->physics->CreateSolidChain(0, 0, tableroCarrilDer, 16);
+	tableroColliders[7] = App->physics->CreateSolidChain(0, 0, tableroCarrilIz, 16);
+	tableroColliders[8] = App->physics->CreateSolidChain(0, 0, tableroBloqueDer, 24);
+	tableroColliders[9] = App->physics->CreateSolidChain(0, 0, tableroCurvaDer, 36);
+	tableroColliders[10] = App->physics->CreateSolidChain(0, 0, tableroInicioRailes, 48);
 
 	// Set Scroll X distance
 	scrollerBG[0] = 0;
@@ -698,7 +687,33 @@ bool ModuleSceneIntro::CleanUp()
 
 	// Clean physics
 
-	//App->physics->world->DestroyBody((b2Body)tableroColliders);
+	for (int i = 0; i < 11; i++) {
+		App->physics->world->DestroyBody(tableroColliders[i]->body);
+	}
+
+	p2List_item<PhysBody*>* c = balls.getFirst();
+	while (c != NULL)
+	{
+		App->physics->world->DestroyBody(c->data->body);
+		c = c->next;
+	}
+	balls.clear();
+
+	App->physics->world->DestroyBody(springBot->body);
+	App->physics->world->DestroyBody(springTop->body);
+	App->physics->world->DestroyBody(flipperLeft->body);
+	App->physics->world->DestroyBody(flipperRight->body);
+	App->physics->world->DestroyBody(flipperLeftPoint->body);
+	App->physics->world->DestroyBody(flipperRightPoint->body);
+	App->physics->world->DestroyBody(leftSideKicker->body);
+	App->physics->world->DestroyBody(rightSideKicker->body);
+	App->physics->world->DestroyBody(leftPad->body);
+	App->physics->world->DestroyBody(rightPad->body);
+	App->physics->world->DestroyBody(leftPlat->body);
+	App->physics->world->DestroyBody(rightPlat->body);
+	App->physics->world->DestroyBody(antiBugPad->body);
+	App->physics->world->DestroyBody(bumperTop->body);
+	App->physics->world->DestroyBody(bumperMid->body);
 
 	return true;
 }

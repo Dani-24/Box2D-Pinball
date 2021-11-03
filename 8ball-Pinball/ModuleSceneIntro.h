@@ -34,7 +34,7 @@ public:
 	// -------- Lists of physics objects --------
 	p2List<PhysBody*> balls;
 
-	PhysBody* tableroColliders;
+	PhysBody* tableroColliders[11];
 
 	// Spring
 	PhysBody* springTop;
