@@ -7,6 +7,7 @@
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
 #include "ModuleFade.h"
+#include "ModuleFonts.h"
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -32,7 +33,7 @@ ModuleSceneIntro::~ModuleSceneIntro()
 
 bool ModuleSceneIntro::Start()
 {
-	LOG("Loading Intro assets :D");
+	LOG("Loading Gameplay assets :D");
 	bool ret = true;
 
 	// --- Set camera position ---
@@ -670,7 +671,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 bool ModuleSceneIntro::CleanUp()
 {
-	LOG("Unloading Intro scene");
+	LOG("Unloading gameplay scene");
 
 	// Clean animations
 	ballLightAnim.DeleteAnim();
@@ -686,7 +687,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(tableroNoBG);
 	App->textures->Unload(tableroParticles);
 
-	// Clear fx:
+	// Clean fx:
 	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = 0;
 
 	// Clean physics

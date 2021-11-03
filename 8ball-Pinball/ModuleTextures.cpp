@@ -96,3 +96,8 @@ void ModuleTextures::Unload(SDL_Texture* texture)
 		item = item->next;
 	}
 }
+
+void ModuleTextures::GetTextureSize(const SDL_Texture* texture, uint& width, uint& height)const
+{
+	SDL_QueryTexture((SDL_Texture*)texture, NULL, NULL, (int*)&width, (int*)&height);
+}

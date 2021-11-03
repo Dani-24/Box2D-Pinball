@@ -6,6 +6,7 @@
 #include "ModuleInput.h"
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
+#include "ModuleFonts.h"
 
 ModuleSceneTitle::ModuleSceneTitle(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -39,6 +40,11 @@ bool ModuleSceneTitle::Start()
 
 	App->audio->PlayMusic("pinball/audio/music_title.ogg",0.5f);
 
+	// Load Font
+	
+	char fontTable[] = { "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.:,;(*!?}^)#${%&-+@" };
+	char testing[] = { "!  ,_./0123456789$;<&?abcdefghijklmnopqrstuvwxyz" };
+	titleFont = App->fonts->Load("pinball/font/testingfont.png",testing,1);
 
 	return ret;
 }
@@ -52,12 +58,17 @@ update_status ModuleSceneTitle::Update()
 		return UPDATE_STOP;
 	}
 
-	// - - Printing "thangs" - -
+	// --- Printing "thangs" ---
 
 	octoAnim.Update();
 	SDL_Rect rect = octoAnim.GetCurrentFrame();
 
 	App->renderer->Blit(octoling, 0, 230, &rect);
+
+
+	// Printing Fonts
+
+	App->fonts->BlitText(220, 600, titleFont, "feliz jueves");
 
 	return UPDATE_CONTINUE;
 }
