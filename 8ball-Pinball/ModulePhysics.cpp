@@ -513,6 +513,10 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 			c->data->body->ApplyForceToCenter(b2Vec2(-100, -400), 1);
 		}
 
+		// Anti bug pad
+		if (physA == App->scene_intro->antiBugPad && physB == c->data) {
+			c->data->body->ApplyForceToCenter(b2Vec2(50, 0), 1);
+		}
 
 		// Next ball, plz
 		c = c->next;

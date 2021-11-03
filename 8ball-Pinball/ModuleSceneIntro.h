@@ -58,6 +58,8 @@ public:
 	PhysBody* leftPlat;
 	PhysBody* rightPlat;
 
+	PhysBody* antiBugPad;
+
 	// Bumpers
 	PhysBody* bumperTop;
 	PhysBody* bumperMid; // jungler diff

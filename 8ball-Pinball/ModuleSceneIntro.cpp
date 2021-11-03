@@ -360,13 +360,13 @@ void ModuleSceneIntro::CreateBG() {
 
 void ModuleSceneIntro::CreateFlippers() {
 	// Flippers (not dolphins) x, y, width and height
-	int x1 = 148;
+	int x1 = 150;
 	int y1 = 700;
 
-	int x2 = 297;
+	int x2 = 295;
 	int y2 = 700;
 
-	int w = 55;
+	int w = 53;
 	int h = 10;
 
 	// --- Left flipper ---
@@ -438,6 +438,16 @@ void ModuleSceneIntro::CreateSensors() {
 	leftPlat->body->SetTransform(posLPlat, 0.6f); // who uses radiants having degrees... 90 degrees all the word knows what it means... but 90 radiants??? wtf are 90 radiants?
 	rightPlat->body->SetTransform(posRPlat, -0.6f);
 
+	// Anti flying-bc-yes-ball sensor	(Idk why the ball gets bugged with Bumpers so i put some of these force generator where it happens and solved :)
+	int leftAntiBugPadX = 300 - 4;
+	int leftAntiBugPadY = 250 - 7;
+	antiBugPad = App->physics->CreateRectangleSensor(leftAntiBugPadX, leftAntiBugPadY, 60, 1);
+
+	b2Vec2 posLAntiB(PIXEL_TO_METERS(leftAntiBugPadX), PIXEL_TO_METERS(leftAntiBugPadY));
+
+	antiBugPad->body->SetTransform(posLAntiB, 1.5708f); // 90 degrees
+
+
 	// --- Sensors that just do what a sensor do ---
 
 }
@@ -447,8 +457,8 @@ void ModuleSceneIntro::CreateBumpers() {
 	bumperMidX = 380;
 	bumperTopY = 190;
 	bumperMidY = 280;
-	bumperTop = App->physics->CreateCircularBumper(bumperTopX, bumperTopY, 10);
-	bumperMid = App->physics->CreateCircularBumper(bumperMidX, bumperMidY, 10);
+	bumperTop = App->physics->CreateCircularBumper(bumperTopX, bumperTopY, 20);
+	bumperMid = App->physics->CreateCircularBumper(bumperMidX, bumperMidY, 20);
 }
 
 update_status ModuleSceneIntro::Update()
