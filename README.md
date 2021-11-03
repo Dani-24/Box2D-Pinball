@@ -15,6 +15,8 @@
 
 ### Debug Mode:
 
+    - F1: Toggle Colliders View
+    - 1: Generate a 8ball at mouse position
 
 ## Game Description:
 
