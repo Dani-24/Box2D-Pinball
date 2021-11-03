@@ -2,7 +2,7 @@
 
 ## Made by :
 
-- [Dani Toledo Rodríguez](https://github.com/Dani-24)
+- Dani Toledo Rodríguez ([Dani-24](https://github.com/Dani-24))
 
 ### Controls:
   
