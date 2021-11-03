@@ -13,6 +13,16 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	// Initialise all the internal class variables, at least to NULL pointer
 	ball = NULL;
 	ray_on = false;
+
+	count = 0;
+	dir = true;
+	axis = true;
+	moveX = true;
+	changes = 0;
+	flipperforce = -250;
+	springForce = 0;
+
+	N = 38;	// Ball Sprite width.
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -463,6 +473,9 @@ void ModuleSceneIntro::CreateBumpers() {
 
 update_status ModuleSceneIntro::Update()
 {
+	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP) {
+		App->fade->FadeToBlack(this, (Module*)App->scene_title, 60);
+	}
 	// --- Bumpers Movement ---
 
 	// Just move the bumpers and then wait 2 sec (if 60 fps) to move them back
@@ -665,6 +678,27 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
+
+	// Clean animations
+	ballLightAnim.DeleteAnim();
+	springAnim.DeleteAnim();
+	springExplosionAnim.DeleteAnim();
+
+	// Clean Textures
+	App->textures->Unload(ball);
+	App->textures->Unload(spring);
+	App->textures->Unload(springBase);
+	App->textures->Unload(springParticles);
+	App->textures->Unload(tableroBG);
+	App->textures->Unload(tableroNoBG);
+	App->textures->Unload(tableroParticles);
+
+	// Clear fx:
+	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = 0;
+
+	// Clean physics
+
+	//App->physics->world->DestroyBody((b2Body)tableroColliders);
 
 	return true;
 }

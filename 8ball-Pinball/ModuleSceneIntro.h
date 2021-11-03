@@ -39,14 +39,14 @@ public:
 	// Spring
 	PhysBody* springTop;
 	PhysBody* springBot;
-	int springForce = 0;
+	int springForce;
 
 	// Flippers
 	PhysBody* flipperLeft;
 	PhysBody* flipperRight;
 	PhysBody* flipperLeftPoint;
 	PhysBody* flipperRightPoint;
-	int flipperforce = -250;
+	int flipperforce;
 
 	// Sensors
 	PhysBody* leftSideKicker;
@@ -68,11 +68,11 @@ public:
 	float bumperMidX;
 	float bumperTopY;
 	float bumperMidY;
-	int count = 0;
-	bool dir = true;
-	bool axis = true;
-	bool moveX = true;
-	int changes = 0;
+	int count;
+	bool dir;
+	bool axis;
+	bool moveX;
+	int changes;
 
 	// -------- Textures --------
 
@@ -96,7 +96,7 @@ public:
 	// Ball
 	Animation ballLightAnim;
 
-	int N = 38;	// Ball Sprite width.
+	int N;	// Ball Sprite width.
 
 	// Spring
 	Animation springAnim;

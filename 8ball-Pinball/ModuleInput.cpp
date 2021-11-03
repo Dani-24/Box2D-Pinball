@@ -80,9 +80,6 @@ update_status ModuleInput::PreUpdate()
 		}
 	}
 
-	if(keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
-		return UPDATE_STOP;
-
 	return UPDATE_CONTINUE;
 }
 

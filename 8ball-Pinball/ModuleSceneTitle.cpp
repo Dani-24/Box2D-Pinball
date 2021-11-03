@@ -47,14 +47,22 @@ bool ModuleSceneTitle::CleanUp()
 {
 	LOG("Unloading title scene");
 
+	App->textures->Unload(octoling);
+	octoling = nullptr;
+
+	octoAnim.DeleteAnim();
+
 	return true;
 }
 
 update_status ModuleSceneTitle::Update()
 {
-	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
 		App->fade->FadeToBlack(this, (Module*)App->scene_intro, 60);
-	//}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP) {
+		return UPDATE_STOP;
+	}
 
 	// - - Printing "thangs" - -
 

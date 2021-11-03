@@ -12,9 +12,10 @@ public:
 	bool loop = true;
 	bool pingpong = false;
 
+
+	int totalFrames = 0;
 private:
 	float currentFrame = 0.0f;
-	int totalFrames = 0;
 	int loopCount = 0;
 	int pingpongDirection = 1;
 
@@ -55,6 +56,10 @@ public:
 			actualFrame = totalFrames - currentFrame;
 
 		return frames[actualFrame];
+	}
+
+	void DeleteAnim() {
+		totalFrames = 0;
 	}
 };
 
