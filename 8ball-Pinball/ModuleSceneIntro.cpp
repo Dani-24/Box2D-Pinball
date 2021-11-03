@@ -443,13 +443,60 @@ void ModuleSceneIntro::CreateSensors() {
 }
 
 void ModuleSceneIntro::CreateBumpers() {
-	bumperTop = App->physics->CreateCircularBumper(355, 190, 10);
-	bumperMid = App->physics->CreateCircularBumper(380, 280, 10);
+	bumperTopX = 355;
+	bumperMidX = 380;
+	bumperTopY = 190;
+	bumperMidY = 280;
+	bumperTop = App->physics->CreateCircularBumper(bumperTopX, bumperTopY, 10);
+	bumperMid = App->physics->CreateCircularBumper(bumperMidX, bumperMidY, 10);
 }
 
 update_status ModuleSceneIntro::Update()
 {
-	// Spring
+	// --- Bumpers Movement ---
+
+	// Just move the bumpers and then wait 2 sec (if 60 fps) to move them back
+	float vel = 0.4f;
+
+	if ( bumperTopX < 400 && dir == true && moveX == true) {
+		bumperTopX += vel;
+		bumperMidX -= vel;
+	}
+	else if (bumperTopX > 320 && dir == false && moveX == true) {
+		bumperTopX -= vel;
+		bumperMidX += vel;
+	}
+	else if (bumperTopY < 280 && dir == true &&  moveX == false) {
+		bumperTopY += vel;
+		bumperMidY -= vel;
+	}
+	else if (bumperTopY > 190 && dir == false && moveX == false) {
+		bumperTopY -= vel;
+		bumperMidY += vel;
+	}
+	else {
+		count++;
+		if (count > 60) {
+			count = 0;
+			moveX = !moveX;
+			changes++;
+		}
+		// that's just to make the movement cicle and don't move back by the same path
+		if (changes >= 3) {	
+			changes = 0;
+			dir = !dir;
+			axis = !axis;
+			moveX = !moveX;
+		}
+	}
+
+	// Change Bumpers X
+	b2Vec2 pos1 = b2Vec2(PIXEL_TO_METERS(bumperTopX), PIXEL_TO_METERS(bumperTopY));
+	bumperTop->body->SetTransform(pos1, 0);
+	b2Vec2 pos2 = b2Vec2(PIXEL_TO_METERS(bumperMidX), PIXEL_TO_METERS(bumperMidY));
+	bumperMid->body->SetTransform(pos2, 0);
+
+	// --- Spring ---
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 	{
 		if (springForce < 300) {
@@ -468,7 +515,7 @@ update_status ModuleSceneIntro::Update()
 		expl = true;
 	}
 
-	// Flippers
+	// --- Flippers ---
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 		flipperLeft->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
 	}
@@ -476,7 +523,7 @@ update_status ModuleSceneIntro::Update()
 		flipperRight->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
 	}
 
-	// Ball Generator
+	// --- Ball Generator ---
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
 		LOG("Creating 8ball at: X = %d Y = %d", App->input->GetMouseX(), App->input->GetMouseY());
@@ -487,6 +534,9 @@ update_status ModuleSceneIntro::Update()
 		balls.getLast()->data->listener = this;
 	}
 
+
+	// --- Raycast ------------------------------------------------------
+	
 	// If user presses SPACE, enable RayCast for no reason bc this truly do nothing more than printing a line xD
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
@@ -498,8 +548,6 @@ update_status ModuleSceneIntro::Update()
 		ray.y = App->input->GetMouseY();
 	}
 
-	// Prepare for raycast ------------------------------------------------------
-	
 	// The target point of the raycast is the mouse current position (will change over game time)
 	iPoint mouse;
 	mouse.x = App->input->GetMouseX();

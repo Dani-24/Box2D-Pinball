@@ -62,6 +62,16 @@ public:
 	PhysBody* bumperTop;
 	PhysBody* bumperMid; // jungler diff
 
+	float bumperTopX;
+	float bumperMidX;
+	float bumperTopY;
+	float bumperMidY;
+	int count = 0;
+	bool dir = true;
+	bool axis = true;
+	bool moveX = true;
+	int changes = 0;
+
 	// -------- Textures --------
 
 	// Ball
