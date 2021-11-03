@@ -460,11 +460,17 @@ void ModuleSceneIntro::CreateBumpers() {
 	bumperMid = App->physics->CreateCircularBumper(bumperMidX, bumperMidY, 20);
 }
 
-update_status ModuleSceneIntro::Update()
+update_status ModuleSceneIntro::PreUpdate() 
 {
 	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP) {
 		App->fade->FadeToBlack(this, (Module*)App->scene_title, 60);
 	}
+
+	return UPDATE_CONTINUE;
+}
+
+update_status ModuleSceneIntro::Update()
+{
 	// --- Bumpers Movement ---
 
 	// Just move the bumpers and then wait 2 sec (if 60 fps) to move them back
@@ -546,36 +552,11 @@ update_status ModuleSceneIntro::Update()
 		balls.getLast()->data->listener = this;
 	}
 
-
-	// --- Raycast ------------------------------------------------------
-	
-	// If user presses SPACE, enable RayCast for no reason bc this truly do nothing more than printing a line xD
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-	{
-		// Enable raycast mode
-		ray_on = !ray_on;
-
-		// Origin point of the raycast is be the mouse current position now (will not change)
-		ray.x = App->input->GetMouseX();
-		ray.y = App->input->GetMouseY();
-	}
-
-	// The target point of the raycast is the mouse current position (will change over game time)
-	iPoint mouse;
-	mouse.x = App->input->GetMouseX();
-	mouse.y = App->input->GetMouseY();
-
-	// Total distance of the raycast reference segment
-	int ray_hit = ray.DistanceTo(mouse);
-
-	// Declare a vector. We will draw the normal to the hit surface (if we hit something)
-	fVector normal(0.0f, 0.0f);
-
 	// --------------------------- All draw functions -------------------------------------
 
 	// --- Background ---
 	App->renderer->Blit(tableroBG, 0, 0);
-	
+
 	// BG Scrolling:
 	for (int i = 0; i < 2; i++) {
 		scrollerBG[i] -= 0.3f;
@@ -593,7 +574,7 @@ update_status ModuleSceneIntro::Update()
 	SDL_Rect rect = ballLightAnim.GetCurrentFrame();
 
 	p2List_item<PhysBody*>* c = balls.getFirst();
-	while(c != NULL)
+	while (c != NULL)
 	{
 		int x, y;
 		c->data->GetPosition(x, y);
@@ -617,12 +598,35 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(springParticles, 474, 691, &rect2);
 	}
 
+	// --- Raycast ------------------------------------------------------
 
-	// --- Raycasts ---
-	if(ray_on == true)
+	// If user presses SPACE, enable RayCast for no reason bc this truly do nothing more than printing a line xD
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		// Enable raycast mode
+		ray_on = !ray_on;
+
+		// Origin point of the raycast is be the mouse current position now (will not change)
+		ray.x = App->input->GetMouseX();
+		ray.y = App->input->GetMouseY();
+	}
+
+	// The target point of the raycast is the mouse current position (will change over game time)
+	iPoint mouse;
+	mouse.x = App->input->GetMouseX();
+	mouse.y = App->input->GetMouseY();
+
+	// Total distance of the raycast reference segment
+	int ray_hit = ray.DistanceTo(mouse);
+
+	// Declare a vector. We will draw the normal to the hit surface (if we hit something)
+	fVector normal(0.0f, 0.0f);
+
+	// Raycasts
+	if (ray_on == true)
 	{
 		// Compute the vector from the raycast origin up to the contact point (if we're hitting anything; otherwise this is the reference length)
-		fVector destination(mouse.x-ray.x, mouse.y-ray.y);
+		fVector destination(mouse.x - ray.x, mouse.y - ray.y);
 		destination.Normalize();
 		destination *= ray_hit;
 
@@ -630,7 +634,7 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->DrawLine(ray.x, ray.y, ray.x + destination.x, ray.y + destination.y, 255, 255, 255);
 
 		// If we are hitting something with the raycast, draw the normal vector to the contact point
-		if(normal.x != 0.0f)
+		if (normal.x != 0.0f)
 			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
 	}
 
@@ -639,7 +643,7 @@ update_status ModuleSceneIntro::Update()
 
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
-	// Play Audio FX on every collision, regardless of who is colliding
+	// Play Audio FX on every collision, randomized to sound more natural
 	int fx = rand() % 5;
 
 	switch (fx)
@@ -661,7 +665,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		break;
 	}
 
-	// Do something else. You can also check which bodies are colliding (sensor? ball? player?)
+	// If you want to see Sensor collisions check -> ModulePhysics -> BeginContact()
 }
 
 bool ModuleSceneIntro::CleanUp()

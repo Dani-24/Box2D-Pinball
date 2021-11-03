@@ -17,6 +17,7 @@ public:
 
 	// -------- Main module steps --------
 	bool Start();
+	update_status PreUpdate();
 	update_status Update();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);

@@ -43,18 +43,6 @@ bool ModuleSceneTitle::Start()
 	return ret;
 }
 
-bool ModuleSceneTitle::CleanUp()
-{
-	LOG("Unloading title scene");
-
-	App->textures->Unload(octoling);
-	octoling = nullptr;
-
-	octoAnim.DeleteAnim();
-
-	return true;
-}
-
 update_status ModuleSceneTitle::Update()
 {
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
@@ -72,4 +60,16 @@ update_status ModuleSceneTitle::Update()
 	App->renderer->Blit(octoling, 0, 230, &rect);
 
 	return UPDATE_CONTINUE;
+}
+
+bool ModuleSceneTitle::CleanUp()
+{
+	LOG("Unloading title scene");
+
+	App->textures->Unload(octoling);
+	octoling = nullptr;
+
+	octoAnim.DeleteAnim();
+
+	return true;
 }
