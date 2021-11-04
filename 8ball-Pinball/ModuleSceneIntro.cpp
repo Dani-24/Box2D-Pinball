@@ -481,7 +481,7 @@ update_status ModuleSceneIntro::Update()
 		bumperTopX += vel;
 		bumperMidX -= vel;
 	}
-	else if (bumperTopX > 320 && dir == false && moveX == true) {
+	else if (bumperTopX > 340 && dir == false && moveX == true) {
 		bumperTopX -= vel;
 		bumperMidX += vel;
 	}

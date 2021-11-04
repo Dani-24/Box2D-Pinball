@@ -14,7 +14,8 @@ ModuleFonts::~ModuleFonts()
 
 }
 
-int ModuleFonts::Load(const char* texture_path, const char* characters, uint rows) {
+int ModuleFonts::Load(const char* texture_path, const char* characters, uint rows) 
+{
 
 	int id = -1;
 
@@ -66,7 +67,8 @@ int ModuleFonts::Load(const char* texture_path, const char* characters, uint row
 	return id;
 }
 
-void ModuleFonts::UnLoad(/*int font_id*/) {
+void ModuleFonts::UnLoad(/*int font_id*/) 
+{
 	/*if (font_id >= 0 && font_id > MAX_FONTS && fonts[font_id].texture != nullptr) {
 		App->textures->Unload(fonts[font_id].texture);
 		fonts[font_id].texture = nullptr;
@@ -82,7 +84,8 @@ void ModuleFonts::UnLoad(/*int font_id*/) {
 	LOG("Fonts cleaned");
 }
 
-void ModuleFonts::BlitText(int x, int y, int font_id, const char* text) const {
+void ModuleFonts::BlitText(int x, int y, int font_id, const char* text) const 
+{
 	if (text == nullptr || font_id < 0 || font_id >= MAX_FONTS || fonts[font_id].texture == nullptr) {
 		LOG("Unable to render text with bmp font id %d", font_id);
 		return;

@@ -10,18 +10,18 @@
 
 ModuleSceneTitle::ModuleSceneTitle(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-
+	currentState = MENU;
 }
 
 ModuleSceneTitle::~ModuleSceneTitle()
 {
-	// You should do some memory cleaning here, if required
 }
 
 bool ModuleSceneTitle::Start()
 {
 	LOG("Loading Title assets uwu");
-	bool ret = true;
+
+	currentState = MENU;
 
 	// Load Textures
 	octoling = App->textures->Load("pinball/sprites/octoling.png");
@@ -43,32 +43,80 @@ bool ModuleSceneTitle::Start()
 	// Load Font
 	
 	char fontTable[] = { "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.:,;(*!?}^)#${%&-+@" };
-	char testing[] = { "!  ,_./0123456789$;<&?abcdefghijklmnopqrstuvwxyz" };
-	titleFont = App->fonts->Load("pinball/font/testingfont.png",testing,1);
 
-	return ret;
+	//char testing[] = { "!  ,_./0123456789$;<&?abcdefghijklmnopqrstuvwxyz" };
+
+	titleFont = App->fonts->Load("pinball/font/font.png", fontTable, 1);
+
+	return true;
 }
 
 update_status ModuleSceneTitle::Update()
 {
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
-		App->fade->FadeToBlack(this, (Module*)App->scene_intro, 60);
+	switch (currentState)
+	{
+	case MENU:
+		// Change Current State
+		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+			currentState = SETTINGS;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+			currentState = SCORES;
+		}
+
+		// --- UPDATE ---
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
+			App->fade->FadeToBlack(this, (Module*)App->scene_intro, 60);
+		}
+		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP) {
+			return UPDATE_STOP;
+		}
+
+		// --- PRINT ---
+
+		octoAnim.Update();
+		SDL_Rect rect = octoAnim.GetCurrentFrame();
+
+		App->renderer->Blit(octoling, 0, 230, &rect);
+
+		// Fonts
+
+		App->fonts->BlitText(220, 600, titleFont, "Feliz Jueves");
+
+		break;
+	case SETTINGS:
+		// Change Current State
+		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+			currentState = MENU;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+			currentState = SCORES;
+		}
+
+		// --- UPDATE ---
+
+
+		// --- PRINT ---
+
+
+		break;
+	case SCORES:
+		// Change Current State
+		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+			currentState = SETTINGS;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+			currentState = MENU;
+		}
+
+		// --- UPDATE ---
+
+
+		// --- PRINT ---
+
+
+		break;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP) {
-		return UPDATE_STOP;
-	}
-
-	// --- Printing "thangs" ---
-
-	octoAnim.Update();
-	SDL_Rect rect = octoAnim.GetCurrentFrame();
-
-	App->renderer->Blit(octoling, 0, 230, &rect);
-
-
-	// Printing Fonts
-
-	App->fonts->BlitText(220, 600, titleFont, "feliz jueves");
 
 	return UPDATE_CONTINUE;
 }
@@ -80,7 +128,8 @@ bool ModuleSceneTitle::CleanUp()
 	App->textures->Unload(octoling);
 	octoling = nullptr;
 
-	octoAnim.DeleteAnim();
+	App->fonts->UnLoad();
 
+	octoAnim.DeleteAnim();
 	return true;
 }

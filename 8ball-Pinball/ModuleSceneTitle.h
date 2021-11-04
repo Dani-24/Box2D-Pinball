@@ -5,6 +5,12 @@
 #include "Globals.h"
 #include "Animation.h"
 
+enum GameState {
+	MENU,
+	SETTINGS,
+	SCORES
+};
+
 class ModuleSceneTitle : public Module
 {
 public:
@@ -19,6 +25,7 @@ public:
 	bool CleanUp();
 
 public:
+	GameState currentState;
 
 	// Textures
 	SDL_Texture* octoling;
