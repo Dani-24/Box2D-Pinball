@@ -42,7 +42,10 @@ bool ModuleSceneTitle::Start()
 
 	// Load Font
 	
-	char fontTable[] = { "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.:,;(*!?}^)#${%&-+@" };
+	char fontTable[] = { "abcdefghijklmnopqrstuvwxyz " };
+	char fontTableCaps[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
+	char fontTableNum[] = { "0123456789" };
+	char fontTableEx[] = { " .:,; (*!? }^)#${ % &-+@ " };
 
 	//char testing[] = { "!  ,_./0123456789$;<&?abcdefghijklmnopqrstuvwxyz" };
 
@@ -81,7 +84,7 @@ update_status ModuleSceneTitle::Update()
 
 		// Fonts
 
-		App->fonts->BlitText(220, 600, titleFont, "Feliz Jueves");
+		App->fonts->BlitText(220, 600, titleFont, "a esta bcdefghijklmnopqrstuvwxyz");
 
 		break;
 	case SETTINGS:

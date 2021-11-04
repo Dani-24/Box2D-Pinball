@@ -15,6 +15,7 @@ class ModuleSceneIntro;
 class ModuleSceneTitle;
 class ModulePhysics;
 class ModuleFonts;
+class ModuleQFonts;
 
 class Application
 {
@@ -30,6 +31,7 @@ public:
 	ModuleSceneIntro* scene_intro;
 	ModulePhysics* physics;
 	ModuleFonts* fonts;
+	ModuleQFonts* qfonts;
 
 private:
 

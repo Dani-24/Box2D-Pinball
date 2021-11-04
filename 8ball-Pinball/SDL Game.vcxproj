@@ -39,7 +39,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>$(VC_LibraryPath_x86);$(ProjectDir)\SDL_ttf\libx86;$(WindowsSDK_LibraryPath_x86);C:\Users\danit\Desktop\Github\Box2D-Pinball\8ball-Pinball\SDL_ttf\libx86</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL_ttf\include;C:\Users\danit\Desktop\Github\Box2D-Pinball\8ball-Pinball\SDL_ttf\include</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -50,6 +53,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>SDL2_ttf.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\SDL_ttf\libx86;C:\Users\danit\Desktop\Github\Box2D-Pinball\8ball-Pinball\SDL_ttf\libx86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -75,6 +80,7 @@
     <ClInclude Include="ModuleFade.h" />
     <ClInclude Include="ModuleFonts.h" />
     <ClInclude Include="ModulePhysics.h" />
+    <ClInclude Include="ModuleQFonts.h" />
     <ClInclude Include="ModuleSceneTitle.h" />
     <ClInclude Include="p2List.h" />
     <ClInclude Include="Module.h" />
@@ -98,6 +104,7 @@
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModulePhysics.cpp" />
     <ClCompile Include="ModulePlayer.cpp" />
+    <ClCompile Include="ModuleQFonts.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleSceneIntro.cpp" />
     <ClCompile Include="ModuleSceneTitle.cpp" />

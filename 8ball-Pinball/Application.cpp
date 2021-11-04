@@ -10,7 +10,7 @@
 #include "ModulePhysics.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleSceneTitle.h"
-
+#include "ModuleQFonts.h"
 #include "Application.h"
 
 Application::Application()
@@ -26,6 +26,7 @@ Application::Application()
 	scene_intro = new ModuleSceneIntro(this, false);
 	physics = new ModulePhysics(this);
 	fonts = new ModuleFonts(this);
+	qfonts = new ModuleQFonts(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -49,6 +50,7 @@ Application::Application()
 
 	// Fonts
 	AddModule(fonts);
+	AddModule(qfonts);
 }
 
 Application::~Application()
