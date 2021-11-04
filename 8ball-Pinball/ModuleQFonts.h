@@ -10,14 +10,22 @@ public:
 
 	~ModuleQFonts();
 
-	int LoadFont(const char* font_path, uint size = 16);
+	bool Init();
+
+	bool Start();
 
 	void UnloadFont();
 
-	void RenderText(const char* textToRender,int x, int y, int r = 0, int g = 0, int b = 0);
+	void RenderText(const char* textToRender,int x, int y, int r = 255, int g = 255, int b = 255);
 	
 private:
 	TTF_Font* font;
+
+	SDL_Surface* fontSurface;
+
+	SDL_Texture* fontTexture;
+
+	int size = 16;
 };
 
 #endif

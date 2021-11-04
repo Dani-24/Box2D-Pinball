@@ -5,7 +5,6 @@
 #include "ModuleInput.h"
 #include "ModuleAudio.h"
 #include "ModuleFade.h"
-#include "ModuleFonts.h"
 #include "ModulePlayer.h"
 #include "ModulePhysics.h"
 #include "ModuleSceneIntro.h"
@@ -25,7 +24,6 @@ Application::Application()
 	scene_title = new ModuleSceneTitle(this, true);
 	scene_intro = new ModuleSceneIntro(this, false);
 	physics = new ModulePhysics(this);
-	fonts = new ModuleFonts(this);
 	qfonts = new ModuleQFonts(this);
 
 	// The order of calls is very important!
@@ -49,7 +47,6 @@ Application::Application()
 	AddModule(player);
 
 	// Fonts
-	AddModule(fonts);
 	AddModule(qfonts);
 }
 

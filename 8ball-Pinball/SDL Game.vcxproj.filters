@@ -65,9 +65,6 @@
     <ClInclude Include="ModuleFade.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleFonts.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleQFonts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -110,9 +107,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModuleFade.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleFonts.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModuleQFonts.cpp">

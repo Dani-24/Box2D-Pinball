@@ -14,7 +14,6 @@ enum GameState {
 class ModuleSceneTitle : public Module
 {
 public:
-
 	// Constructors & Destructors
 	ModuleSceneTitle(Application* app, bool start_enabled);
 	~ModuleSceneTitle();
@@ -38,6 +37,8 @@ public:
 
 	// Font
 	
-	int titleFont = -1;
+	int textSize = 16;
+
+	char text[20];
 
 };

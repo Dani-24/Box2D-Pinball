@@ -1,4 +1,3 @@
-#include "Globals.h"
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModuleSceneTitle.h"
@@ -6,7 +5,7 @@
 #include "ModuleInput.h"
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
-#include "ModuleFonts.h"
+#include "ModuleQFonts.h"
 
 ModuleSceneTitle::ModuleSceneTitle(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -40,16 +39,9 @@ bool ModuleSceneTitle::Start()
 
 	App->audio->PlayMusic("pinball/audio/music_title.ogg",0.5f);
 
-	// Load Font
-	
-	char fontTable[] = { "abcdefghijklmnopqrstuvwxyz " };
-	char fontTableCaps[] = { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
-	char fontTableNum[] = { "0123456789" };
-	char fontTableEx[] = { " .:,; (*!? }^)#${ % &-+@ " };
+	// Assign Text
 
-	//char testing[] = { "!  ,_./0123456789$;<&?abcdefghijklmnopqrstuvwxyz" };
-
-	titleFont = App->fonts->Load("pinball/font/font.png", fontTable, 1);
+	strcpy_s(text, "Feliz Jueves");
 
 	return true;
 }
@@ -84,7 +76,7 @@ update_status ModuleSceneTitle::Update()
 
 		// Fonts
 
-		App->fonts->BlitText(220, 600, titleFont, "a esta bcdefghijklmnopqrstuvwxyz");
+		App->qfonts->RenderText(text, 0, 0);
 
 		break;
 	case SETTINGS:
@@ -130,8 +122,6 @@ bool ModuleSceneTitle::CleanUp()
 
 	App->textures->Unload(octoling);
 	octoling = nullptr;
-
-	App->fonts->UnLoad();
 
 	octoAnim.DeleteAnim();
 	return true;

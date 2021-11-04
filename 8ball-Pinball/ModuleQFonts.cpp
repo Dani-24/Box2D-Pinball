@@ -2,50 +2,73 @@
 #include "ModuleQFonts.h"
 #include "Globals.h"
 #include "ModuleRender.h"
+#include "ModuleTextures.h"
 
 ModuleQFonts::ModuleQFonts(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-
 }
 
 ModuleQFonts::~ModuleQFonts()
 {
-
+	UnloadFont();
 }
 
-int ModuleQFonts::LoadFont(const char* font_path, uint size){
+bool ModuleQFonts::Init() {
+	LOG("Init Module Fonts");
+	if (TTF_Init() == -1) {
+		LOG("Fonts can't initialize || TTF_Init: %s", TTF_GetError());
+		return false;
+	}
+	return true;
+}
 
-	int id = -1;
-	
-	font = TTF_OpenFont(font_path, size);
+bool ModuleQFonts::Start() {
+
+	LOG("Starting Fonts Module");
+
+	// Load Font
+	font = TTF_OpenFont("pinball/font/Paintball.ttf", size);
 
 	if (!font) {
-		LOG("Error loading font || TTF_OpenFont: %s\n", TTF_GetError());
-		// handle error
-		return id;
+		LOG("Error loading font || TTF_OpenFont: %s", TTF_GetError());
+
+		return false;
 	}
-	return id;
-}
 
-void ModuleQFonts::UnloadFont() {
-
-	// free the font
-
-	TTF_CloseFont(font);
-	font = NULL; // to be safe..
-
-	LOG("Font cleaned");
+	return true;
 }
 
 void ModuleQFonts::RenderText(const char* textToRender, int x, int y, int r , int g , int b ) {
 
+	// Text Color
 	SDL_Color color = { r,g,b };
-	SDL_Surface* text_surface;
-	if (!(text_surface = TTF_RenderText_Solid(font, textToRender, color))) {	// Cambiar Solid por Blended para probar
-		LOG("Error Rendering Text || TTF_OpenFont: %s\n", TTF_GetError());
+
+	// Create the text on surface
+	if (!(fontSurface = TTF_RenderText_Solid(font, textToRender, color))) {	// Cambiar Solid por Blended para probar
+		LOG("Error Rendering Text || TTF_OpenFont: %s", TTF_GetError());
 	}
 	else {
 
-		App->renderer->Blit((SDL_Texture*)text_surface, x, y);
+		// Transform the text surface to texture
+		fontTexture = SDL_CreateTextureFromSurface(App->renderer->renderer, fontSurface);
+		
+		// Draw the text at X, Y
+		App->renderer->Blit(fontTexture, x, y);
 	}
+}
+
+void ModuleQFonts::UnloadFont()
+{
+	// clean & free memory
+
+	SDL_FreeSurface(fontSurface);
+
+	App->textures->Unload(fontTexture);
+
+	TTF_CloseFont(font);
+	font = NULL; // to be safe..
+
+	TTF_Quit();
+
+	LOG("Font cleaned");
 }
