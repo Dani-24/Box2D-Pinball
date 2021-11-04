@@ -39,6 +39,6 @@ public:
 	
 	int textSize = 16;
 
-	char text[20];
+	char text[100];
 
 };

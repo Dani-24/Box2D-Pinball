@@ -25,7 +25,7 @@ private:
 
 	SDL_Texture* fontTexture;
 
-	int size = 16;
+	int size = 50;
 };
 
 #endif

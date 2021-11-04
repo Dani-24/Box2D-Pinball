@@ -41,7 +41,7 @@ bool ModuleSceneTitle::Start()
 
 	// Assign Text
 
-	strcpy_s(text, "Feliz Jueves");
+	strcpy_s(text, "Feliz Jueves <3");
 
 	return true;
 }
