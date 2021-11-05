@@ -26,9 +26,7 @@ Application::Application()
 	physics = new ModulePhysics(this);
 	qfonts = new ModuleQFonts(this);
 
-	// The order of calls is very important!
-	// Modules will Init() Start() and Update in this order
-	// They will CleanUp() in reverse order
+	// Add modules ---
 
 	// Main Modules
 	AddModule(window);
@@ -129,7 +127,9 @@ bool Application::CleanUp()
 
 	while(item != NULL && ret == true)
 	{
-		ret = item->data->CleanUp();
+		if (item->data->IsEnabled()) {
+			ret = item->data->CleanUp();
+		}
 		item = item->prev;
 	}
 	return ret;

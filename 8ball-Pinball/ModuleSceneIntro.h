@@ -92,6 +92,11 @@ public:
 
 	float scrollerBG[2];
 
+	// Fonts
+	char textScore[100];
+
+	p2List<char[100]> textDialogs;
+
 	// -------- Animation --------
 
 	// Ball

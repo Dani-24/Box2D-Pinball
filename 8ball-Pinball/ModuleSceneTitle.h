@@ -27,7 +27,6 @@ public:
 	GameState currentState;
 
 	// Textures
-
 	SDL_Texture* cursor;
 	int cursorX, cursorY;
 
@@ -44,9 +43,6 @@ public:
 
 
 	// Font
-	
-	int textSize = 16;
-
 	char textPlay[10];
 	
 	char textSettings[10];
