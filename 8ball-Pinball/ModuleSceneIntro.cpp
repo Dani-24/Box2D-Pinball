@@ -15,15 +15,12 @@ using namespace std;
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	// Initialise all the internal class variables, at least to NULL pointer
+	// Initialise
 	ball = NULL;
 	ray_on = false;
 
 	count = 0;
 	dir = true;
-	axis = true;
-	moveX = true;
-	changes = 0;
 	flipperforce = -250;
 	springForce = 0;
 
@@ -32,7 +29,6 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 
 ModuleSceneIntro::~ModuleSceneIntro()
 {
-	// You should do some memory cleaning here, if required
 }
 
 bool ModuleSceneIntro::Start()
@@ -442,27 +438,14 @@ void ModuleSceneIntro::CreateSensors() {
 	leftPlat->body->SetTransform(posLPlat, 0.6f); // who uses radiants having degrees... 90 degrees all the word knows what it means... but 90 radiants??? wtf are 90 radiants?
 	rightPlat->body->SetTransform(posRPlat, -0.6f);
 
-	// Anti flying-bc-yes-ball sensor	(Idk why the ball gets bugged with Bumpers so i put some of these force generator where it happens and solved :)
-	int leftAntiBugPadX = 300 - 4;
-	int leftAntiBugPadY = 250 - 7;
-	antiBugPad = App->physics->CreateRectangleSensor(leftAntiBugPadX, leftAntiBugPadY, 60, 1);
-
-	b2Vec2 posLAntiB(PIXEL_TO_METERS(leftAntiBugPadX), PIXEL_TO_METERS(leftAntiBugPadY));
-
-	antiBugPad->body->SetTransform(posLAntiB, 1.5708f); // 90 degrees
-
-
 	// --- Sensors that just do what a sensor do ---
 
 }
 
 void ModuleSceneIntro::CreateBumpers() {
-	bumperTopX = 355;
-	bumperMidX = 380;
+	bumperTopX = 375;
 	bumperTopY = 190;
-	bumperMidY = 280;
 	bumperTop = App->physics->CreateCircularBumper(bumperTopX, bumperTopY, 20);
-	bumperMid = App->physics->CreateCircularBumper(bumperMidX, bumperMidY, 20);
 }
 
 update_status ModuleSceneIntro::PreUpdate() 
@@ -481,43 +464,23 @@ update_status ModuleSceneIntro::Update()
 	// Just move the bumpers and then wait 2 sec (if 60 fps) to move them back
 	float vel = 0.4f;
 
-	if ( bumperTopX < 400 && dir == true && moveX == true) {
-		bumperTopX += vel;
-		bumperMidX -= vel;
-	}
-	else if (bumperTopX > 340 && dir == false && moveX == true) {
-		bumperTopX -= vel;
-		bumperMidX += vel;
-	}
-	else if (bumperTopY < 280 && dir == true &&  moveX == false) {
+	if (bumperTopY < 290 && dir == true) {
 		bumperTopY += vel;
-		bumperMidY -= vel;
 	}
-	else if (bumperTopY > 190 && dir == false && moveX == false) {
+	else if (bumperTopY > 190 && dir == false) {
 		bumperTopY -= vel;
-		bumperMidY += vel;
 	}
 	else {
 		count++;
 		if (count > 60) {
 			count = 0;
-			moveX = !moveX;
-			changes++;
-		}
-		// that's just to make the movement cicle and don't move back by the same path
-		if (changes >= 3) {	
-			changes = 0;
 			dir = !dir;
-			axis = !axis;
-			moveX = !moveX;
 		}
 	}
 
 	// Change Bumpers X
 	b2Vec2 pos1 = b2Vec2(PIXEL_TO_METERS(bumperTopX), PIXEL_TO_METERS(bumperTopY));
 	bumperTop->body->SetTransform(pos1, 0);
-	b2Vec2 pos2 = b2Vec2(PIXEL_TO_METERS(bumperMidX), PIXEL_TO_METERS(bumperMidY));
-	bumperMid->body->SetTransform(pos2, 0);
 
 	// --- Spring ---
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
@@ -747,9 +710,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->physics->world->DestroyBody(rightPad->body);
 	App->physics->world->DestroyBody(leftPlat->body);
 	App->physics->world->DestroyBody(rightPlat->body);
-	App->physics->world->DestroyBody(antiBugPad->body);
 	App->physics->world->DestroyBody(bumperTop->body);
-	App->physics->world->DestroyBody(bumperMid->body);
 
 	return true;
 }

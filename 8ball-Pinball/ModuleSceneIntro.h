@@ -64,21 +64,13 @@ public:
 	PhysBody* leftPlat;
 	PhysBody* rightPlat;
 
-	PhysBody* antiBugPad;
-
 	// Bumpers
 	PhysBody* bumperTop;
-	PhysBody* bumperMid; // jungler diff
 
 	float bumperTopX;
-	float bumperMidX;
 	float bumperTopY;
-	float bumperMidY;
 	int count;
 	bool dir;
-	bool axis;
-	bool moveX;
-	int changes;
 
 	// -------- Textures --------
 

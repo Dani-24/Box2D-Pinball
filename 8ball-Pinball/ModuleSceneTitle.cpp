@@ -44,7 +44,8 @@ bool ModuleSceneTitle::Start()
 
 	// Load Audio
 
-	App->audio->PlayMusic("pinball/audio/music_title.ogg",0.5f);
+	music = false;
+	ManageMusic();
 
 	// Assign Text
 
@@ -55,6 +56,23 @@ bool ModuleSceneTitle::Start()
 	strcpy_s(githubLink, "https://github.com/Dani-24/Box2D-Pinball");
 
 	return true;
+}
+
+void ModuleSceneTitle::ManageMusic() {
+	if (music == false) {
+		music = true;
+		switch (currentState)
+		{
+		case MENU:
+			App->audio->PlayMusic("pinball/audio/music_title.ogg", 0.5f);
+			break;
+		case SETTINGS:
+			App->audio->PlayMusic("pinball/audio/music_settings.ogg", 0.5f);
+			break;
+		case SCORES:
+			break;
+		}
+	}
 }
 
 update_status ModuleSceneTitle::Update()
@@ -79,6 +97,8 @@ update_status ModuleSceneTitle::Update()
 		// State and Scene management
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 575) {
 			currentState = SETTINGS;
+			music = false;
+			ManageMusic();
 		}
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 650) {
 			currentState = SCORES;
@@ -103,14 +123,16 @@ update_status ModuleSceneTitle::Update()
 
 		// Fonts
 		App->qfonts->RenderText(textPlay, 242, 500);
-		App->qfonts->RenderText(textScores, 225, 575);
-		App->qfonts->RenderText(textSettings, 210, 650);
+		App->qfonts->RenderText(textSettings, 210, 575);
+		App->qfonts->RenderText(textScores, 225, 650);
 
 		break;
 	case SETTINGS:
 		// Return back to menu
 		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
 			currentState = MENU;
+			music = false;
+			ManageMusic();
 		}
 
 		// --- UPDATE ---

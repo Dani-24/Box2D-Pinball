@@ -23,6 +23,9 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	void ManageMusic();
+	bool music;
+
 public:
 	GameState currentState;
 
