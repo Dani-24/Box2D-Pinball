@@ -30,12 +30,16 @@ public:
 	void CreateSensors();
 	void CreateBumpers();
 
+	void PlayPtsFx();
+
 public:
 
 	// -------- HUD -----------------------------
 
 	int score;
 	int lives;
+
+	int lastFrameScore;
 
 	// -------- Lists of physics objects --------
 	p2List<PhysBody*> balls;
@@ -113,6 +117,12 @@ public:
 	uint collision3Fx;
 	uint collision4Fx;
 	uint collision5Fx;
+
+	uint kickerInitFx;
+	uint kickerBurstFx;
+
+	uint ptsFx2;
+	uint ptsFx3;
 
 	int music;
 

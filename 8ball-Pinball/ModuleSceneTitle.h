@@ -44,6 +44,11 @@ public:
 
 	// FX
 
+	uint scorefx;
+
+	uint acceptfx;
+	uint backfx;
+	uint selectfx;
 
 	// Font
 	char textPlay[10];

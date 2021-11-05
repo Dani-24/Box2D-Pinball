@@ -18,7 +18,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	// Initialise
 	ball = NULL;
 	ray_on = false;
-
+	score = 0;
 	count = 0;
 	dir = true;
 	flipperforce = -250;
@@ -73,6 +73,12 @@ bool ModuleSceneIntro::Start()
 	collision3Fx = App->audio->LoadFx("pinball/audio/fx/collider3.wav");
 	collision4Fx = App->audio->LoadFx("pinball/audio/fx/collider4.wav");
 	collision5Fx = App->audio->LoadFx("pinball/audio/fx/collider5.wav");
+
+	kickerInitFx = App->audio->LoadFx("pinball/audio/fx/kickerInit.wav");
+	kickerBurstFx = App->audio->LoadFx("pinball/audio/fx/kickerBurst.wav");
+
+	ptsFx2 = App->audio->LoadFx("pinball/audio/fx/pts2.wav");
+	ptsFx3 = App->audio->LoadFx("pinball/audio/fx/pts3.wav");
 
 	return ret;
 }
@@ -435,7 +441,7 @@ void ModuleSceneIntro::CreateSensors() {
 	b2Vec2 posLPlat(PIXEL_TO_METERS(LplatX), PIXEL_TO_METERS(LplatY));
 	b2Vec2 posRPlat(PIXEL_TO_METERS(RplatX), PIXEL_TO_METERS(RplatY));
 
-	leftPlat->body->SetTransform(posLPlat, 0.6f); // who uses radiants having degrees... 90 degrees all the word knows what it means... but 90 radiants??? wtf are 90 radiants?
+	leftPlat->body->SetTransform(posLPlat, 0.6f); // who uses radiants having degrees... 90 degrees all the world knows what does it means... but 90 radiants??? wtf are 90 radiants?
 	rightPlat->body->SetTransform(posRPlat, -0.6f);
 
 	// --- Sensors that just do what a sensor do ---
@@ -450,9 +456,21 @@ void ModuleSceneIntro::CreateBumpers() {
 
 update_status ModuleSceneIntro::PreUpdate() 
 {
+	// Scene transitions
 	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP) {
 		App->fade->FadeToBlack(this, (Module*)App->scene_title, 60);
 	}
+
+
+	//// Check if score has changed to then play sfx
+
+	//if (score != 0) {
+	//	if (lastFrameScore != score) {
+	//		PlayPtsFx();
+	//	}
+	//	lastFrameScore = score;
+	//}
+
 
 	return UPDATE_CONTINUE;
 }
@@ -493,12 +511,20 @@ update_status ModuleSceneIntro::Update()
 		springAnim.Update();
 		expl = false;
 		springExplosionAnim.Reset();
+
+		// Fx
+		if (springForce == 10) {
+			App->audio->PlayFx(kickerInitFx);
+		}
 	}
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
 		springForce = 0;
 		
 		springAnim.Reset();
 		expl = true;
+
+		// Fx
+		App->audio->PlayFx(kickerBurstFx);
 	}
 
 	// --- Flippers ---
@@ -659,8 +685,21 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		App->audio->PlayFx(collision5Fx);
 		break;
 	}
+}
 
-	// If you want to see Sensor collisions check -> ModulePhysics -> BeginContact()
+void ModuleSceneIntro::PlayPtsFx() {
+
+	int sfx = rand() % 2;
+
+	switch (sfx)
+	{
+	case 0:
+		App->audio->PlayFx(ptsFx2);
+		break;
+	case 1:
+		App->audio->PlayFx(ptsFx3);
+		break;
+	}
 }
 
 bool ModuleSceneIntro::CleanUp()

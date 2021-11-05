@@ -47,6 +47,12 @@ bool ModuleSceneTitle::Start()
 	music = false;
 	ManageMusic();
 
+	scorefx = App->audio->LoadFx("pinball/audio/fx/openScore.wav");
+
+	acceptfx = App->audio->LoadFx("pinball/audio/fx/fxAccept.wav");
+	backfx = App->audio->LoadFx("pinball/audio/fx/fxBack.wav");
+	selectfx = App->audio->LoadFx("pinball/audio/fx/fxSelect.wav");
+
 	// Assign Text
 
 	strcpy_s(textPlay, "Play");
@@ -89,24 +95,30 @@ update_status ModuleSceneTitle::Update()
 		// Cursor Movement
 		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN && cursorY != 650) {
 			cursorY += 75;
+			App->audio->PlayFx(selectfx);
 		}
 		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN && cursorY != 500) {
 			cursorY -= 75;
+			App->audio->PlayFx(selectfx);
 		}
 
 		// State and Scene management
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 575) {
 			currentState = SETTINGS;
+			App->audio->PlayFx(acceptfx);
 			music = false;
 			ManageMusic();
 		}
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 650) {
 			currentState = SCORES;
+			App->audio->PlayFx(scorefx);
 		}
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 500) {
+			App->audio->PlayFx(acceptfx);
 			App->fade->FadeToBlack(this, (Module*)App->scene_intro, 60);
 		}
 		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
+			App->audio->PlayFx(backfx);
 			return UPDATE_STOP;
 		}
 
@@ -131,6 +143,8 @@ update_status ModuleSceneTitle::Update()
 		// Return back to menu
 		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
 			currentState = MENU;
+
+			App->audio->PlayFx(backfx);
 			music = false;
 			ManageMusic();
 		}
@@ -146,6 +160,9 @@ update_status ModuleSceneTitle::Update()
 		// Return
 		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
 			currentState = MENU;
+
+			App->audio->PlayFx(backfx);
+
 		}
 
 		// --- UPDATE ---
@@ -170,7 +187,9 @@ bool ModuleSceneTitle::CleanUp()
 
 	App->textures->Unload(octoling);
 	octoling = nullptr;
-
 	octoAnim.DeleteAnim();
+
+	scorefx = acceptfx = selectfx = backfx = 0;
+
 	return true;
 }
