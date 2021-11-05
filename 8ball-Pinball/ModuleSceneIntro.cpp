@@ -9,6 +9,10 @@
 #include "ModuleFade.h"
 #include "ModuleQFonts.h"
 
+#include <sstream>
+#include <string.h>
+using namespace std;
+
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	// Initialise all the internal class variables, at least to NULL pointer
@@ -598,6 +602,33 @@ update_status ModuleSceneIntro::Update()
 		springExplosionAnim.Update();
 		App->renderer->Blit(springParticles, 474, 691, &rect2);
 	}
+
+
+	// --- Fonts ---
+
+	// Score int -> const char*
+	stringstream strs;
+	strs << score;
+	string temp_str = strs.str();
+	char* char_type = (char*)temp_str.c_str();
+
+	// Change X position to fit better with the HUD 
+	if (score < 10){
+		App->qfonts->RenderText(char_type, 195, 15);
+	}
+	else if (score < 1000) {
+		App->qfonts->RenderText(char_type, 180, 15);
+	}
+	else if (score < 10000) {
+		App->qfonts->RenderText(char_type, 170, 15);
+	}
+	else if (score < 100000) {
+		App->qfonts->RenderText(char_type, 165, 15);
+	}
+	else{
+		App->qfonts->RenderText(char_type, 150, 15);
+	}
+
 
 	// --- Raycast ------------------------------------------------------
 

@@ -492,25 +492,44 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		// Side Kickers
 		if (physA == App->scene_intro->rightSideKicker && physB == c->data) {
 			c->data->body->ApplyForceToCenter(b2Vec2(0, -500), 1);
+
+			App->scene_intro->score += 50;
 		}
 		if (physA == App->scene_intro->leftSideKicker && physB == c->data) {
 			c->data->body->ApplyForceToCenter(b2Vec2(0, -500), 1);
+
+			App->scene_intro->score += 50;
 		}
 
 		// Jump Pads
 		if (physA == App->scene_intro->rightPad && physB == c->data) {
 			c->data->body->ApplyForceToCenter(b2Vec2(-150, -250), 1);
+
+			App->scene_intro->score += 100;
 		}
 		if (physA == App->scene_intro->leftPad && physB == c->data) {
 			c->data->body->ApplyForceToCenter(b2Vec2(150, -250), 1);
+
+			App->scene_intro->score += 100;
 		}
 
 		// Above flipper Jump Pads
 		if (physA == App->scene_intro->leftPlat && physB == c->data) {
 			c->data->body->ApplyForceToCenter(b2Vec2(100, -400), 1);
+
+			App->scene_intro->score += 100;
 		}
 		if (physA == App->scene_intro->rightPlat && physB == c->data) {
 			c->data->body->ApplyForceToCenter(b2Vec2(-100, -400), 1);
+
+			App->scene_intro->score += 100;
+		}
+		// Bumpers
+		if (physA == App->scene_intro->bumperTop && physB == c->data) {
+			App->scene_intro->score += 500;
+		}
+		if (physA == App->scene_intro->bumperMid && physB == c->data) {
+			App->scene_intro->score += 500;
 		}
 
 		// Anti bug pad

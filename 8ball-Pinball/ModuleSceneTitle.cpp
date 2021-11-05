@@ -24,7 +24,6 @@ bool ModuleSceneTitle::Start()
 
 	// Load Textures
 
-
 	bg = App->textures->Load("pinball/sprites/background/tableroBG.png");
 	bgPart = App->textures->Load("pinball/sprites/background/particulasBG.png");
 

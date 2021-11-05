@@ -32,6 +32,11 @@ public:
 
 public:
 
+	// -------- HUD -----------------------------
+
+	int score;
+	int lives;
+
 	// -------- Lists of physics objects --------
 	p2List<PhysBody*> balls;
 
