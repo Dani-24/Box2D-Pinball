@@ -8,7 +8,8 @@
 #include "ModulePhysics.h"
 #include "ModuleFade.h"
 #include "ModuleQFonts.h"
-
+#include "ModuleSceneMenu.h"
+#include "ModuleSceneTitle.h"
 #include <sstream>
 #include <string.h>
 using namespace std;
@@ -23,6 +24,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 	dir = true;
 	flipperforce = -250;
 	springForce = 0;
+	pause = false;
 
 	N = 38;	// Ball Sprite width.
 }
@@ -35,6 +37,10 @@ bool ModuleSceneIntro::Start()
 {
 	LOG("Loading Gameplay assets :D");
 	bool ret = true;
+
+	// ppl variables
+	score = 0;
+	lives = 3;
 
 	// --- Set camera position ---
 	App->renderer->camera.x = App->renderer->camera.y = 0;
@@ -194,8 +200,8 @@ void ModuleSceneIntro::CreateBG() {
 	67, 760,
 	67, 720,
 	172, 760,
-	172, 848,
-	277, 848,
+	172, 2000,
+	277, 2000,
 	277, 760,
 	381, 720,
 	381, 760,
@@ -372,7 +378,7 @@ void ModuleSceneIntro::CreateFlippers() {
 	int x2 = 295;
 	int y2 = 700;
 
-	int w = 53;
+	int w = 52;
 	int h = 10;
 
 	// --- Left flipper ---
@@ -446,6 +452,9 @@ void ModuleSceneIntro::CreateSensors() {
 
 	// --- Sensors that just do what a sensor do ---
 
+	// Losing a ball sensor
+	loseSensor = App->physics->CreateRectangleSensor(223, 820, 100, 100);
+
 }
 
 void ModuleSceneIntro::CreateBumpers() {
@@ -454,96 +463,120 @@ void ModuleSceneIntro::CreateBumpers() {
 	bumperTop = App->physics->CreateCircularBumper(bumperTopX, bumperTopY, 20);
 }
 
+void ModuleSceneIntro::PauseGame() {
+	pause = true;
+	App->scene_menu->currentState = PAUSE;
+}
+
+void ModuleSceneIntro::UnPauseGame() {
+	pause = false;
+}
+
 update_status ModuleSceneIntro::PreUpdate() 
 {
 	// Scene transitions
-	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP) {
+	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP && lives > 0) {
 		App->fade->FadeToBlack(this, (Module*)App->scene_title, 60);
+		App->scene_menu->currentState = DISABLED;
 	}
 
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN) {
+		PauseGame();
+	}
 
-	//// Check if score has changed to then play sfx
+	if (lives == 0) {
+		LOG("Llamo A Gameover");
+		App->scene_menu->currentState = GAMEOVER;
+		pause = true;
+		// Lives = -1 , idk why but if i let lives in 0 even disabling this module this if sends another Gameover to the scene menu and kboom
+		lives = -1;
 
-	//if (score != 0) {
-	//	if (lastFrameScore != score) {
-	//		PlayPtsFx();
-	//	}
-	//	lastFrameScore = score;
-	//}
-
+	}
+	if (lives == -1) {
+		// This should be in lives==0 if but since i have to put lives=-1 this shit go there or it doesn't Update()
+		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP) {
+			// "Save" score if exit 
+			App->scene_title->scores.add(App->scene_intro->score);
+			LOG("Saving Score %d", App->scene_intro->score);
+			// Fade
+			App->fade->FadeToBlack(this, (Module*)App->scene_title, 60);
+			App->scene_menu->currentState = DISABLED;
+		}
+	}
 
 	return UPDATE_CONTINUE;
 }
 
 update_status ModuleSceneIntro::Update()
 {
-	// --- Bumpers Movement ---
+	if (pause != true) {
+		// --- Bumpers Movement ---
 
-	// Just move the bumpers and then wait 2 sec (if 60 fps) to move them back
-	float vel = 0.4f;
-
-	if (bumperTopY < 290 && dir == true) {
-		bumperTopY += vel;
-	}
-	else if (bumperTopY > 190 && dir == false) {
-		bumperTopY -= vel;
-	}
-	else {
-		count++;
-		if (count > 60) {
-			count = 0;
-			dir = !dir;
+		// Just move the bumpers and then wait 2 sec (if 60 fps) to move them back
+		if (bumperTopY < 290 && dir == true) {
+			bumperTopY += bumperVel;
 		}
-	}
-
-	// Change Bumpers X
-	b2Vec2 pos1 = b2Vec2(PIXEL_TO_METERS(bumperTopX), PIXEL_TO_METERS(bumperTopY));
-	bumperTop->body->SetTransform(pos1, 0);
-
-	// --- Spring ---
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-	{
-		if (springForce < 300) {
-			springForce += 10;
+		else if (bumperTopY > 190 && dir == false) {
+			bumperTopY -= bumperVel;
 		}
-		springTop->body->ApplyForceToCenter(b2Vec2(0, springForce), 1);
-
-		springAnim.Update();
-		expl = false;
-		springExplosionAnim.Reset();
-
-		// Fx
-		if (springForce == 10) {
-			App->audio->PlayFx(kickerInitFx);
+		else {
+			count++;
+			if (count > 60) {
+				count = 0;
+				dir = !dir;
+			}
 		}
-	}
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
-		springForce = 0;
-		
-		springAnim.Reset();
-		expl = true;
 
-		// Fx
-		App->audio->PlayFx(kickerBurstFx);
-	}
+		// Change Bumpers X
+		b2Vec2 pos1 = b2Vec2(PIXEL_TO_METERS(bumperTopX), PIXEL_TO_METERS(bumperTopY));
+		bumperTop->body->SetTransform(pos1, 0);
 
-	// --- Flippers ---
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
-		flipperLeft->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
-	}
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
-		flipperRight->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
-	}
+		// --- Spring ---
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		{
+			if (springForce < 300) {
+				springForce += 10;
+			}
+			springTop->body->ApplyForceToCenter(b2Vec2(0, springForce), 1);
 
-	// --- Ball Generator ---
-	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{
-		LOG("Creating 8ball at: X = %d Y = %d", App->input->GetMouseX(), App->input->GetMouseY());
+			springAnim.Update();
+			expl = false;
+			springExplosionAnim.Reset();
 
-		balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), (N/2)));
+			// Fx
+			if (springForce == 10) {
+				App->audio->PlayFx(kickerInitFx);
+			}
+		}
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
+			springForce = 0;
 
-		// If Box2D detects a collision with this last generated circle, it will automatically callback the function ModulePhysics::BeginContact()
-		balls.getLast()->data->listener = this;
+			springAnim.Reset();
+			expl = true;
+
+			// Fx
+			App->audio->PlayFx(kickerBurstFx);
+		}
+
+		// --- Flippers ---
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
+			flipperLeft->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
+		}
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
+			flipperRight->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
+		}
+
+		// --- Ball Generator ---
+		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		{
+			LOG("Creating 8ball at: X = %d Y = %d", App->input->GetMouseX(), App->input->GetMouseY());
+
+			balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), (N / 2)));
+
+			// If Box2D detects a collision with this last generated circle, it will automatically callback the function ModulePhysics::BeginContact()
+			balls.getLast()->data->listener = this;
+		}
+
 	}
 
 	// --------------------------- All draw functions -------------------------------------
@@ -592,7 +625,6 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(springParticles, 474, 691, &rect2);
 	}
 
-
 	// --- Fonts ---
 
 	// Score int -> const char*
@@ -618,19 +650,7 @@ update_status ModuleSceneIntro::Update()
 		App->qfonts->RenderText(char_type, 150, 15);
 	}
 
-
 	// --- Raycast ------------------------------------------------------
-
-	// If user presses SPACE, enable RayCast for no reason bc this truly do nothing more than printing a line xD
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-	{
-		// Enable raycast mode
-		ray_on = !ray_on;
-
-		// Origin point of the raycast is be the mouse current position now (will not change)
-		ray.x = App->input->GetMouseX();
-		ray.y = App->input->GetMouseY();
-	}
 
 	// The target point of the raycast is the mouse current position (will change over game time)
 	iPoint mouse;
@@ -643,7 +663,6 @@ update_status ModuleSceneIntro::Update()
 	// Declare a vector. We will draw the normal to the hit surface (if we hit something)
 	fVector normal(0.0f, 0.0f);
 
-	// Raycasts
 	if (ray_on == true)
 	{
 		// Compute the vector from the raycast origin up to the contact point (if we're hitting anything; otherwise this is the reference length)
@@ -705,6 +724,9 @@ void ModuleSceneIntro::PlayPtsFx() {
 bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading gameplay scene");
+
+	pause = false;
+	lives = 3;
 
 	// Clean animations
 	ballLightAnim.DeleteAnim();

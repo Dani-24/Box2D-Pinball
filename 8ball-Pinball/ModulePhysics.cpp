@@ -54,25 +54,25 @@ bool ModulePhysics::Start()
 
 update_status ModulePhysics::PreUpdate()
 {
-	// Step (update) the World
-	// WARNING: WE ARE STEPPING BY CONSTANT 1/60 SECONDS!
-	world->Step(1.0f / 60.0f, 6, 2);
+	if (App->scene_intro->pause != true) {
+		// Step (update) the World by constant 1/60 sec!
+		world->Step(1.0f / 60.0f, 6, 2);
 
-	// Because Box2D does not automatically broadcast collisions/contacts with sensors, 
-	// we have to manually search for collisions and "call" the equivalent to the ModulePhysics::BeginContact() ourselves...
-	for(b2Contact* c = world->GetContactList(); c; c = c->GetNext())
-	{
-		// For each contact detected by Box2D, see if the first one colliding is a sensor
-		if(c->GetFixtureA()->IsSensor() && c->IsTouching())
+		// Because Box2D does not automatically broadcast collisions/contacts with sensors, 
+		// we have to manually search for collisions and "call" the equivalent to the ModulePhysics::BeginContact() ourselves...
+		for (b2Contact* c = world->GetContactList(); c; c = c->GetNext())
 		{
-			// If so, we call the OnCollision listener function (only of the sensor), passing as inputs our custom PhysBody classes
-			PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
-			PhysBody* pb2 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
-			if(pb1 && pb2 && pb1->listener)
-				pb1->listener->OnCollision(pb1, pb2);
+			// For each contact detected by Box2D, see if the first one colliding is a sensor
+			if (c->GetFixtureA()->IsSensor() && c->IsTouching())
+			{
+				// If so, we call the OnCollision listener function (only of the sensor), passing as inputs our custom PhysBody classes
+				PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
+				PhysBody* pb2 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
+				if (pb1 && pb2 && pb1->listener)
+					pb1->listener->OnCollision(pb1, pb2);
+			}
 		}
 	}
-
 	// Keep playing
 	return UPDATE_CONTINUE;
 }
@@ -87,8 +87,7 @@ update_status ModulePhysics::PostUpdate()
 	if(!debug)
 		return UPDATE_CONTINUE;
 
-	// Bonus code: this will iterate all objects in the world and draw the circles
-	// You need to provide your own macro to translate meters to pixels
+	// This will iterate all objects in the world and draw the circles
 	for(b2Body* b = world->GetBodyList(); b; b = b->GetNext())
 	{
 		for(b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
@@ -527,6 +526,13 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		// Bumpers
 		if (physA == App->scene_intro->bumperTop && physB == c->data) {
 			App->scene_intro->score += 500;
+		}
+
+		// Losing a ball
+		if (physA == App->scene_intro->loseSensor && physB == c->data) {
+			// Delete the ball and -1 live
+
+			App->scene_intro->lives -= 1;
 		}
 
 		// Next ball, plz

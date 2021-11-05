@@ -10,6 +10,7 @@
 #include "ModuleSceneIntro.h"
 #include "ModuleSceneTitle.h"
 #include "ModuleQFonts.h"
+#include "ModuleSceneMenu.h"
 #include "Application.h"
 
 Application::Application()
@@ -23,6 +24,7 @@ Application::Application()
 	player = new ModulePlayer(this, false);
 	scene_title = new ModuleSceneTitle(this, true);
 	scene_intro = new ModuleSceneIntro(this, false);
+	scene_menu = new ModuleSceneMenu(this);
 	physics = new ModulePhysics(this);
 	qfonts = new ModuleQFonts(this);
 
@@ -38,9 +40,11 @@ Application::Application()
 	AddModule(fade);
 	
 	// Scenes
+
 	AddModule(scene_title);
 	AddModule(scene_intro);
-	
+	AddModule(scene_menu);
+
 	// Player
 	AddModule(player);
 

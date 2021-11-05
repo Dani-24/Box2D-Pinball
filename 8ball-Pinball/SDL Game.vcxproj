@@ -80,6 +80,7 @@
     <ClInclude Include="ModuleFade.h" />
     <ClInclude Include="ModulePhysics.h" />
     <ClInclude Include="ModuleQFonts.h" />
+    <ClInclude Include="ModuleSceneMenu.h" />
     <ClInclude Include="ModuleSceneTitle.h" />
     <ClInclude Include="p2List.h" />
     <ClInclude Include="Module.h" />
@@ -105,6 +106,7 @@
     <ClCompile Include="ModuleQFonts.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
     <ClCompile Include="ModuleSceneIntro.cpp" />
+    <ClCompile Include="ModuleSceneMenu.cpp" />
     <ClCompile Include="ModuleSceneTitle.cpp" />
     <ClCompile Include="ModuleTextures.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />

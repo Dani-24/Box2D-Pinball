@@ -29,6 +29,9 @@ public:
 	void CreateFlippers();
 	void CreateSensors();
 	void CreateBumpers();
+	
+	void PauseGame();
+	void UnPauseGame();
 
 	void PlayPtsFx();
 
@@ -38,7 +41,7 @@ public:
 
 	int score;
 	int lives;
-
+	bool pause;
 	int lastFrameScore;
 
 	// -------- Lists of physics objects --------
@@ -68,6 +71,8 @@ public:
 	PhysBody* leftPlat;
 	PhysBody* rightPlat;
 
+	PhysBody* loseSensor;
+
 	// Bumpers
 	PhysBody* bumperTop;
 
@@ -75,6 +80,8 @@ public:
 	float bumperTopY;
 	int count;
 	bool dir;
+
+	float bumperVel = 0.4f;
 
 	// -------- Textures --------
 

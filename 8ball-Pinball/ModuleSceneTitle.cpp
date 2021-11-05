@@ -7,6 +7,10 @@
 #include "ModuleAudio.h"
 #include "ModuleQFonts.h"
 
+#include <sstream>
+#include <string.h>
+using namespace std;
+
 ModuleSceneTitle::ModuleSceneTitle(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	currentState = MENU;
@@ -115,7 +119,7 @@ update_status ModuleSceneTitle::Update()
 		}
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 500) {
 			App->audio->PlayFx(acceptfx);
-			App->fade->FadeToBlack(this, (Module*)App->scene_intro, 60);
+			App->fade->FadeToBlack(this, (Module*)App->scene_intro, 30);
 		}
 		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
 			App->audio->PlayFx(backfx);
@@ -154,7 +158,6 @@ update_status ModuleSceneTitle::Update()
 
 		// --- PRINT ---
 
-
 		break;
 	case SCORES:
 		// Return
@@ -167,13 +170,55 @@ update_status ModuleSceneTitle::Update()
 
 		// --- UPDATE ---
 
-		
+
 		// --- PRINT ---
 
 		octoAnim.Update();
 		SDL_Rect rect = octoAnim.GetCurrentFrame();
 
 		App->renderer->Blit(octoling, 0, 230, &rect);
+
+		// Score list
+		int N = 1, y = 200;
+
+		p2List_item<int>* c = scores.getFirst();
+		if (c == NULL) {
+			strcpy_s(scorePosition, "There is no Score registed");
+			App->qfonts->RenderText(scorePosition, 75, y);
+		}
+		else {
+			strcpy_s(scorePosition, "Score from lastest Games");
+			App->qfonts->RenderText(scorePosition, 75, y - 150);
+		}
+		while (c != NULL)
+		{
+
+			// print nums:
+			stringstream strs, strs2;
+			strs << N;
+			string temp_str = strs.str();
+			char* numToChar = (char*)temp_str.c_str();
+
+			strcpy_s(scorePosition, "Game ");	// Add "Score "  to scorePosition
+
+			strcat_s(scorePosition, numToChar); // Add "N "  to scorePosition
+
+			strs2 << c->data;
+			string temp_str2 = strs2.str();
+			char* numToChar2 = (char*)temp_str2.c_str();
+
+			strcat_s(scorePosition, " : "); // Add " : "  to scorePosition
+
+			strcat_s(scorePosition, numToChar2); // Add " c->data "  to scorePosition
+
+			App->qfonts->RenderText(scorePosition, 150, y); // Print scorePosition
+
+			LOG(scorePosition);
+
+			N++;
+			y += 50;
+			c = c->next;
+		}
 
 		break;
 	}

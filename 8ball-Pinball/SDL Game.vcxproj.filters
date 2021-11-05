@@ -68,6 +68,9 @@
     <ClInclude Include="ModuleQFonts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleSceneMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -110,6 +113,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModuleQFonts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleSceneMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

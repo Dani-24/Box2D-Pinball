@@ -24,10 +24,11 @@ public:
 	bool CleanUp();
 
 	void ManageMusic();
-	bool music;
 
 public:
 	GameState currentState;
+
+	p2List<int> scores;
 
 	// Textures
 	SDL_Texture* cursor;
@@ -43,6 +44,7 @@ public:
 	Animation octoAnim;
 
 	// FX
+	bool music;
 
 	uint scorefx;
 
@@ -58,5 +60,7 @@ public:
 	char textScores[10];
 
 	char githubLink[100];
+
+	char scorePosition[100];
 
 };
