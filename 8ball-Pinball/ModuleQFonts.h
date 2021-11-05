@@ -14,18 +14,22 @@ public:
 
 	bool Start();
 
+	void LoadFont(const char* fontPath, char size[10]);
+
 	void UnloadFont();
 
-	void RenderText(const char* textToRender,int x, int y, int r = 255, int g = 255, int b = 255);
+	void RenderText(const char* textToRender,int x, int y, char size[10] = "normal", int r = 255, int g = 255, int b = 255);
+
+	bool CleanUp();
 	
 private:
 	TTF_Font* font;
+	TTF_Font* lilFont;
+	TTF_Font* whichOne;
 
 	SDL_Surface* fontSurface;
 
 	SDL_Texture* fontTexture;
-
-	int size = 30;
 };
 
 #endif

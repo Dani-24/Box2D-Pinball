@@ -57,7 +57,10 @@ bool ModuleSceneTitle::Start()
 	backfx = App->audio->LoadFx("pinball/audio/fx/fxBack.wav");
 	selectfx = App->audio->LoadFx("pinball/audio/fx/fxSelect.wav");
 
-	// Assign Text
+	// Fonts
+
+	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "normal");
+	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "chikita");
 
 	strcpy_s(textPlay, "Play");
 	strcpy_s(textSettings, "Settings");
@@ -170,49 +173,58 @@ update_status ModuleSceneTitle::Update()
 
 		// --- UPDATE ---
 
+		// Debug lifehacks
+		if (_DEBUG) {
+			if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
+				scores.add(777);
+			}
+		}
 
 		// --- PRINT ---
 
-		octoAnim.Update();
-		SDL_Rect rect = octoAnim.GetCurrentFrame();
-
-		App->renderer->Blit(octoling, 0, 230, &rect);
 
 		// Score list
-		int N = 1, y = 200;
+		int N = 1, x = 150, y = 200; bool mt11 = false;
 
 		p2List_item<int>* c = scores.getFirst();
 		if (c == NULL) {
-			strcpy_s(scorePosition, "There is no Score registed");
-			App->qfonts->RenderText(scorePosition, 75, y);
+			strcpy_s(scorePosition, "` There is no Score registed");
+			App->qfonts->RenderText(scorePosition, 50, y);
 		}
 		else {
-			strcpy_s(scorePosition, "Score from lastest Games");
-			App->qfonts->RenderText(scorePosition, 75, y - 150);
+			strcpy_s(scorePosition, "´ Score from lastest Games ´");
+			App->qfonts->RenderText(scorePosition, 40, y - 150);
+
+			strcpy_s(scorePosition, "(Sorted from first to lastest game)");
+			App->qfonts->RenderText(scorePosition, 90, y - 100,"chikita");
 		}
 		while (c != NULL)
 		{
+			if (N == 11) {
+				strcpy_s(scorePosition, "¡ Stay Fresh !");
+				App->qfonts->RenderText(scorePosition, 150, y);
+			}
+			else {
+				// print nums:
+				stringstream strs, strs2;
+				strs << N;
+				string temp_str = strs.str();
+				char* numToChar = (char*)temp_str.c_str();
 
-			// print nums:
-			stringstream strs, strs2;
-			strs << N;
-			string temp_str = strs.str();
-			char* numToChar = (char*)temp_str.c_str();
+				strcpy_s(scorePosition, "Game ");	// Add "Score "  to scorePosition
 
-			strcpy_s(scorePosition, "Game ");	// Add "Score "  to scorePosition
+				strcat_s(scorePosition, numToChar); // Add "N "  to scorePosition
 
-			strcat_s(scorePosition, numToChar); // Add "N "  to scorePosition
+				strs2 << c->data;
+				string temp_str2 = strs2.str();
+				char* numToChar2 = (char*)temp_str2.c_str();
 
-			strs2 << c->data;
-			string temp_str2 = strs2.str();
-			char* numToChar2 = (char*)temp_str2.c_str();
+				strcat_s(scorePosition, " : "); // Add " : "  to scorePosition
 
-			strcat_s(scorePosition, " : "); // Add " : "  to scorePosition
+				strcat_s(scorePosition, numToChar2); // Add " c->data "  to scorePosition
 
-			strcat_s(scorePosition, numToChar2); // Add " c->data "  to scorePosition
-
-			App->qfonts->RenderText(scorePosition, 150, y); // Print scorePosition
-
+				App->qfonts->RenderText(scorePosition, x, y); // Print scorePosition
+			}
 			LOG(scorePosition);
 
 			N++;
@@ -231,10 +243,18 @@ bool ModuleSceneTitle::CleanUp()
 	LOG("Unloading title scene");
 
 	App->textures->Unload(octoling);
+	App->textures->Unload(bg);
+	App->textures->Unload(bgPart);
+	App->textures->Unload(cursor);
+
 	octoling = nullptr;
 	octoAnim.DeleteAnim();
 
 	scorefx = acceptfx = selectfx = backfx = 0;
+
+	App->qfonts->UnloadFont();
+
+	textPlay[10] = textSettings[10] = textScores[10] = githubLink[100] = scorePosition[100] = NULL;
 
 	return true;
 }

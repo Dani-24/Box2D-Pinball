@@ -86,6 +86,11 @@ bool ModuleSceneIntro::Start()
 	ptsFx2 = App->audio->LoadFx("pinball/audio/fx/pts2.wav");
 	ptsFx3 = App->audio->LoadFx("pinball/audio/fx/pts3.wav");
 
+	// Fonts
+
+	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "normal");
+	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "chikita");
+
 	return ret;
 }
 
@@ -772,6 +777,8 @@ bool ModuleSceneIntro::CleanUp()
 	App->physics->world->DestroyBody(leftPlat->body);
 	App->physics->world->DestroyBody(rightPlat->body);
 	App->physics->world->DestroyBody(bumperTop->body);
+
+	App->qfonts->UnloadFont();
 
 	return true;
 }
