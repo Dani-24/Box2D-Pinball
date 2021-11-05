@@ -23,7 +23,15 @@ bool ModuleSceneTitle::Start()
 	currentState = MENU;
 
 	// Load Textures
+
+
+	bg = App->textures->Load("pinball/sprites/background/tableroBG.png");
+	bgPart = App->textures->Load("pinball/sprites/background/particulasBG.png");
+
 	octoling = App->textures->Load("pinball/sprites/octoling.png");
+	cursor = App->textures->Load("pinball/sprites/cursor.png");
+	cursorX = 350;
+	cursorY = 500;
 
 	// Load Sprite Animations
 
@@ -52,45 +60,58 @@ bool ModuleSceneTitle::Start()
 
 update_status ModuleSceneTitle::Update()
 {
+	// Print BG
+	App->renderer->Blit(bg, 0, 0);
+	App->renderer->Blit(bgPart, 0, 0);
+
 	switch (currentState)
 	{
 	case MENU:
-		// Change Current State
-		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
-			currentState = SETTINGS;
+		// --- UPDATE ---
+
+		// Cursor Movement
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN && cursorY != 650) {
+			cursorY += 75;
 		}
-		if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
-			currentState = SCORES;
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN && cursorY != 500) {
+			cursorY -= 75;
 		}
 
+		// State and Scene management
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 575) {
+			currentState = SETTINGS;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 650) {
+			currentState = SCORES;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 500) {
+			App->fade->FadeToBlack(this, (Module*)App->scene_intro, 60);
+		}
+		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
+			return UPDATE_STOP;
+		}
+
+		// Open website
 		if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
 			LOG("Opening Link : %s", githubLink);
 			SDL_OpenURL(githubLink);
 		}
 
-		// --- UPDATE ---
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
-			App->fade->FadeToBlack(this, (Module*)App->scene_intro, 60);
-		}
-		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP) {
-			return UPDATE_STOP;
-		}
-
 		// --- PRINT ---
 
+		// Cursor
+		App->renderer->Blit(cursor, cursorX, cursorY);
+
 		// Fonts
-		App->qfonts->RenderText(textPlay, 242, 400);
-		App->qfonts->RenderText(textScores, 225, 475);
-		App->qfonts->RenderText(textSettings, 210, 550);
+		App->qfonts->RenderText(textPlay, 242, 500);
+		App->qfonts->RenderText(textScores, 225, 575);
+		App->qfonts->RenderText(textSettings, 210, 650);
 
 		break;
 	case SETTINGS:
-		// Change Current State
-		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
+		// Return back to menu
+		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
 			currentState = MENU;
-		}
-		if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
-			currentState = SCORES;
 		}
 
 		// --- UPDATE ---
@@ -101,11 +122,8 @@ update_status ModuleSceneTitle::Update()
 
 		break;
 	case SCORES:
-		// Change Current State
-		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN) {
-			currentState = SETTINGS;
-		}
-		if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
+		// Return
+		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
 			currentState = MENU;
 		}
 

@@ -27,7 +27,15 @@ public:
 	GameState currentState;
 
 	// Textures
+
+	SDL_Texture* cursor;
+	int cursorX, cursorY;
+
 	SDL_Texture* octoling;
+
+	SDL_Texture* bg;
+
+	SDL_Texture* bgPart;
 
 	// Animation
 	Animation octoAnim;
