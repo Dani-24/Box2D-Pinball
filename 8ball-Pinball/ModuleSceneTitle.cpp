@@ -45,6 +45,8 @@ bool ModuleSceneTitle::Start()
 	strcpy_s(textSettings, "Settings");
 	strcpy_s(textScores, "Scores");
 
+	strcpy_s(githubLink, "https://github.com/Dani-24/Box2D-Pinball");
+
 	return true;
 }
 
@@ -59,6 +61,11 @@ update_status ModuleSceneTitle::Update()
 		}
 		if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN) {
 			currentState = SCORES;
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
+			LOG("Opening Link : %s", githubLink);
+			SDL_OpenURL(githubLink);
 		}
 
 		// --- UPDATE ---

@@ -45,4 +45,6 @@ public:
 
 	char textScores[10];
 
+	char githubLink[100];
+
 };
