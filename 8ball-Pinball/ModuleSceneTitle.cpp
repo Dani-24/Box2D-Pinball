@@ -41,7 +41,9 @@ bool ModuleSceneTitle::Start()
 
 	// Assign Text
 
-	strcpy_s(text, "Feliz Jueves <3");
+	strcpy_s(textPlay, "Play");
+	strcpy_s(textSettings, "Settings");
+	strcpy_s(textScores, "Scores");
 
 	return true;
 }
@@ -69,14 +71,10 @@ update_status ModuleSceneTitle::Update()
 
 		// --- PRINT ---
 
-		octoAnim.Update();
-		SDL_Rect rect = octoAnim.GetCurrentFrame();
-
-		App->renderer->Blit(octoling, 0, 230, &rect);
-
 		// Fonts
-
-		App->qfonts->RenderText(text, 0, 0);
+		App->qfonts->RenderText(textPlay, 242, 400);
+		App->qfonts->RenderText(textScores, 225, 475);
+		App->qfonts->RenderText(textSettings, 210, 550);
 
 		break;
 	case SETTINGS:
@@ -106,9 +104,13 @@ update_status ModuleSceneTitle::Update()
 
 		// --- UPDATE ---
 
-
+		
 		// --- PRINT ---
 
+		octoAnim.Update();
+		SDL_Rect rect = octoAnim.GetCurrentFrame();
+
+		App->renderer->Blit(octoling, 0, 230, &rect);
 
 		break;
 	}

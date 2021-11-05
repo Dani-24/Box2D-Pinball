@@ -39,6 +39,10 @@ public:
 	
 	int textSize = 16;
 
-	char text[100];
+	char textPlay[10];
+	
+	char textSettings[10];
+
+	char textScores[10];
 
 };
