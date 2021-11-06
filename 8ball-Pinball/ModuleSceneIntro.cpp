@@ -332,6 +332,12 @@ update_status ModuleSceneIntro::Update()
 	SDL_Rect rpad4 = bounceAnimB2.GetCurrentFrame();
 	App->renderer->Blit(bouncePadB, 253, 287, &rpad4, 0.0f, RADTODEG* (padB2Angle));
 
+	// Flippers
+	float32 flipperLeftAngle = flipperLeft->body->GetAngle();
+	float32 flipperRightAngle = flipperRight->body->GetAngle();
+
+	App->renderer->Blit(flipper, 155, 695, NULL, 0, RADTODEG* (flipperLeftAngle), 0, 5);
+	App->renderer->Blit(flipper2, 240, 695, NULL, 0, RADTODEG* (flipperRightAngle), 52, 5);
 
 	// --- Fonts ---
 
@@ -757,6 +763,9 @@ void ModuleSceneIntro::CreateFlippers() {
 	flipperRightJoint.localAnchorB.Set(0, 0);
 	b2RevoluteJoint* joint_rightFlipper = (b2RevoluteJoint*)App->physics->world->CreateJoint(&flipperRightJoint);
 
+	// Get texture
+	flipper = App->textures->Load("pinball/sprites/flipper.png");
+	flipper2 = App->textures->Load("pinball/sprites/flipper2.png");
 }
 
 void ModuleSceneIntro::CreateSensors() {
@@ -851,6 +860,8 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(tableroParticles);
 	App->textures->Unload(bouncePad);
 	App->textures->Unload(bouncePadB);
+	App->textures->Unload(flipper);
+	App->textures->Unload(flipper2);
 
 	// Clean fx:
 	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = 0;

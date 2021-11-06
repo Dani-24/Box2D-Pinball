@@ -105,6 +105,10 @@ public:
 	SDL_Texture* bouncePad;
 	SDL_Texture* bouncePadB;
 
+	// Flipper
+	SDL_Texture* flipper;
+	SDL_Texture* flipper2;
+
 	// Fonts
 	char textScore[100];
 
@@ -151,7 +155,6 @@ public:
 	// Spring
 	uint springChargeFx;
 	uint springReleaseFx;
-
 
 	// -------- Raycast --------
 	p2Point<int> ray;
