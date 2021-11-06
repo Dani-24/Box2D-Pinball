@@ -39,4 +39,4 @@ Game made to pass physics 2 at [Citm](https://www.citm.upc.edu).
 Special thanks to all those StackOverFlow users who solve full project crashes with a 4 words comment.
   
 ## License
-This project is licensed under an unmodified MIT license, which is an OSI-certified license that allows static linking with closed source software. Check LICENSE for further     details.
+This project is licensed under an unmodified MIT license, which is an OSI-certified license that allows static linking with closed source software. Check [LICENSE](https://github.com/Dani-24/Box2D-Pinball/blob/main/LICENSE) for further     details.
