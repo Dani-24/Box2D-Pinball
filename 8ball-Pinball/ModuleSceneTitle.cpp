@@ -177,10 +177,9 @@ update_status ModuleSceneTitle::Update()
 
 		// Debug lifehacks
 
-		/*if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
-			scores.add(777);
-			}
-		*/
+		if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
+			scores.add(69);
+		}
 
 		// --- PRINT ---
 
@@ -249,10 +248,10 @@ bool ModuleSceneTitle::CleanUp()
 	App->textures->Unload(bgPart);
 	App->textures->Unload(cursor);
 
-	octoling = nullptr;
+	octoling = bg = bgPart = cursor = nullptr;
 	octoAnim.DeleteAnim();
 
-	scorefx = acceptfx = selectfx = backfx = 0;
+	scorefx = acceptfx = selectfx = backfx = cursorX = cursorY = NULL;
 
 	App->qfonts->UnloadFont();
 	App->qfonts->CleanUp();
@@ -263,5 +262,7 @@ bool ModuleSceneTitle::CleanUp()
 	for (int j = 0; j < 100; j++) {
 		githubLink[j] = scorePosition[j] = NULL;
 	}
+
+
 	return true;
 }

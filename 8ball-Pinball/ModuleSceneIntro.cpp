@@ -38,6 +38,8 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading Gameplay assets :D");
 	bool ret = true;
 
+	App->physics->Enable();
+
 	// ppl variables
 	score = 0;
 	lives = 3;
@@ -780,6 +782,8 @@ bool ModuleSceneIntro::CleanUp()
 	App->physics->world->DestroyBody(bumperTop->body);
 
 	App->qfonts->UnloadFont();
+
+	App->physics->Disable();
 
 	return true;
 }

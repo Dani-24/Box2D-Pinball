@@ -35,9 +35,7 @@ public:
 	int cursorX, cursorY;
 
 	SDL_Texture* octoling;
-
 	SDL_Texture* bg;
-
 	SDL_Texture* bgPart;
 
 	// Animation

@@ -24,9 +24,9 @@ Application::Application()
 	player = new ModulePlayer(this, false);
 	scene_title = new ModuleSceneTitle(this, true);
 	scene_intro = new ModuleSceneIntro(this, false);
-	scene_menu = new ModuleSceneMenu(this);
-	physics = new ModulePhysics(this);
-	qfonts = new ModuleQFonts(this);
+	scene_menu = new ModuleSceneMenu(this, false);
+	physics = new ModulePhysics(this, false);
+	qfonts = new ModuleQFonts(this, false);
 
 	// Add modules ---
 
