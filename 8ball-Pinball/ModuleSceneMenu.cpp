@@ -69,7 +69,7 @@ update_status ModuleSceneMenu::Update()
 			LOG("Saving Score %d", App->scene_intro->score);
 
 			// Reset Scene intro
-			App->fade->FadeToBlack((Module*)App->scene_intro, (Module*)App->scene_intro, 60);
+			App->fade->FadeToBlack((Module*)App->scene_intro, (Module*)App->scene_intro, 1);
 
 		}
 

@@ -75,6 +75,8 @@ bool ModuleSceneTitle::Start()
 	backfx = App->audio->LoadFx("pinball/audio/fx/fxBack.wav");
 	selectfx = App->audio->LoadFx("pinball/audio/fx/fxSelect.wav");
 
+	metroFx = App->audio->LoadFx("pinball/audio/fx/metroFx.wav");
+
 	// Fonts
 
 	App->qfonts->Init();
@@ -100,39 +102,41 @@ update_status ModuleSceneTitle::Update()
 	switch (currentState)
 	{
 	case MENU:
-		// --- UPDATE ---
+		if (metroMoving != true) {
+			// --- UPDATE ---
 
-		// Cursor Movement
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN && cursorY != 650) {
-			cursorY += 75;
-			App->audio->PlayFx(selectfx);
-		}
-		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN && cursorY != 500) {
-			cursorY -= 75;
-			App->audio->PlayFx(selectfx);
-		}
+			// Cursor Movement
+			if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN && cursorY != 650) {
+				cursorY += 75;
+				App->audio->PlayFx(selectfx);
+			}
+			if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN && cursorY != 500) {
+				cursorY -= 75;
+				App->audio->PlayFx(selectfx);
+			}
 
-		// State and Scene management
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 650) {
-			App->audio->PlayFx(acceptfx);
-			// Open Website
-			LOG("Opening Link : %s", githubLink);
-			SDL_OpenURL(githubLink);
+			// State and Scene management
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 650) {
+				App->audio->PlayFx(acceptfx);
+				// Open Website
+				LOG("Opening Link : %s", githubLink);
+				SDL_OpenURL(githubLink);
+			}
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 575) {
+				currentState = SCORES;
+				App->audio->PlayFx(scorefx);
+			}
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 500) {
+				metroMoving = true;
+				App->audio->PlayFx(metroFx);
+				App->audio->PlayFx(acceptfx);
+				App->fade->FadeToBlack(this, (Module*)App->scene_intro, 102);
+			}
+			if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
+				App->audio->PlayFx(backfx);
+				return UPDATE_STOP;
+			}
 		}
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 575) {
-			currentState = SCORES;
-			App->audio->PlayFx(scorefx);
-		}
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 500) {
-			metroMoving = true;
-			App->audio->PlayFx(acceptfx);
-			App->fade->FadeToBlack(this, (Module*)App->scene_intro, 90);
-		}
-		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
-			App->audio->PlayFx(backfx);
-			return UPDATE_STOP;
-		}
-
 		// --- PRINT ---
 
 		// Cursor
@@ -232,10 +236,9 @@ update_status ModuleSceneTitle::Update()
 		metroAnim.Update();
 	}
 	else {
-		static int increase = 0;
 		if (metroX < 800) {
 			increase += 1;
-			metroX += increase/5;
+			metroX += increase/10;
 		}
 		else {
 			increase = 0;
@@ -279,5 +282,7 @@ bool ModuleSceneTitle::CleanUp()
 	for (int j = 0; j < 100; j++) {
 		githubLink[j] = scorePosition[j] = NULL;
 	}
+
+	increase = 0;
 	return true;
 }

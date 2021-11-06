@@ -147,7 +147,6 @@ public:
 
 	uint ptsFx2;
 	uint ptsFx3;
-
 	uint bounceFx;
 
 	int music;

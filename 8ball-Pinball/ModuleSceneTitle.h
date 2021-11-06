@@ -51,6 +51,9 @@ public:
 	uint acceptfx;
 	uint backfx;
 	uint selectfx;
+	uint metroFx;
+
+	int increase = 0;
 
 	// Font
 	char textPlay[10];

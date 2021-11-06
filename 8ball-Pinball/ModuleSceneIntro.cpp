@@ -112,7 +112,7 @@ update_status ModuleSceneIntro::PreUpdate()
 {
 	// Scene transitions
 	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP && lives > 0) {
-		App->fade->FadeToBlack(this, (Module*)App->scene_title, 60);
+		App->fade->FadeToBlack(this, (Module*)App->scene_title, 1);
 		App->scene_menu->currentState = DISABLED;
 	}
 
