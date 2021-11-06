@@ -36,7 +36,7 @@ This game has been done thanks to [SDL](https://www.libsdl.org/index.php) and [B
 
 Game made to pass physics 2 at [Citm](https://www.citm.upc.edu).
 
-Special thanks to all those StackOverFlow users who solve full project crashes with a 4 words comment.
+Special thanks to all those [StackOverFlow](stackoverflow.com) users who solve full project crashes with a 4 words comment.
   
 ## License
 This project is licensed under an unmodified MIT license, which is an OSI-certified license that allows static linking with closed source software. Check [LICENSE](https://github.com/Dani-24/Box2D-Pinball/blob/main/LICENSE) for further     details.
