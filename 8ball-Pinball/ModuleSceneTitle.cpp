@@ -48,8 +48,7 @@ bool ModuleSceneTitle::Start()
 
 	// Load Audio
 
-	music = false;
-	ManageMusic();
+	App->audio->PlayMusic("pinball/audio/music_title.ogg", 0.5f);
 
 	scorefx = App->audio->LoadFx("pinball/audio/fx/openScore.wav");
 
@@ -63,31 +62,15 @@ bool ModuleSceneTitle::Start()
 
 	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "normal");
 	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "chikita");
+	App->qfonts->RenderText("                                                                   ", 0, 0); // Spacebar my new best friend that avoid MemLeaks and Bugs bc ModuleFonts is programmed as bad as posible.
 
 	strcpy_s(textPlay, "Play");
-	strcpy_s(textSettings, "Settings");
+	strcpy_s(textSettings, "Github");
 	strcpy_s(textScores, "Scores");
 
 	strcpy_s(githubLink, "https://github.com/Dani-24/Box2D-Pinball");
 
 	return true;
-}
-
-void ModuleSceneTitle::ManageMusic() {
-	if (music == false) {
-		music = true;
-		switch (currentState)
-		{
-		case MENU:
-			App->audio->PlayMusic("pinball/audio/music_title.ogg", 0.5f);
-			break;
-		case SETTINGS:
-			App->audio->PlayMusic("pinball/audio/music_settings.ogg", 0.5f);
-			break;
-		case SCORES:
-			break;
-		}
-	}
 }
 
 update_status ModuleSceneTitle::Update()
@@ -112,13 +95,13 @@ update_status ModuleSceneTitle::Update()
 		}
 
 		// State and Scene management
-		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 575) {
-			currentState = SETTINGS;
-			App->audio->PlayFx(acceptfx);
-			music = false;
-			ManageMusic();
-		}
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 650) {
+			App->audio->PlayFx(acceptfx);
+			// Open Website
+			LOG("Opening Link : %s", githubLink);
+			SDL_OpenURL(githubLink);
+		}
+		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 575) {
 			currentState = SCORES;
 			App->audio->PlayFx(scorefx);
 		}
@@ -131,37 +114,16 @@ update_status ModuleSceneTitle::Update()
 			return UPDATE_STOP;
 		}
 
-		// Open website
-		if (App->input->GetKey(SDL_SCANCODE_0) == KEY_DOWN) {
-			LOG("Opening Link : %s", githubLink);
-			SDL_OpenURL(githubLink);
-		}
-
 		// --- PRINT ---
 
 		// Cursor
 		App->renderer->Blit(cursor, cursorX, cursorY);
 
 		// Fonts
+		
 		App->qfonts->RenderText(textPlay, 242, 500);
-		App->qfonts->RenderText(textSettings, 210, 575);
-		App->qfonts->RenderText(textScores, 225, 650);
-
-		break;
-	case SETTINGS:
-		// Return back to menu
-		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
-			currentState = MENU;
-
-			App->audio->PlayFx(backfx);
-			music = false;
-			ManageMusic();
-		}
-
-		// --- UPDATE ---
-
-
-		// --- PRINT ---
+		App->qfonts->RenderText(textScores, 225, 575);
+		App->qfonts->RenderText(textSettings, 225, 650);
 
 		break;
 	case SCORES:
@@ -225,6 +187,7 @@ update_status ModuleSceneTitle::Update()
 				strcat_s(scorePosition, numToChar2); // Add " c->data "  to scorePosition
 
 				App->qfonts->RenderText(scorePosition, x, y); // Print scorePosition
+
 			}
 			LOG(scorePosition);
 

@@ -7,7 +7,6 @@
 
 enum GameState {
 	MENU,
-	SETTINGS,
 	SCORES
 };
 
@@ -22,8 +21,6 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
-
-	void ManageMusic();
 
 public:
 	GameState currentState;
@@ -42,10 +39,7 @@ public:
 	Animation octoAnim;
 
 	// FX
-	bool music;
-
 	uint scorefx;
-
 	uint acceptfx;
 	uint backfx;
 	uint selectfx;

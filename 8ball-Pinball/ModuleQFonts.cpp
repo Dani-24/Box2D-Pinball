@@ -18,24 +18,21 @@ bool ModuleQFonts::Init() {
 		LOG("Fonts can't initialize || TTF_Init: %s", TTF_GetError());
 		return false;
 	}
+
+	fontTexture = nullptr;
+
 	return true;
 }
 
 bool ModuleQFonts::Start() {
 
 	LOG("Starting Fonts Module");
-
-	// Load Font
-	//font = TTF_OpenFont("pinball/font/Paintball.ttf", 30);
-	//lilFont = TTF_OpenFont("pinball/font/Paintball.ttf", 20);
-
 	return true;
 }
 
 void ModuleQFonts::LoadFont(const char* fontPath, char size[10]) {
 	if (size != "chikita") {
 		font = TTF_OpenFont(fontPath, 30);
-
 		if (!font) {
 			LOG("Error loading font || TTF_OpenFont: %s", TTF_GetError());
 		}
@@ -54,22 +51,36 @@ void ModuleQFonts::RenderText(const char* textToRender, int x, int y, char size[
 	// Text Color
 	color = { r,g,b };
 
-	// by default use font at normal size
-	whichOne = font;
+	bool changeSize = false;
+
+	if (theSize != size) {
+		changeSize = true;
+	}
 
 	if (size == "chikita") {
-		whichOne = lilFont;
+		wFont = lilFont;
 	}
-	SDL_Surface* fontSurface;
+	else {
+		// by default use font at normal size
+		wFont = font;
+	}
+
 	// Create the text on surface
-	if (!(fontSurface = TTF_RenderText_Blended(whichOne, textToRender, color))) {	// Blended sale menos pixelado q Solid
+	if (!(fontSurface = TTF_RenderText_Blended(wFont, textToRender, color))) {	// Blended sale menos pixelado q Solid
 		LOG("Error Rendering Text || TTF_OpenFont: %s", TTF_GetError());
 	}
 	else {
+		if (fontTexture == nullptr || changeSize == true) {
+			changeSize = false;
+			// Transform the text surface to texture
+			fontTexture = SDL_CreateTextureFromSurface(App->renderer->renderer, fontSurface);
+			LOG("Surface to Texture");
+		}
+		else {
+			SDL_UpdateTexture(fontTexture, nullptr, fontSurface->pixels, fontSurface->pitch);
+			LOG("Updating Texture");
+		}
 
-		// Transform the text surface to texture
-		SDL_Texture* fontTexture = SDL_CreateTextureFromSurface(App->renderer->renderer, fontSurface);
-		
 		// Draw the text at X, Y
 		App->renderer->Blit(fontTexture, x, y);
 	}
@@ -81,7 +92,9 @@ void ModuleQFonts::UnloadFont()
 	TTF_CloseFont(font);
 	TTF_CloseFont(lilFont);
 
-	font = lilFont = whichOne = NULL; // to be safe..
+	App->textures->Unload(fontTexture);
+
+	font = lilFont = wFont = NULL; // to be safe..
 
 	LOG("Fonts unloaded");
 }

@@ -23,11 +23,17 @@ public:
 	bool CleanUp();
 	
 private:
+	SDL_Color color;
+
 	TTF_Font* font;
 	TTF_Font* lilFont;
-	TTF_Font* whichOne;
 
-	SDL_Color color;
+	SDL_Texture* fontTexture;
+	SDL_Surface* fontSurface;
+
+	TTF_Font* wFont;
+
+	char theSize[10];
 };
 
 #endif
