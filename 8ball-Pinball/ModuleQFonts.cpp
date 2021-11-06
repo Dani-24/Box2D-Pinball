@@ -73,15 +73,13 @@ void ModuleQFonts::RenderText(const char* textToRender, int x, int y, char size[
 		// Draw the text at X, Y
 		App->renderer->Blit(fontTexture, x, y);
 	}
-	LOG("SDL_TTF Imprime ptoo");
 	SDL_FreeSurface(fontSurface);
 }
 
 void ModuleQFonts::UnloadFont()
 {
-	//TTF_CloseFont(font);
-	//TTF_CloseFont(lilFont);
-	TTF_CloseFont(whichOne);
+	TTF_CloseFont(font);
+	TTF_CloseFont(lilFont);
 
 	font = lilFont = whichOne = NULL; // to be safe..
 
