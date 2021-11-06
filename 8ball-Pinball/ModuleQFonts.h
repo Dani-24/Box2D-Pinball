@@ -26,10 +26,6 @@ private:
 	TTF_Font* font;
 	TTF_Font* lilFont;
 	TTF_Font* whichOne;
-
-	SDL_Surface* fontSurface;
-
-	SDL_Texture* fontTexture;
 };
 
 #endif

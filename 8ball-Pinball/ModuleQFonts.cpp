@@ -10,7 +10,6 @@ ModuleQFonts::ModuleQFonts(Application* app, bool start_enabled) : Module(app, s
 
 ModuleQFonts::~ModuleQFonts()
 {
-	UnloadFont();
 }
 
 bool ModuleQFonts::Init() {
@@ -42,12 +41,13 @@ void ModuleQFonts::LoadFont(const char* fontPath, char size[10]) {
 		}
 	}
 	else {
-		lilFont = TTF_OpenFont(fontPath, 30);
+		lilFont = TTF_OpenFont(fontPath, 20);
 
 		if (!lilFont) {
 			LOG("Error loading little font || TTF_OpenFont: %s", TTF_GetError());
 		}
 	}
+	LOG("Fonts loaded");
 }
 
 void ModuleQFonts::RenderText(const char* textToRender, int x, int y, char size[10], int r , int g , int b) {
@@ -60,15 +60,15 @@ void ModuleQFonts::RenderText(const char* textToRender, int x, int y, char size[
 	if (size == "chikita") {
 		whichOne = lilFont;
 	}
-
+	SDL_Surface* fontSurface;
 	// Create the text on surface
-	if (!(fontSurface = TTF_RenderText_Solid(whichOne, textToRender, color))) {	// Cambiar Solid por Blended para probar
+	if (!(fontSurface = TTF_RenderText_Blended(whichOne, textToRender, color))) {	// Blended sale menos pixelado q Solid
 		LOG("Error Rendering Text || TTF_OpenFont: %s", TTF_GetError());
 	}
 	else {
 
 		// Transform the text surface to texture
-		fontTexture = SDL_CreateTextureFromSurface(App->renderer->renderer, fontSurface);
+		SDL_Texture* fontTexture = SDL_CreateTextureFromSurface(App->renderer->renderer, fontSurface);
 		
 		// Draw the text at X, Y
 		App->renderer->Blit(fontTexture, x, y);
@@ -82,23 +82,12 @@ void ModuleQFonts::UnloadFont()
 	TTF_CloseFont(font);
 	TTF_CloseFont(lilFont);
 
-	font = NULL; // to be safe..
-	lilFont = NULL;
-
-	whichOne = NULL;
+	font = lilFont = whichOne = NULL; // to be safe..
 
 	LOG("Fonts unloaded");
 }
 
 bool ModuleQFonts::CleanUp() {
-
-	// clean & free memory
-
-	if (fontSurface != nullptr) {
-		SDL_FreeSurface(fontSurface);
-	}
-
-	App->textures->Unload(fontTexture);
 
 	TTF_Quit();
 

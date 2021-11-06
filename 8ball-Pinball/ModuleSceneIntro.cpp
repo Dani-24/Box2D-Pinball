@@ -87,6 +87,7 @@ bool ModuleSceneIntro::Start()
 	ptsFx3 = App->audio->LoadFx("pinball/audio/fx/pts3.wav");
 
 	// Fonts
+	App->qfonts->Init();
 
 	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "normal");
 	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "chikita");
@@ -94,18 +95,276 @@ bool ModuleSceneIntro::Start()
 	return ret;
 }
 
+void ModuleSceneIntro::PauseGame() {
+	pause = true;
+	App->scene_menu->currentState = PAUSE;
+}
+
+void ModuleSceneIntro::UnPauseGame() {
+	pause = false;
+}
+
+update_status ModuleSceneIntro::PreUpdate() 
+{
+	// Scene transitions
+	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP && lives > 0) {
+		App->fade->FadeToBlack(this, (Module*)App->scene_title, 60);
+		App->scene_menu->currentState = DISABLED;
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN) {
+		PauseGame();
+	}
+
+	if (lives == 0) {
+		LOG("Llamo A Gameover");
+		App->scene_menu->currentState = GAMEOVER;
+		pause = true;
+		// Lives = -1 , idk why but if i let lives in 0 even disabling this module this if sends another Gameover to the scene menu and kboom
+		lives = -1;
+
+	}
+	if (lives == -1) {
+		// This should be in lives==0 if but since i have to put lives=-1 this shit go there or it doesn't Update()
+		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP) {
+			// "Save" score if exit 
+			App->scene_title->scores.add(App->scene_intro->score);
+			LOG("Saving Score %d", App->scene_intro->score);
+			// Fade
+			App->fade->FadeToBlack(this, (Module*)App->scene_title, 60);
+			App->scene_menu->currentState = DISABLED;
+		}
+	}
+
+	return UPDATE_CONTINUE;
+}
+
+update_status ModuleSceneIntro::Update()
+{
+	if (pause != true) {
+		// --- Bumpers Movement ---
+
+		// Just move the bumpers and then wait 2 sec (if 60 fps) to move them back
+		if (bumperTopY < 290 && dir == true) {
+			bumperTopY += bumperVel;
+		}
+		else if (bumperTopY > 190 && dir == false) {
+			bumperTopY -= bumperVel;
+		}
+		else {
+			count++;
+			if (count > 60) {
+				count = 0;
+				dir = !dir;
+			}
+		}
+
+		// Change Bumpers X
+		b2Vec2 pos1 = b2Vec2(PIXEL_TO_METERS(bumperTopX), PIXEL_TO_METERS(bumperTopY));
+		bumperTop->body->SetTransform(pos1, 0);
+
+		// --- Spring ---
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		{
+			if (springForce < 300) {
+				springForce += 10;
+			}
+			springTop->body->ApplyForceToCenter(b2Vec2(0, springForce), 1);
+
+			springAnim.Update();
+			expl = false;
+			springExplosionAnim.Reset();
+
+			// Fx
+			if (springForce == 10) {
+				App->audio->PlayFx(kickerInitFx);
+			}
+		}
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
+			springForce = 0;
+
+			springAnim.Reset();
+			expl = true;
+
+			// Fx
+			App->audio->PlayFx(kickerBurstFx);
+		}
+
+		// --- Flippers ---
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
+			flipperLeft->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
+		}
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
+			flipperRight->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
+		}
+
+		// --- Ball Generator ---
+		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		{
+			LOG("Creating 8ball at: X = %d Y = %d", App->input->GetMouseX(), App->input->GetMouseY());
+
+			balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), (N / 2)));
+
+			// If Box2D detects a collision with this last generated circle, it will automatically callback the function ModulePhysics::BeginContact()
+			balls.getLast()->data->listener = this;
+		}
+
+	}
+
+	// --------------------------- All draw functions -------------------------------------
+
+	// --- Background ---
+	App->renderer->Blit(tableroBG, 0, 0);
+
+	// BG Scrolling:
+	for (int i = 0; i < 2; i++) {
+		scrollerBG[i] -= 0.3f;
+		if (scrollerBG[i] < -552) {
+			scrollerBG[i] = 552;
+		}
+		App->renderer->Blit(tableroParticles, scrollerBG[i], 0);
+	}
+
+	App->renderer->Blit(tableroNoBG, 0, 0);
+
+	// --- Balls ---
+	// Update Animations 
+	ballLightAnim.Update();
+	SDL_Rect rect = ballLightAnim.GetCurrentFrame();
+
+	p2List_item<PhysBody*>* c = balls.getFirst();
+	while (c != NULL)
+	{
+		int x, y;
+		c->data->GetPosition(x, y);
+
+		App->renderer->Blit(ball, x, y, &rect, 1.0f, c->data->GetRotation());
+
+		c = c->next;
+	}
+
+	// --- Spring ---
+
+	SDL_Rect rect1 = springAnim.GetCurrentFrame();
+	SDL_Rect rect2 = springExplosionAnim.GetCurrentFrame();
+
+
+	App->renderer->Blit(spring, 493, 710, &rect1);
+	App->renderer->Blit(springBase, 493, 721);
+
+	if (expl == true) {
+		springExplosionAnim.Update();
+		App->renderer->Blit(springParticles, 474, 691, &rect2);
+	}
+
+	// --- Fonts ---
+
+	// Score int -> const char*
+	stringstream strs;
+	strs << score;
+	string temp_str = strs.str();
+	char* char_type = (char*)temp_str.c_str();
+
+	// Change X position to fit better with the HUD 
+	if (score < 10){
+		App->qfonts->RenderText(char_type, 195, 15);
+	}
+	else if (score < 1000) {
+		App->qfonts->RenderText(char_type, 180, 15);
+	}
+	else if (score < 10000) {
+		App->qfonts->RenderText(char_type, 170, 15);
+	}
+	else if (score < 100000) {
+		App->qfonts->RenderText(char_type, 165, 15);
+	}
+	else{
+		App->qfonts->RenderText(char_type, 150, 15);
+	}
+
+	// --- Raycast ------------------------------------------------------
+
+	// The target point of the raycast is the mouse current position (will change over game time)
+	iPoint mouse;
+	mouse.x = App->input->GetMouseX();
+	mouse.y = App->input->GetMouseY();
+
+	// Total distance of the raycast reference segment
+	int ray_hit = ray.DistanceTo(mouse);
+
+	// Declare a vector. We will draw the normal to the hit surface (if we hit something)
+	fVector normal(0.0f, 0.0f);
+
+	if (ray_on == true)
+	{
+		// Compute the vector from the raycast origin up to the contact point (if we're hitting anything; otherwise this is the reference length)
+		fVector destination(mouse.x - ray.x, mouse.y - ray.y);
+		destination.Normalize();
+		destination *= ray_hit;
+
+		// Draw a line from origin to the hit point (or reference length if we are not hitting anything)
+		App->renderer->DrawLine(ray.x, ray.y, ray.x + destination.x, ray.y + destination.y, 255, 255, 255);
+
+		// If we are hitting something with the raycast, draw the normal vector to the contact point
+		if (normal.x != 0.0f)
+			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
+	}
+
+	return UPDATE_CONTINUE;
+}
+
+void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
+{
+	// Play Audio FX on every collision, randomized to sound more natural
+	int fx = rand() % 5;
+
+	switch (fx)
+	{
+	case 0:
+		App->audio->PlayFx(collision1Fx);
+		break;
+	case 1:
+		App->audio->PlayFx(collision2Fx);
+		break;
+	case 2:
+		App->audio->PlayFx(collision3Fx);
+		break;
+	case 3:
+		App->audio->PlayFx(collision4Fx);
+		break;
+	case 4:
+		App->audio->PlayFx(collision5Fx);
+		break;
+	}
+}
+
+void ModuleSceneIntro::PlayPtsFx() {
+
+	int sfx = rand() % 2;
+
+	switch (sfx)
+	{
+	case 0:
+		App->audio->PlayFx(ptsFx2);
+		break;
+	case 1:
+		App->audio->PlayFx(ptsFx3);
+		break;
+	}
+}
+
 void ModuleSceneIntro::BallManager() {
 
 	ball = App->textures->Load("pinball/sprites/8ball.png");
 
 	// Ball light Animation
-	
+
 	for (int i = 0; i < 21; i++) {
 		if (i == 0) {
 			ballLightAnim.PushBack({ 0,0,N,N });
-			ballLightAnim.PushBack({ N+4,0,N,N });
+			ballLightAnim.PushBack({ N + 4,0,N,N });
 			ballLightAnim.PushBack({ 0,0,N,N });
-			ballLightAnim.PushBack({ N+4,0,N,N });
+			ballLightAnim.PushBack({ N + 4,0,N,N });
 			ballLightAnim.PushBack({ 0,0,N,N });
 		}
 		ballLightAnim.PushBack({ 0,0,N,N });
@@ -124,13 +383,13 @@ void ModuleSceneIntro::CreateSpring()
 
 	springAnim.PushBack({ 0,0,N,N });
 	springAnim.PushBack({ N,0,N,N });
-	springAnim.PushBack({ 2*N,0,N,N });
-	springAnim.PushBack({ 3*N,0,N,N });
+	springAnim.PushBack({ 2 * N,0,N,N });
+	springAnim.PushBack({ 3 * N,0,N,N });
 	springAnim.loop = false;
 	springAnim.speed = 0.15f;
 
 	for (int i = 0; i < 9; i++) {
-		springExplosionAnim.PushBack({ i*2*N,0,2*N,2*N });
+		springExplosionAnim.PushBack({ i * 2 * N,0,2 * N,2 * N });
 	}
 	springExplosionAnim.PushBack({ 0,0,0,0 });
 	springExplosionAnim.loop = false;
@@ -466,264 +725,6 @@ void ModuleSceneIntro::CreateBumpers() {
 	bumperTopX = 375;
 	bumperTopY = 190;
 	bumperTop = App->physics->CreateCircularBumper(bumperTopX, bumperTopY, 20);
-}
-
-void ModuleSceneIntro::PauseGame() {
-	pause = true;
-	App->scene_menu->currentState = PAUSE;
-}
-
-void ModuleSceneIntro::UnPauseGame() {
-	pause = false;
-}
-
-update_status ModuleSceneIntro::PreUpdate() 
-{
-	// Scene transitions
-	if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP && lives > 0) {
-		App->fade->FadeToBlack(this, (Module*)App->scene_title, 60);
-		App->scene_menu->currentState = DISABLED;
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN) {
-		PauseGame();
-	}
-
-	if (lives == 0) {
-		LOG("Llamo A Gameover");
-		App->scene_menu->currentState = GAMEOVER;
-		pause = true;
-		// Lives = -1 , idk why but if i let lives in 0 even disabling this module this if sends another Gameover to the scene menu and kboom
-		lives = -1;
-
-	}
-	if (lives == -1) {
-		// This should be in lives==0 if but since i have to put lives=-1 this shit go there or it doesn't Update()
-		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP) {
-			// "Save" score if exit 
-			App->scene_title->scores.add(App->scene_intro->score);
-			LOG("Saving Score %d", App->scene_intro->score);
-			// Fade
-			App->fade->FadeToBlack(this, (Module*)App->scene_title, 60);
-			App->scene_menu->currentState = DISABLED;
-		}
-	}
-
-	return UPDATE_CONTINUE;
-}
-
-update_status ModuleSceneIntro::Update()
-{
-	if (pause != true) {
-		// --- Bumpers Movement ---
-
-		// Just move the bumpers and then wait 2 sec (if 60 fps) to move them back
-		if (bumperTopY < 290 && dir == true) {
-			bumperTopY += bumperVel;
-		}
-		else if (bumperTopY > 190 && dir == false) {
-			bumperTopY -= bumperVel;
-		}
-		else {
-			count++;
-			if (count > 60) {
-				count = 0;
-				dir = !dir;
-			}
-		}
-
-		// Change Bumpers X
-		b2Vec2 pos1 = b2Vec2(PIXEL_TO_METERS(bumperTopX), PIXEL_TO_METERS(bumperTopY));
-		bumperTop->body->SetTransform(pos1, 0);
-
-		// --- Spring ---
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		{
-			if (springForce < 300) {
-				springForce += 10;
-			}
-			springTop->body->ApplyForceToCenter(b2Vec2(0, springForce), 1);
-
-			springAnim.Update();
-			expl = false;
-			springExplosionAnim.Reset();
-
-			// Fx
-			if (springForce == 10) {
-				App->audio->PlayFx(kickerInitFx);
-			}
-		}
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) {
-			springForce = 0;
-
-			springAnim.Reset();
-			expl = true;
-
-			// Fx
-			App->audio->PlayFx(kickerBurstFx);
-		}
-
-		// --- Flippers ---
-		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
-			flipperLeft->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
-		}
-		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
-			flipperRight->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
-		}
-
-		// --- Ball Generator ---
-		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-		{
-			LOG("Creating 8ball at: X = %d Y = %d", App->input->GetMouseX(), App->input->GetMouseY());
-
-			balls.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), (N / 2)));
-
-			// If Box2D detects a collision with this last generated circle, it will automatically callback the function ModulePhysics::BeginContact()
-			balls.getLast()->data->listener = this;
-		}
-
-	}
-
-	// --------------------------- All draw functions -------------------------------------
-
-	// --- Background ---
-	App->renderer->Blit(tableroBG, 0, 0);
-
-	// BG Scrolling:
-	for (int i = 0; i < 2; i++) {
-		scrollerBG[i] -= 0.3f;
-		if (scrollerBG[i] < -552) {
-			scrollerBG[i] = 552;
-		}
-		App->renderer->Blit(tableroParticles, scrollerBG[i], 0);
-	}
-
-	App->renderer->Blit(tableroNoBG, 0, 0);
-
-	// --- Balls ---
-	// Update Animations 
-	ballLightAnim.Update();
-	SDL_Rect rect = ballLightAnim.GetCurrentFrame();
-
-	p2List_item<PhysBody*>* c = balls.getFirst();
-	while (c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-
-		App->renderer->Blit(ball, x, y, &rect, 1.0f, c->data->GetRotation());
-
-		c = c->next;
-	}
-
-	// --- Spring ---
-
-	SDL_Rect rect1 = springAnim.GetCurrentFrame();
-	SDL_Rect rect2 = springExplosionAnim.GetCurrentFrame();
-
-
-	App->renderer->Blit(spring, 493, 710, &rect1);
-	App->renderer->Blit(springBase, 493, 721);
-
-	if (expl == true) {
-		springExplosionAnim.Update();
-		App->renderer->Blit(springParticles, 474, 691, &rect2);
-	}
-
-	// --- Fonts ---
-
-	// Score int -> const char*
-	stringstream strs;
-	strs << score;
-	string temp_str = strs.str();
-	char* char_type = (char*)temp_str.c_str();
-
-	// Change X position to fit better with the HUD 
-	if (score < 10){
-		App->qfonts->RenderText(char_type, 195, 15);
-	}
-	else if (score < 1000) {
-		App->qfonts->RenderText(char_type, 180, 15);
-	}
-	else if (score < 10000) {
-		App->qfonts->RenderText(char_type, 170, 15);
-	}
-	else if (score < 100000) {
-		App->qfonts->RenderText(char_type, 165, 15);
-	}
-	else{
-		App->qfonts->RenderText(char_type, 150, 15);
-	}
-
-	// --- Raycast ------------------------------------------------------
-
-	// The target point of the raycast is the mouse current position (will change over game time)
-	iPoint mouse;
-	mouse.x = App->input->GetMouseX();
-	mouse.y = App->input->GetMouseY();
-
-	// Total distance of the raycast reference segment
-	int ray_hit = ray.DistanceTo(mouse);
-
-	// Declare a vector. We will draw the normal to the hit surface (if we hit something)
-	fVector normal(0.0f, 0.0f);
-
-	if (ray_on == true)
-	{
-		// Compute the vector from the raycast origin up to the contact point (if we're hitting anything; otherwise this is the reference length)
-		fVector destination(mouse.x - ray.x, mouse.y - ray.y);
-		destination.Normalize();
-		destination *= ray_hit;
-
-		// Draw a line from origin to the hit point (or reference length if we are not hitting anything)
-		App->renderer->DrawLine(ray.x, ray.y, ray.x + destination.x, ray.y + destination.y, 255, 255, 255);
-
-		// If we are hitting something with the raycast, draw the normal vector to the contact point
-		if (normal.x != 0.0f)
-			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
-	}
-
-	return UPDATE_CONTINUE;
-}
-
-void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
-{
-	// Play Audio FX on every collision, randomized to sound more natural
-	int fx = rand() % 5;
-
-	switch (fx)
-	{
-	case 0:
-		App->audio->PlayFx(collision1Fx);
-		break;
-	case 1:
-		App->audio->PlayFx(collision2Fx);
-		break;
-	case 2:
-		App->audio->PlayFx(collision3Fx);
-		break;
-	case 3:
-		App->audio->PlayFx(collision4Fx);
-		break;
-	case 4:
-		App->audio->PlayFx(collision5Fx);
-		break;
-	}
-}
-
-void ModuleSceneIntro::PlayPtsFx() {
-
-	int sfx = rand() % 2;
-
-	switch (sfx)
-	{
-	case 0:
-		App->audio->PlayFx(ptsFx2);
-		break;
-	case 1:
-		App->audio->PlayFx(ptsFx3);
-		break;
-	}
 }
 
 bool ModuleSceneIntro::CleanUp()

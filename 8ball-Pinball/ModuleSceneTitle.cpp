@@ -59,6 +59,8 @@ bool ModuleSceneTitle::Start()
 
 	// Fonts
 
+	App->qfonts->Init();
+
 	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "normal");
 	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "chikita");
 
@@ -253,6 +255,7 @@ bool ModuleSceneTitle::CleanUp()
 	scorefx = acceptfx = selectfx = backfx = 0;
 
 	App->qfonts->UnloadFont();
+	App->qfonts->CleanUp();
 
 	textPlay[10] = textSettings[10] = textScores[10] = githubLink[100] = scorePosition[100] = NULL;
 
