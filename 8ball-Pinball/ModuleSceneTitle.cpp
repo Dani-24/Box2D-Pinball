@@ -36,15 +36,34 @@ bool ModuleSceneTitle::Start()
 	cursorX = 350;
 	cursorY = 500;
 
+	metro = App->textures->Load("pinball/sprites/metro.png");
+
 	// Load Sprite Animations
 
 	int N = 0;
 	for (int i = 0; i < 30; i++) {
-		octoAnim.PushBack({ N,0,540,540 });
+		octoAnim.PushBack({ N, 0, 540, 540 });
 		N += 540;
 	}
 	octoAnim.speed = 0.25f;
 	octoAnim.loop = true;
+
+	N = 0;
+	for (int i = 0; i < 24; i++) {
+		if (i >= 14) {
+			metroAnim.PushBack({ 0, 0, 400, 70 });
+		}
+		else {
+			metroAnim.PushBack({ 0, N, 400, 70 });
+			N += 70;
+		}
+	}
+	metroAnim.speed = 0.2f;
+	metroAnim.loop = true;
+
+	metroX = 75;
+	metroY = 0;
+	metroMoving = false;
 
 	// Load Audio
 
@@ -105,8 +124,9 @@ update_status ModuleSceneTitle::Update()
 			App->audio->PlayFx(scorefx);
 		}
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 500) {
+			metroMoving = true;
 			App->audio->PlayFx(acceptfx);
-			App->fade->FadeToBlack(this, (Module*)App->scene_intro, 30);
+			App->fade->FadeToBlack(this, (Module*)App->scene_intro, 90);
 		}
 		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
 			App->audio->PlayFx(backfx);
@@ -138,9 +158,11 @@ update_status ModuleSceneTitle::Update()
 
 		// Debug lifehacks
 
-		/*if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
-			scores.add(69420777);
-		}*/
+		if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
+			scores.add(69);
+			scores.add(420);
+			scores.add(777666);
+		}
 
 		// --- PRINT ---
 
@@ -154,14 +176,14 @@ update_status ModuleSceneTitle::Update()
 		}
 		else {
 			strcpy_s(scorePosition, "´ Score from lastest Games ´");
-			App->qfonts->RenderText(scorePosition, 40, y - 150);
+			App->qfonts->RenderText(scorePosition, 40, y - 110);
 
 			insertTextBcVisualBug();
 
 			strcpy_s(scorePosition, "(Sorted from first");
-			App->qfonts->RenderText(scorePosition, 130, y - 100);
-			strcpy_s(scorePosition, " to lastest game)");
 			App->qfonts->RenderText(scorePosition, 130, y - 80);
+			strcpy_s(scorePosition, " to lastest game)");
+			App->qfonts->RenderText(scorePosition, 130, y - 60);
 
 			insertTextBcVisualBug();
 		}
@@ -204,6 +226,26 @@ update_status ModuleSceneTitle::Update()
 		break;
 	}
 
+	// Print in all scenes
+
+	if (metroMoving == false) {
+		metroAnim.Update();
+	}
+	else {
+		static int increase = 0;
+		if (metroX < 800) {
+			increase += 1;
+			metroX += increase/5;
+		}
+		else {
+			increase = 0;
+			metroMoving = false;
+		}
+	}
+
+	SDL_Rect posEso = metroAnim.GetCurrentFrame();
+	App->renderer->Blit(metro, metroX, metroY, &posEso);
+
 	return UPDATE_CONTINUE;
 }
 
@@ -219,9 +261,12 @@ bool ModuleSceneTitle::CleanUp()
 	App->textures->Unload(bg);
 	App->textures->Unload(bgPart);
 	App->textures->Unload(cursor);
+	App->textures->Unload(metro);
 
 	octoling = bg = bgPart = cursor = nullptr;
 	octoAnim.DeleteAnim();
+
+	metroAnim.DeleteAnim();
 
 	scorefx = acceptfx = selectfx = backfx = cursorX = cursorY = NULL;
 

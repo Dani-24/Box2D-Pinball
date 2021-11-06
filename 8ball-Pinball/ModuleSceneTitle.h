@@ -37,8 +37,14 @@ public:
 	SDL_Texture* bg;
 	SDL_Texture* bgPart;
 
+	SDL_Texture* metro;
+
 	// Animation
 	Animation octoAnim;
+	Animation metroAnim;
+
+	int metroX, metroY;
+	bool metroMoving;
 
 	// FX
 	uint scorefx;
