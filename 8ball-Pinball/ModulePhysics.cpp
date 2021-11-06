@@ -6,6 +6,7 @@
 #include "p2Point.h"
 #include "math.h"
 #include "ModuleSceneIntro.h"
+#include "ModuleAudio.h"
 
 // Tell the compiler to reference the compiled Box2D libraries
 #ifdef _DEBUG
@@ -503,25 +504,29 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		// Jump Pads
 		if (physA == App->scene_intro->rightPad && physB == c->data) {
 			c->data->body->ApplyForceToCenter(b2Vec2(-150, -250), 1);
-
+			App->scene_intro->pd4 = true;
 			App->scene_intro->score += 100;
+			App->audio->PlayFx(App->scene_intro->bounceFx);
 		}
 		if (physA == App->scene_intro->leftPad && physB == c->data) {
 			c->data->body->ApplyForceToCenter(b2Vec2(150, -250), 1);
-
+			App->scene_intro->pd3 = true;
 			App->scene_intro->score += 100;
+			App->audio->PlayFx(App->scene_intro->bounceFx);
 		}
 
 		// Above flipper Jump Pads
 		if (physA == App->scene_intro->leftPlat && physB == c->data) {
 			c->data->body->ApplyForceToCenter(b2Vec2(100, -400), 1);
-
+			App->scene_intro->pd1 = true;
 			App->scene_intro->score += 100;
+			App->audio->PlayFx(App->scene_intro->bounceFx);
 		}
 		if (physA == App->scene_intro->rightPlat && physB == c->data) {
 			c->data->body->ApplyForceToCenter(b2Vec2(-100, -400), 1);
-
+			App->scene_intro->pd2 = true;
 			App->scene_intro->score += 100;
+			App->audio->PlayFx(App->scene_intro->bounceFx);
 		}
 		// Bumpers
 		if (physA == App->scene_intro->bumperTop && physB == c->data) {

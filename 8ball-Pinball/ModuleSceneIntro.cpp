@@ -89,6 +89,7 @@ bool ModuleSceneIntro::Start()
 	ptsFx2 = App->audio->LoadFx("pinball/audio/fx/pts2.wav");
 	ptsFx3 = App->audio->LoadFx("pinball/audio/fx/pts3.wav");
 
+	bounceFx = App->audio->LoadFx("pinball/audio/fx/bouncePad.wav");
 	// Fonts
 	App->qfonts->Init();
 
@@ -212,6 +213,59 @@ update_status ModuleSceneIntro::Update()
 			balls.getLast()->data->listener = this;
 		}
 
+		// --- Bounce Pads ---
+		// Down left
+		static int pd1_time = 0;
+		if (pd1 == true) {
+			if (pd1_time > 10) {
+				bounceAnim.Reset();
+				pd1 = false;
+				pd1_time = 0;
+			}
+			else {
+				bounceAnim.Update();
+				pd1_time++;
+			}
+		}
+		// Down right
+		static int pd2_time = 0;
+		if (pd2 == true) {
+			if (pd2_time > 10) {
+				bounceAnim2.Reset();
+				pd2 = false;
+				pd2_time = 0;
+			}
+			else {
+				bounceAnim2.Update();
+				pd2_time++;
+			}
+		}
+		// Up left
+		static int pd3_time = 0;
+		if (pd3 == true) {
+			if (pd3_time > 10) {
+				bounceAnimB.Reset();
+				pd3 = false;
+				pd3_time = 0;
+			}
+			else {
+				bounceAnimB.Update();
+				pd3_time++;
+			}
+		}
+		// Up right
+		static int pd4_time = 0;
+		if (pd4 == true) {
+			if (pd4_time > 10) {
+				bounceAnimB2.Reset();
+				pd4 = false;
+				pd4_time = 0;
+			}
+			else {
+				bounceAnimB2.Update();
+				pd4_time++;
+			}
+		}
 	}
 
 	// --------------------------- All draw functions -------------------------------------
@@ -251,7 +305,6 @@ update_status ModuleSceneIntro::Update()
 	SDL_Rect rect1 = springAnim.GetCurrentFrame();
 	SDL_Rect rect2 = springExplosionAnim.GetCurrentFrame();
 
-
 	App->renderer->Blit(spring, 493, 710, &rect1);
 	App->renderer->Blit(springBase, 493, 721);
 
@@ -259,6 +312,26 @@ update_status ModuleSceneIntro::Update()
 		springExplosionAnim.Update();
 		App->renderer->Blit(springParticles, 474, 691, &rect2);
 	}
+
+	// --- Bounce pads ---
+
+	float32 padAngle = leftPad->body->GetAngle();
+	float32 pad2Angle = rightPad->body->GetAngle();
+	float32 padBAngle = leftPlat->body->GetAngle();
+	float32 padB2Angle = rightPlat->body->GetAngle();
+
+	SDL_Rect rpad1 = bounceAnim.GetCurrentFrame();
+	App->renderer->Blit(bouncePad, 110, 630, &rpad1, 0.0f, RADTODEG*(padAngle));
+
+	SDL_Rect rpad2 = bounceAnim2.GetCurrentFrame();
+	App->renderer->Blit(bouncePad, 285, 630, &rpad2, 0.0f, RADTODEG* (pad2Angle));
+
+	SDL_Rect rpad3 = bounceAnimB.GetCurrentFrame();
+	App->renderer->Blit(bouncePadB, 116, 286, &rpad3, 0.0f, RADTODEG* (padBAngle));
+
+	SDL_Rect rpad4 = bounceAnimB2.GetCurrentFrame();
+	App->renderer->Blit(bouncePadB, 253, 287, &rpad4, 0.0f, RADTODEG* (padB2Angle));
+
 
 	// --- Fonts ---
 
@@ -717,6 +790,28 @@ void ModuleSceneIntro::CreateSensors() {
 	leftPlat->body->SetTransform(posLPlat, 0.6f); // who uses radiants having degrees... 90 degrees all the world knows what does it means... but 90 radiants??? wtf are 90 radiants?
 	rightPlat->body->SetTransform(posRPlat, -0.6f);
 
+	// Assign Textures and anim
+	bouncePad = App->textures->Load("pinball/sprites/bouncePad.png");
+	bouncePadB = App->textures->Load("pinball/sprites/bouncePadB.png");
+
+	int y = 0;
+	for (int i = 0; i < 5; i++) {
+		bounceAnim.PushBack({ 0,y,50,10 });
+		bounceAnim2.PushBack({ 0,y,50,10 });
+		y += 10;
+	}
+	bounceAnim.loop = bounceAnim2.loop = false;
+	bounceAnim.speed = bounceAnim2.speed = 0.5f;
+
+	y = 0;
+	for (int i = 0; i < 4; i++) {
+		bounceAnimB.PushBack({ 0,y,35,10 });
+		bounceAnimB2.PushBack({ 0,y,35,10 });
+		y += 10;
+	}
+	bounceAnimB.loop = bounceAnimB2.loop = false;
+	bounceAnimB.speed = bounceAnimB2.speed = 0.5f;
+
 	// --- Sensors that just do what a sensor do ---
 
 	// Losing a ball sensor
@@ -741,6 +836,10 @@ bool ModuleSceneIntro::CleanUp()
 	ballLightAnim.DeleteAnim();
 	springAnim.DeleteAnim();
 	springExplosionAnim.DeleteAnim();
+	bounceAnim.DeleteAnim();
+	bounceAnim2.DeleteAnim();
+	bounceAnimB.DeleteAnim();
+	bounceAnimB2.DeleteAnim();
 
 	// Clean Textures
 	App->textures->Unload(ball);
@@ -750,6 +849,8 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(tableroBG);
 	App->textures->Unload(tableroNoBG);
 	App->textures->Unload(tableroParticles);
+	App->textures->Unload(bouncePad);
+	App->textures->Unload(bouncePadB);
 
 	// Clean fx:
 	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = 0;
@@ -783,7 +884,6 @@ bool ModuleSceneIntro::CleanUp()
 	App->physics->world->DestroyBody(bumperTop->body);
 
 	App->qfonts->UnloadFont();
-
 	App->physics->Disable();
 	App->scene_menu->Disable();
 

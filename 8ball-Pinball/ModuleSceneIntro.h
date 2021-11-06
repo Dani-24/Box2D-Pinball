@@ -101,6 +101,10 @@ public:
 
 	float scrollerBG[2];
 
+	// Bounce Pads
+	SDL_Texture* bouncePad;
+	SDL_Texture* bouncePadB;
+
 	// Fonts
 	char textScore[100];
 
@@ -119,6 +123,14 @@ public:
 
 	bool expl = false;
 
+	// BouncePads
+
+	Animation bounceAnim;
+	Animation bounceAnim2;
+	Animation bounceAnimB;
+	Animation bounceAnimB2;
+	bool pd1 = false, pd2 = false, pd3 = false, pd4 = false;
+
 	// -------- FX --------
 	uint collision1Fx;
 	uint collision2Fx;
@@ -131,6 +143,8 @@ public:
 
 	uint ptsFx2;
 	uint ptsFx3;
+
+	uint bounceFx;
 
 	int music;
 

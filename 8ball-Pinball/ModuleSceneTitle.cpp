@@ -138,9 +138,9 @@ update_status ModuleSceneTitle::Update()
 
 		// Debug lifehacks
 
-		if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
+		/*if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
 			scores.add(69420777);
-		}
+		}*/
 
 		// --- PRINT ---
 
