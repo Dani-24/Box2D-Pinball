@@ -40,8 +40,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>$(VC_LibraryPath_x86);$(ProjectDir)\SDL_ttf\libx86;$(WindowsSDK_LibraryPath_x86);C:\Users\danit\Desktop\Github\Box2D-Pinball\8ball-Pinball\SDL_ttf\libx86</LibraryPath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL_ttf\include;C:\Users\danit\Desktop\Github\Box2D-Pinball\8ball-Pinball\SDL_ttf\include</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(ProjectDir)\SDL_ttf\libx86;$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir)\SDL_ttf\include</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
