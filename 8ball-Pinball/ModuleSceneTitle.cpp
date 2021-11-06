@@ -257,7 +257,11 @@ bool ModuleSceneTitle::CleanUp()
 	App->qfonts->UnloadFont();
 	App->qfonts->CleanUp();
 
-	textPlay[10] = textSettings[10] = textScores[10] = githubLink[100] = scorePosition[100] = NULL;
-
+	for (int i = 0; i < 10; i++) {
+		textPlay[i] = textSettings[i] = textScores[i] = NULL;
+	}
+	for (int j = 0; j < 100; j++) {
+		githubLink[j] = scorePosition[j] = NULL;
+	}
 	return true;
 }

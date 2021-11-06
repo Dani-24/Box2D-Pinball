@@ -50,9 +50,9 @@ void ModuleQFonts::LoadFont(const char* fontPath, char size[10]) {
 	LOG("Fonts loaded");
 }
 
-void ModuleQFonts::RenderText(const char* textToRender, int x, int y, char size[10], int r , int g , int b) {
+void ModuleQFonts::RenderText(const char* textToRender, int x, int y, char size[10], Uint8 r , Uint8 g , Uint8 b) {
 	// Text Color
-	SDL_Color color = { r,g,b };
+	color = { r,g,b };
 
 	// by default use font at normal size
 	whichOne = font;

@@ -18,7 +18,7 @@ public:
 
 	void UnloadFont();
 
-	void RenderText(const char* textToRender,int x, int y, char size[10] = "normal", int r = 255, int g = 255, int b = 255);
+	void RenderText(const char* textToRender,int x, int y, char size[10] = "normal", Uint8 r = 255, Uint8 g = 255, Uint8 b = 255);
 
 	bool CleanUp();
 	
@@ -26,6 +26,8 @@ private:
 	TTF_Font* font;
 	TTF_Font* lilFont;
 	TTF_Font* whichOne;
+
+	SDL_Color color;
 };
 
 #endif
