@@ -30,55 +30,37 @@ bool ModuleQFonts::Start() {
 	return true;
 }
 
-void ModuleQFonts::LoadFont(const char* fontPath, char size[10]) {
-	if (size != "chikita") {
-		font = TTF_OpenFont(fontPath, 30);
-		if (!font) {
-			LOG("Error loading font || TTF_OpenFont: %s", TTF_GetError());
-		}
+// For the future Dani, i know you will come back there to take this code for another game, BUT remember, this code is made as bad as you could do it.
+// If you declare more fonts you can load them at LoadFont() with their size stuff.
+// And renderText(), fix this shit pls, make not necesary to send an "                 " char every time you call Fonts.
+// SDL_UpdateTexture and SDL_FreeSurface free memory on each loop.
+
+void ModuleQFonts::LoadFont(const char* fontPath) {
+	font = TTF_OpenFont(fontPath, 30);
+	if (!font) {
+		LOG("Error loading font || TTF_OpenFont: %s", TTF_GetError());
 	}
 	else {
-		lilFont = TTF_OpenFont(fontPath, 20);
-
-		if (!lilFont) {
-			LOG("Error loading little font || TTF_OpenFont: %s", TTF_GetError());
-		}
+		LOG("Fonts loaded");
 	}
-	LOG("Fonts loaded");
 }
 
-void ModuleQFonts::RenderText(const char* textToRender, int x, int y, char size[10], Uint8 r , Uint8 g , Uint8 b) {
+void ModuleQFonts::RenderText(const char* textToRender, int x, int y, Uint8 r , Uint8 g , Uint8 b) {
 	// Text Color
 	color = { r,g,b };
 
-	bool changeSize = false;
-
-	if (theSize != size) {
-		changeSize = true;
-	}
-
-	if (size == "chikita") {
-		wFont = lilFont;
-	}
-	else {
-		// by default use font at normal size
-		wFont = font;
-	}
-
 	// Create the text on surface
-	if (!(fontSurface = TTF_RenderText_Blended(wFont, textToRender, color))) {	// Blended sale menos pixelado q Solid
+	if (!(fontSurface = TTF_RenderText_Blended(font, textToRender, color))) {	// Blended sale menos pixelado q Solid
 		LOG("Error Rendering Text || TTF_OpenFont: %s", TTF_GetError());
 	}
 	else {
-		if (fontTexture == nullptr || changeSize == true) {
-			changeSize = false;
+		if (fontTexture == nullptr) {
 			// Transform the text surface to texture
 			fontTexture = SDL_CreateTextureFromSurface(App->renderer->renderer, fontSurface);
 			LOG("Surface to Texture");
 		}
 		else {
 			SDL_UpdateTexture(fontTexture, nullptr, fontSurface->pixels, fontSurface->pitch);
-			LOG("Updating Texture");
 		}
 
 		// Draw the text at X, Y
@@ -90,11 +72,10 @@ void ModuleQFonts::RenderText(const char* textToRender, int x, int y, char size[
 void ModuleQFonts::UnloadFont()
 {
 	TTF_CloseFont(font);
-	TTF_CloseFont(lilFont);
 
 	App->textures->Unload(fontTexture);
 
-	font = lilFont = wFont = NULL; // to be safe..
+	font = NULL; // to be safe..
 
 	LOG("Fonts unloaded");
 }

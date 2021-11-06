@@ -60,9 +60,8 @@ bool ModuleSceneTitle::Start()
 
 	App->qfonts->Init();
 
-	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "normal");
-	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "chikita");
-	App->qfonts->RenderText("                                                                   ", 0, 0); // Spacebar my new best friend that avoid MemLeaks and Bugs bc ModuleFonts is programmed as bad as posible.
+	App->qfonts->LoadFont("pinball/font/Paintball.ttf");
+	insertTextBcVisualBug();
 
 	strcpy_s(textPlay, "Play");
 	strcpy_s(textSettings, "Github");
@@ -120,7 +119,7 @@ update_status ModuleSceneTitle::Update()
 		App->renderer->Blit(cursor, cursorX, cursorY);
 
 		// Fonts
-		
+		App->qfonts->RenderText("                                                                   ", 0, 0); // This shouldn't exist but visual bugs
 		App->qfonts->RenderText(textPlay, 242, 500);
 		App->qfonts->RenderText(textScores, 225, 575);
 		App->qfonts->RenderText(textSettings, 225, 650);
@@ -140,7 +139,7 @@ update_status ModuleSceneTitle::Update()
 		// Debug lifehacks
 
 		if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
-			scores.add(69);
+			scores.add(69420777);
 		}
 
 		// --- PRINT ---
@@ -148,7 +147,6 @@ update_status ModuleSceneTitle::Update()
 
 		// Score list
 		int N = 1, x = 150, y = 200; bool mt11 = false;
-
 		p2List_item<int>* c = scores.getFirst();
 		if (c == NULL) {
 			strcpy_s(scorePosition, "` There is no Score registed");
@@ -158,16 +156,24 @@ update_status ModuleSceneTitle::Update()
 			strcpy_s(scorePosition, "´ Score from lastest Games ´");
 			App->qfonts->RenderText(scorePosition, 40, y - 150);
 
-			strcpy_s(scorePosition, "(Sorted from first to lastest game)");
-			App->qfonts->RenderText(scorePosition, 90, y - 100,"chikita");
+			insertTextBcVisualBug();
+
+			strcpy_s(scorePosition, "(Sorted from first");
+			App->qfonts->RenderText(scorePosition, 130, y - 100);
+			strcpy_s(scorePosition, " to lastest game)");
+			App->qfonts->RenderText(scorePosition, 130, y - 80);
+
+			insertTextBcVisualBug();
 		}
 		while (c != NULL)
 		{
 			if (N == 11) {
+				insertTextBcVisualBug();
 				strcpy_s(scorePosition, "¡ Stay Fresh !");
 				App->qfonts->RenderText(scorePosition, 150, y);
 			}
 			else {
+				insertTextBcVisualBug();
 				// print nums:
 				stringstream strs, strs2;
 				strs << N;
@@ -195,11 +201,14 @@ update_status ModuleSceneTitle::Update()
 			y += 50;
 			c = c->next;
 		}
-
 		break;
 	}
 
 	return UPDATE_CONTINUE;
+}
+
+void ModuleSceneTitle::insertTextBcVisualBug() {
+	App->qfonts->RenderText("                                                                   ", 0, 0); // Go next line plz
 }
 
 bool ModuleSceneTitle::CleanUp()
@@ -225,7 +234,5 @@ bool ModuleSceneTitle::CleanUp()
 	for (int j = 0; j < 100; j++) {
 		githubLink[j] = scorePosition[j] = NULL;
 	}
-
-
 	return true;
 }

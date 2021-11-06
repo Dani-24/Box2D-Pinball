@@ -14,11 +14,11 @@ public:
 
 	bool Start();
 
-	void LoadFont(const char* fontPath, char size[10]);
+	void LoadFont(const char* fontPath);
 
 	void UnloadFont();
 
-	void RenderText(const char* textToRender,int x, int y, char size[10] = "normal", Uint8 r = 255, Uint8 g = 255, Uint8 b = 255);
+	void RenderText(const char* textToRender,int x, int y, Uint8 r = 255, Uint8 g = 255, Uint8 b = 255);
 
 	bool CleanUp();
 	
@@ -33,7 +33,7 @@ private:
 
 	TTF_Font* wFont;
 
-	char theSize[10];
+	int theS;
 };
 
 #endif

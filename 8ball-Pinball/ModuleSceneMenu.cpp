@@ -60,7 +60,6 @@ update_status ModuleSceneMenu::Update()
 
 		// Reset scene
 		if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) {
-
 			LOG("Reset scene");
 			// Quit Scene menu
 			currentState = DISABLED;

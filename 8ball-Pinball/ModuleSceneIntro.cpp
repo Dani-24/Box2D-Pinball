@@ -39,6 +39,7 @@ bool ModuleSceneIntro::Start()
 	bool ret = true;
 
 	App->physics->Enable();
+	App->scene_menu->Enable();
 
 	// ppl variables
 	score = 0;
@@ -91,8 +92,8 @@ bool ModuleSceneIntro::Start()
 	// Fonts
 	App->qfonts->Init();
 
-	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "normal");
-	App->qfonts->LoadFont("pinball/font/Paintball.ttf", "chikita");
+	App->qfonts->LoadFont("pinball/font/Paintball.ttf");
+	insertTextBcVisualBug();
 
 	return ret;
 }
@@ -784,6 +785,11 @@ bool ModuleSceneIntro::CleanUp()
 	App->qfonts->UnloadFont();
 
 	App->physics->Disable();
+	App->scene_menu->Disable();
 
 	return true;
+}
+
+void ModuleSceneIntro::insertTextBcVisualBug() {
+	App->qfonts->RenderText("                                                                   ", 0, 0); // Go next line plz
 }

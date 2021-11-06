@@ -34,6 +34,7 @@ public:
 	void UnPauseGame();
 
 	void PlayPtsFx();
+	void insertTextBcVisualBug();
 
 public:
 
