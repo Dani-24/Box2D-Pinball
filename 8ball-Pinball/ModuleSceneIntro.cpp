@@ -87,7 +87,6 @@ bool ModuleSceneIntro::Start()
 	App->qfonts->Init();
 
 	App->qfonts->LoadFont("pinball/font/Paintball.ttf");
-	insertTextBcVisualBug();
 
 	return ret;
 }
@@ -397,19 +396,19 @@ update_status ModuleSceneIntro::Update()
 
 	// Change X position to fit better with the HUD 
 	if (score < 10){
-		App->qfonts->RenderText(char_type, 195, 15);
+		App->qfonts->drawText(char_type, 195, 15);
 	}
 	else if (score < 1000) {
-		App->qfonts->RenderText(char_type, 180, 15);
+		App->qfonts->drawText(char_type, 180, 15);
 	}
 	else if (score < 10000) {
-		App->qfonts->RenderText(char_type, 170, 15);
+		App->qfonts->drawText(char_type, 170, 15);
 	}
 	else if (score < 100000) {
-		App->qfonts->RenderText(char_type, 165, 15);
+		App->qfonts->drawText(char_type, 165, 15);
 	}
 	else{
-		App->qfonts->RenderText(char_type, 150, 15);
+		App->qfonts->drawText(char_type, 150, 15);
 	}
 
 	// --- Raycast ------------------------------------------------------
@@ -956,8 +955,4 @@ bool ModuleSceneIntro::CleanUp()
 	App->scene_menu->Disable();
 
 	return true;
-}
-
-void ModuleSceneIntro::insertTextBcVisualBug() {
-	App->qfonts->RenderText("                                                                   ", 0, 0); // Go next line plz
 }

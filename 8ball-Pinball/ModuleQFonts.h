@@ -18,8 +18,12 @@ public:
 
 	void UnloadFont();
 
+	void drawText(const char* textToRender, int x, int y, Uint8 r = 255, Uint8 g = 255, Uint8 b = 255);
+
+private:
 	void RenderText(const char* textToRender,int x, int y, Uint8 r = 255, Uint8 g = 255, Uint8 b = 255);
 
+public:
 	bool CleanUp();
 	
 private:

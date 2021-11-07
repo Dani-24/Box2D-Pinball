@@ -22,8 +22,6 @@ public:
 	update_status Update();
 	bool CleanUp();
 
-	void insertTextBcVisualBug();
-
 public:
 	GameState currentState;
 

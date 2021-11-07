@@ -80,7 +80,6 @@ bool ModuleSceneTitle::Start()
 	App->qfonts->Init();
 
 	App->qfonts->LoadFont("pinball/font/Paintball.ttf");
-	insertTextBcVisualBug();
 
 	strcpy_s(textPlay, "Play");
 	strcpy_s(textSettings, "Github");
@@ -141,10 +140,9 @@ update_status ModuleSceneTitle::Update()
 		App->renderer->Blit(cursor, cursorX, cursorY);
 
 		// Fonts
-		App->qfonts->RenderText("                                                                   ", 0, 0); // This shouldn't exist but visual bugs
-		App->qfonts->RenderText(textPlay, 242, 500);
-		App->qfonts->RenderText(textScores, 225, 575);
-		App->qfonts->RenderText(textSettings, 225, 650);
+		App->qfonts->drawText(textPlay, 242, 500);
+		App->qfonts->drawText(textScores, 225, 575);
+		App->qfonts->drawText(textSettings, 225, 650);
 
 		break;
 	case SCORES:
@@ -174,30 +172,23 @@ update_status ModuleSceneTitle::Update()
 		p2List_item<int>* c = scores.getFirst();
 		if (c == NULL) {
 			strcpy_s(scorePosition, "` There is no Score registed");
-			App->qfonts->RenderText(scorePosition, 50, y);
+			App->qfonts->drawText(scorePosition, 50, y);
 		}
 		else {
 			strcpy_s(scorePosition, "´ Score from lastest Games ´");
-			App->qfonts->RenderText(scorePosition, 40, y - 110);
-
-			insertTextBcVisualBug();
-
+			App->qfonts->drawText(scorePosition, 40, y - 110);
 			strcpy_s(scorePosition, "(Sorted from first");
-			App->qfonts->RenderText(scorePosition, 130, y - 80);
+			App->qfonts->drawText(scorePosition, 130, y - 80);
 			strcpy_s(scorePosition, " to lastest game)");
-			App->qfonts->RenderText(scorePosition, 130, y - 60);
-
-			insertTextBcVisualBug();
+			App->qfonts->drawText(scorePosition, 130, y - 60);
 		}
 		while (c != NULL)
 		{
 			if (N == 11) {
-				insertTextBcVisualBug();
 				strcpy_s(scorePosition, "¡ Stay Fresh !");
-				App->qfonts->RenderText(scorePosition, 150, y);
+				App->qfonts->drawText(scorePosition, 150, y);
 			}
 			else {
-				insertTextBcVisualBug();
 				// print nums:
 				stringstream strs, strs2;
 				strs << N;
@@ -216,7 +207,7 @@ update_status ModuleSceneTitle::Update()
 
 				strcat_s(scorePosition, numToChar2); // Add " c->data "  to scorePosition
 
-				App->qfonts->RenderText(scorePosition, x, y); // Print scorePosition
+				App->qfonts->drawText(scorePosition, x, y); // Print scorePosition
 
 			}
 			LOG(scorePosition);
@@ -248,10 +239,6 @@ update_status ModuleSceneTitle::Update()
 	App->renderer->Blit(metro, metroX, metroY, &posEso);
 
 	return UPDATE_CONTINUE;
-}
-
-void ModuleSceneTitle::insertTextBcVisualBug() {
-	App->qfonts->RenderText("                                                                   ", 0, 0); // Go next line plz
 }
 
 bool ModuleSceneTitle::CleanUp()
