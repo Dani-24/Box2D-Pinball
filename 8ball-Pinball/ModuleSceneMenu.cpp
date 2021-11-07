@@ -57,7 +57,7 @@ update_status ModuleSceneMenu::Update()
 		// --- Draw the stuff ---
 		App->renderer->Blit(prueba, 0, 230);
 
-		App->qfonts->drawText("GAME PAUSED", 242, 500);
+		//App->qfonts->drawText("GAME PAUSED", 242, 500);
 
 		break;
 	case GAMEOVER:
@@ -82,7 +82,7 @@ update_status ModuleSceneMenu::Update()
 		// --- Draw ---
 		App->renderer->Blit(gO, 0, 230);
 
-		App->qfonts->drawText("GAME OVER", 242, 500);
+		//App->qfonts->drawText("GAME OVER", 242, 500);
 		
 		break;
 	case DISABLED:

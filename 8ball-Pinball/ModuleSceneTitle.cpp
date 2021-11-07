@@ -169,7 +169,7 @@ update_status ModuleSceneTitle::Update()
 		p2List_item<int>* c = scores.getFirst();
 		if (c == NULL) {
 			strcpy_s(scorePosition, "` There is no Score registed");
-			App->qfonts->drawText(scorePosition, 50, y);
+			App->qfonts->drawText(scorePosition, 50, 400);
 		}
 		else {
 			strcpy_s(scorePosition, "´ Score from lastest Games ´");

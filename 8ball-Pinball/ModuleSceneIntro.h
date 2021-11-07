@@ -92,6 +92,9 @@ public:
 	// Ball
 	SDL_Texture* ball;
 
+	// Lives
+	SDL_Texture* liveTexture;
+
 	// Spring
 	SDL_Texture* spring;
 	SDL_Texture* springBase;
@@ -129,6 +132,9 @@ public:
 
 	// Ball
 	Animation ballLightAnim;
+
+	// Lives
+	Animation livesAnim1, livesAnim2, livesAnim3;
 
 	int N;	// Ball Sprite width.
 
@@ -185,6 +191,8 @@ public:
 	int music;
 	bool lastMusic;
 	bool lastMusicLastFrame;
+
+	uint deathfx;
 
 	// Spring
 	uint springChargeFx;

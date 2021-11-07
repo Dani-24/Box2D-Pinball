@@ -59,6 +59,17 @@ bool ModuleSceneIntro::Start()
 	CreateSensors();
 	CreateBumpers();
 
+	// Lives
+
+	liveTexture = App->textures->Load("pinball/sprites/live.png");
+	for (int i = 0; i < 2; i++) {
+		livesAnim1.PushBack({ i * 30, 0, 30, 40 });
+		livesAnim2.PushBack({ i * 30, 0, 30, 40 });
+		livesAnim3.PushBack({ i * 30, 0, 30, 40 });
+	}
+	livesAnim1.loop = livesAnim2.loop = livesAnim3.loop = false;
+	livesAnim1.speed = livesAnim2.speed = livesAnim3.speed = 0.1f;
+
 	// The best sea cumber:
 
 	cumber = App->textures->Load("pinball/sprites/cumber.png");
@@ -97,6 +108,8 @@ bool ModuleSceneIntro::Start()
 	ChangeMusic();
 
 	// Fx
+
+	deathfx = App->audio->LoadFx("pinball/audio/fx/vietnam.wav");
 
 	collision1Fx = App->audio->LoadFx("pinball/audio/fx/collider1.wav");
 	collision2Fx = App->audio->LoadFx("pinball/audio/fx/collider2.wav");
@@ -228,7 +241,6 @@ update_status ModuleSceneIntro::PreUpdate()
 
 update_status ModuleSceneIntro::Update()
 {
-	LOG("Cont %d || wDialog = %d",contDialog, wDialog);
 	contDialog++;
 	if (contDialog >= 1000) {
 		contDialog = 0;
@@ -355,6 +367,7 @@ update_status ModuleSceneIntro::Update()
 				else {
 					currentDialog = &dialog6;
 					CumberFx();
+					App->audio->PlayFx(deathfx);
 				}
 			}
 		}
@@ -555,6 +568,31 @@ update_status ModuleSceneIntro::Update()
 	else {
 		lastMusic = false;
 	}
+
+	// Lives
+
+	if (lives == 3) {
+		livesAnim3.Reset();
+	}
+	if (lives == 2) {
+		livesAnim3.Update();
+		livesAnim2.Reset();
+	}
+	if (lives == 1) {
+		livesAnim2.Update();
+		livesAnim1.Reset();
+	}
+	if (lives == 0 || lives == -1) {
+		livesAnim1.Update();
+	}
+
+	SDL_Rect live1R = livesAnim1.GetCurrentFrame();
+	SDL_Rect live2R = livesAnim2.GetCurrentFrame();
+	SDL_Rect live3R = livesAnim3.GetCurrentFrame();
+
+	App->renderer->Blit(liveTexture, 30, 10, &live1R);
+	App->renderer->Blit(liveTexture, 60, 10, &live2R);
+	App->renderer->Blit(liveTexture, 90, 10, &live3R);
 
 	// --- Raycast ------------------------------------------------------
 
@@ -1098,7 +1136,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(cumber);
 
 	// Free fx:
-	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = spawnFx
+	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = spawnFx = deathfx
 	= flipperfx = bumperfx = bumperMovefx = bumperStopfx = pausefx = cumberfx1 = cumberfx2 = cumberfx3 = cumberfx4 = cumberfx5 = 0;
 
 	// Clean physics
