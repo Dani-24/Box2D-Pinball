@@ -40,7 +40,7 @@ https://github.com/Dani-24/Box2D-Pinball
 ## Link to the references:
 Game Text Font : [Project Paintball](http://fizzystack.web.fc2.com/paintball.html)
 
-Splatoon™ 2: Octo Expansion: [Link][https://www.nintendo.com/games/detail/splatoon-2-switch/]
+Splatoon™ 2: Octo Expansion: [Link](https://www.nintendo.com/games/detail/splatoon-2-switch/)
 
 ## Additional comments
 This game has been done thanks to [SDL](https://www.libsdl.org/index.php) and [Box2D](https://box2d.org/)
