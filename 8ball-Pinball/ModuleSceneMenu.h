@@ -27,13 +27,14 @@ public:
 	MenuState currentState;
 
 	// Textures
-
+	SDL_Texture* menuBg;
 
 	// Animation
 
 
 	// FX
-
+	uint gameOverFx;
+	bool playGOFx;
 
 	// Font
 

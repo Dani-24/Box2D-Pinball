@@ -477,6 +477,11 @@ update_status ModuleSceneIntro::Update()
 
 	// --- Spring ---
 
+	// Kicker platform
+	b2Vec2 posKick = springTop->body->GetPosition();
+	App->renderer->Blit(kicker, METERS_TO_PIXELS(posKick.x) - 18, METERS_TO_PIXELS(posKick.y) - 5);
+
+	// Spring
 	SDL_Rect rect1 = springAnim.GetCurrentFrame();
 	SDL_Rect rect2 = springExplosionAnim.GetCurrentFrame();
 
@@ -573,6 +578,8 @@ update_status ModuleSceneIntro::Update()
 
 	if (lives == 3) {
 		livesAnim3.Reset();
+		livesAnim2.Reset();
+		livesAnim1.Reset();
 	}
 	if (lives == 2) {
 		livesAnim3.Update();
@@ -593,6 +600,9 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(liveTexture, 30, 10, &live1R);
 	App->renderer->Blit(liveTexture, 60, 10, &live2R);
 	App->renderer->Blit(liveTexture, 90, 10, &live3R);
+
+	// Print Tunel the last to make it appear on top
+	App->renderer->Blit(tunel, 71, 231);
 
 	// --- Raycast ------------------------------------------------------
 
@@ -692,6 +702,7 @@ void ModuleSceneIntro::CreateSpring()
 	spring = App->textures->Load("pinball/sprites/fishSpring.png");
 	springBase = App->textures->Load("pinball/sprites/fishBase.png");
 	springParticles = App->textures->Load("pinball/sprites/fishSpringParticle.png");
+	kicker = App->textures->Load("pinball/sprites/background/kicker.png");
 
 	springAnim.PushBack({ 0,0,N,N });
 	springAnim.PushBack({ N,0,N,N });
@@ -737,6 +748,7 @@ void ModuleSceneIntro::CreateBG() {
 	tableroBG = App->textures->Load("pinball/sprites/background/tableroBG.png");
 	tableroNoBG = App->textures->Load("pinball/sprites/background/tableroSinBG.png");
 	tableroParticles = App->textures->Load("pinball/sprites/background/particulasBG.png");
+	tunel = App->textures->Load("pinball/sprites/background/tunel.png");
 
 	// Red effect
 	bgRed = App->textures->Load("pinball/sprites/background/bgRed.png");
@@ -830,23 +842,6 @@ void ModuleSceneIntro::CreateBG() {
 	258, 304,
 	283, 286
 	};
-	int tableroEsponja[30] = {
-	96, 446,
-	127, 415,
-	125, 413,
-	96, 443,
-	73, 420,
-	66, 410,
-	63, 402,
-	62, 397,
-	62, 377,
-	60, 377,
-	60, 397,
-	62, 407,
-	67, 416,
-	74, 424,
-	93, 443
-	};
 	int tableroInterruptoresTop[26] = {
 	266, 100,
 	182, 116,
@@ -916,31 +911,26 @@ void ModuleSceneIntro::CreateBG() {
 	456, 246,
 	488, 262
 	};
-	int tableroInicioRailes[48] = {
-	66, 308,
-	66, 214,
-	72, 214,
-	72, 224,
-	76, 234,
-	84, 241,
-	93, 242,
-	102, 241,
-	110, 234,
-	114, 224,
+	
+	int tableroRailesD[16] = {
 	115, 214,
-	121, 214,
-	121, 283,
-	147, 304,
-	146, 307,
-	141, 308,
-	117, 289,
-	103, 291,
-	89, 301,
-	82, 313,
-	103, 332,
-	102, 336,
-	97, 337,
-	68, 310
+	119, 212,
+	124, 214,
+	124, 285,
+	149, 304,
+	144, 310,
+	115, 288,
+	115, 216
+	};
+	int tableroRailesI[16] = {
+	64, 214,
+	68, 212,
+	72, 214,
+	72, 302,
+	104, 332,
+	99, 338,
+	64, 306,
+	64, 216
 	};
 
 	// BG Collider Chains Creation
@@ -948,13 +938,13 @@ void ModuleSceneIntro::CreateBG() {
 	tableroColliders[1] = App->physics->CreateSolidChain(0, 0, tableroTrianguloIz, 10);
 	tableroColliders[2] = App->physics->CreateSolidChain(0, 0, tableroTrianguloDer, 10);
 	tableroColliders[3] = App->physics->CreateSolidChain(0, 0, tableroColchonetaDer, 20);
-	tableroColliders[4] = App->physics->CreateSolidChain(0, 0, tableroEsponja, 30);
 	tableroColliders[5] = App->physics->CreateSolidChain(0, 0, tableroInterruptoresTop, 26);
 	tableroColliders[6] = App->physics->CreateSolidChain(0, 0, tableroCarrilDer, 16);
 	tableroColliders[7] = App->physics->CreateSolidChain(0, 0, tableroCarrilIz, 16);
 	tableroColliders[8] = App->physics->CreateSolidChain(0, 0, tableroBloqueDer, 24);
 	tableroColliders[9] = App->physics->CreateSolidChain(0, 0, tableroCurvaDer, 36);
-	tableroColliders[10] = App->physics->CreateSolidChain(0, 0, tableroInicioRailes, 48);
+	tableroColliders[10] = App->physics->CreateSolidChain(0, 0, tableroRailesD, 16);
+	tableroColliders[4] = App->physics->CreateSolidChain(0, 0, tableroRailesI, 16);
 
 	// Set Scroll X distance
 	scrollerBG[0] = 0;
@@ -1093,6 +1083,7 @@ bool ModuleSceneIntro::CleanUp()
 
 	pause = false;
 	lives = 3;
+	lastFrameLives = 0;
 
 	// Clean animations
 	ballLightAnim.DeleteAnim();
@@ -1139,6 +1130,8 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(dialogTexture);
 	App->textures->Unload(cumber);
 	App->textures->Unload(liveTexture);
+	App->textures->Unload(tunel);
+	App->textures->Unload(kicker);
 
 	// Free fx:
 	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = spawnFx = deathfx

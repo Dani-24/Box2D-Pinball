@@ -24,13 +24,15 @@ bool ModuleSceneMenu::Start()
 	currentState = DISABLED;
 
 	// Load Textures
-
+	menuBg = App->textures->Load("pinball/sprites/background/menuBG.png");
 
 	// Load Sprite Animations
 
 
 	// Load Audio
 
+	gameOverFx = App->audio->LoadFx("pinball/audio/fx/gameOverFx.wav");
+	playGOFx = true;
 
 	// Assign Text
 
@@ -53,13 +55,24 @@ update_status ModuleSceneMenu::Update()
 		}
 		
 		// --- Draw the stuff ---
+		App->renderer->Blit(menuBg,65,315);
 
-		//App->qfonts->drawText("GAME PAUSED", 242, 500);
+		App->qfonts->drawText("GAME PAUSED", 160, 350);
+		App->qfonts->drawText("Press Space to continue", 80, 400);
 
 		break;
 	case GAMEOVER:
 		// --- Update ---
-		App->audio->ChangeVolume(20);
+		App->audio->ChangeVolume(0);
+		if (playGOFx == true) {
+			App->audio->PlayFx(gameOverFx);
+			playGOFx = false;
+		}
+
+		App->renderer->Blit(menuBg, 50, 320);
+
+		App->qfonts->drawText("GAME OVER", 165, 350);
+		App->qfonts->drawText("Press R to play again", 82, 400);
 
 		// Reset scene
 		if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) {
@@ -82,7 +95,7 @@ update_status ModuleSceneMenu::Update()
 		break;
 	case DISABLED:
 		App->audio->ChangeVolume();
-
+		playGOFx = true;
 		// Do nothing bc this module is """""Disabled""""
 		break;
 	}
@@ -93,6 +106,7 @@ bool ModuleSceneMenu::CleanUp()
 {
 	LOG("Unloading menu scene");
 
+	gameOverFx = 0;
 
 	return true;
 }

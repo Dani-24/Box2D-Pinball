@@ -96,6 +96,7 @@ public:
 	SDL_Texture* liveTexture;
 
 	// Spring
+	SDL_Texture* kicker;
 	SDL_Texture* spring;
 	SDL_Texture* springBase;
 	SDL_Texture* springParticles;
@@ -106,6 +107,8 @@ public:
 	SDL_Texture* tableroParticles;
 	float scrollerBG[2];
 	SDL_Texture* bgRed;
+
+	SDL_Texture* tunel;
 
 	// Bounce Pads
 	SDL_Texture* bouncePad;
