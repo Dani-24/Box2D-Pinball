@@ -66,15 +66,13 @@ bool ModuleSceneTitle::Start()
 	metroMoving = false;
 
 	// Load Audio
-
+	App->audio->ChangeVolume();
 	App->audio->PlayMusic("pinball/audio/music_title.ogg", 0.5f);
 
 	scorefx = App->audio->LoadFx("pinball/audio/fx/openScore.wav");
-
 	acceptfx = App->audio->LoadFx("pinball/audio/fx/fxAccept.wav");
 	backfx = App->audio->LoadFx("pinball/audio/fx/fxBack.wav");
 	selectfx = App->audio->LoadFx("pinball/audio/fx/fxSelect.wav");
-
 	metroFx = App->audio->LoadFx("pinball/audio/fx/metroFx.wav");
 
 	// Fonts

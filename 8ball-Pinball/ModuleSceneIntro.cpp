@@ -44,6 +44,7 @@ bool ModuleSceneIntro::Start()
 	// ppl variables
 	score = 0;
 	lives = 3;
+	lastMusic = false;
 
 	// --- Set camera position ---
 	App->renderer->camera.x = App->renderer->camera.y = 0;
@@ -58,22 +59,7 @@ bool ModuleSceneIntro::Start()
 
 	// --- Load Audio ---
 
-	// Randomize Music
-	srand(SDL_GetTicks());
-	music = rand() % 3;
-
-	switch (music)
-	{
-	case 0:
-		App->audio->PlayMusic("pinball/audio/music_#8_Regret.ogg");
-		break;
-	case 1:
-		App->audio->PlayMusic("pinball/audio/music_#9_Party.ogg");
-		break;
-	case 2:
-		App->audio->PlayMusic("pinball/audio/music_#11_Above.ogg");
-		break;
-	}
+	ChangeMusic();
 
 	// Fx
 
@@ -90,6 +76,13 @@ bool ModuleSceneIntro::Start()
 	ptsFx3 = App->audio->LoadFx("pinball/audio/fx/pts3.wav");
 
 	bounceFx = App->audio->LoadFx("pinball/audio/fx/bouncePad.wav");
+	
+	bumperfx = App->audio->LoadFx("pinball/audio/fx/bumper.wav");
+	bumperMovefx = App->audio->LoadFx("pinball/audio/fx/bounceMove.wav");
+	bumperStopfx = App->audio->LoadFx("pinball/audio/fx/bounceStop.wav");
+	pausefx = App->audio->LoadFx("pinball/audio/fx/pause.wav");
+	flipperfx = App->audio->LoadFx("pinball/audio/fx/flipper.wav");
+
 	// Fonts
 	App->qfonts->Init();
 
@@ -99,9 +92,36 @@ bool ModuleSceneIntro::Start()
 	return ret;
 }
 
+void ModuleSceneIntro::ChangeMusic() {
+	if (lastMusic == true) {
+		App->audio->PlayMusic("pinball/audio/music_#16_Salty.ogg", 0.0f);
+	}
+	else {
+		// Randomize Music
+		srand(SDL_GetTicks());
+		music = rand() % 3;
+
+		switch (music)
+		{
+		case 0:
+			App->audio->PlayMusic("pinball/audio/music_#8_Regret.ogg", 0.0f);
+			break;
+		case 1:
+			App->audio->PlayMusic("pinball/audio/music_#9_Party.ogg", 0.0f);
+			break;
+		case 2:
+			App->audio->PlayMusic("pinball/audio/music_#11_Above.ogg", 0.0f);
+			break;
+		}
+	}
+}
+
 void ModuleSceneIntro::PauseGame() {
-	pause = true;
-	App->scene_menu->currentState = PAUSE;
+	if (pause != true) {
+		pause = true;
+		App->scene_menu->currentState = PAUSE;
+		App->audio->PlayFx(pausefx);
+	}
 }
 
 void ModuleSceneIntro::UnPauseGame() {
@@ -126,18 +146,23 @@ update_status ModuleSceneIntro::PreUpdate()
 		pause = true;
 		// Lives = -1 , idk why but if i let lives in 0 even disabling this module this if sends another Gameover to the scene menu and kboom
 		lives = -1;
-
 	}
 	if (lives == -1) {
-		// This should be in lives==0 if but since i have to put lives=-1 this shit go there or it doesn't Update()
+		// This should be in lives == 0 if but since i have to put lives=-1 this shit go there or it doesn't Update()
 		if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_UP) {
 			// "Save" score if exit 
 			App->scene_title->scores.add(App->scene_intro->score);
 			LOG("Saving Score %d", App->scene_intro->score);
 			// Fade
-			App->fade->FadeToBlack(this, (Module*)App->scene_title, 60);
+			App->fade->FadeToBlack(this, (Module*)App->scene_title, 1);
 			App->scene_menu->currentState = DISABLED;
 		}
+	}
+	if (lives == 1) {
+		lastMusic = true;
+	}
+	else {
+		lastMusic = false;
 	}
 
 	return UPDATE_CONTINUE;
@@ -154,6 +179,7 @@ update_status ModuleSceneIntro::Update()
 		}
 		else if (bumperTopY > 190 && dir == false) {
 			bumperTopY -= bumperVel;
+
 		}
 		else {
 			count++;
@@ -195,6 +221,9 @@ update_status ModuleSceneIntro::Update()
 		}
 
 		// --- Flippers ---
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN) {
+			App->audio->PlayFx(flipperfx);
+		}
 		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 			flipperLeft->body->ApplyForceToCenter(b2Vec2(0, flipperforce), 1);
 		}
@@ -211,6 +240,12 @@ update_status ModuleSceneIntro::Update()
 
 			// If Box2D detects a collision with this last generated circle, it will automatically callback the function ModulePhysics::BeginContact()
 			balls.getLast()->data->listener = this;
+		}
+
+		// DEBUG ##############################################################################################
+		if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN){
+			lives++;
+			LOG("Lives = %d",lives);
 		}
 
 		// --- Bounce Pads ---
@@ -266,6 +301,15 @@ update_status ModuleSceneIntro::Update()
 				pd4_time++;
 			}
 		}
+
+		// Animate bumper:
+		bumperAnim.Update();
+
+		// Music changer if lives = 1 or then change :
+		if (lastMusicLastFrame != lastMusic) {
+			ChangeMusic();
+		}
+		lastMusicLastFrame = lastMusic;
 	}
 
 	// --------------------------- All draw functions -------------------------------------
@@ -338,6 +382,10 @@ update_status ModuleSceneIntro::Update()
 
 	App->renderer->Blit(flipper, 155, 695, NULL, 0, RADTODEG* (flipperLeftAngle), 0, 5);
 	App->renderer->Blit(flipper2, 240, 695, NULL, 0, RADTODEG* (flipperRightAngle), 52, 5);
+
+	// Bumper
+	SDL_Rect bumpRect = bumperAnim.GetCurrentFrame();
+	App->renderer->Blit(bumperTexture, bumperTopX-20, bumperTopY-20, &bumpRect);
 
 	// --- Fonts ---
 
@@ -832,6 +880,14 @@ void ModuleSceneIntro::CreateBumpers() {
 	bumperTopX = 375;
 	bumperTopY = 190;
 	bumperTop = App->physics->CreateCircularBumper(bumperTopX, bumperTopY, 20);
+
+	bumperTexture = App->textures->Load("pinball/sprites/bumper.png");
+
+	bumperAnim.PushBack({0, 0, 40, 40});
+	bumperAnim.PushBack({ 40, 0, 40, 40 });
+	bumperAnim.speed = 0.005f;
+	bumperAnim.loop = true;
+
 }
 
 bool ModuleSceneIntro::CleanUp()
@@ -862,9 +918,10 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(bouncePadB);
 	App->textures->Unload(flipper);
 	App->textures->Unload(flipper2);
+	App->textures->Unload(bumperTexture);
 
 	// Clean fx:
-	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = 0;
+	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = flipperfx = bumperfx = bumperMovefx = bumperStopfx = pausefx = 0;
 
 	// Clean physics
 

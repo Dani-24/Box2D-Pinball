@@ -531,6 +531,7 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		// Bumpers
 		if (physA == App->scene_intro->bumperTop && physB == c->data) {
 			App->scene_intro->score += 500;
+			App->audio->PlayFx(App->scene_intro->bumperfx);
 		}
 
 		// Losing a ball

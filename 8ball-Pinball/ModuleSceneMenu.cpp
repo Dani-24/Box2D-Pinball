@@ -45,6 +45,8 @@ update_status ModuleSceneMenu::Update()
 	{
 	case PAUSE:
 		// --- DO stuff ---
+		App->audio->ChangeVolume(10);
+
 		// unpause
 		if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) {
 			App->scene_intro->UnPauseGame();
@@ -57,7 +59,7 @@ update_status ModuleSceneMenu::Update()
 		break;
 	case GAMEOVER:
 		// --- Update ---
-
+		App->audio->ChangeVolume(20);
 		// Reset scene
 		if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN) {
 			LOG("Reset scene");
@@ -78,6 +80,8 @@ update_status ModuleSceneMenu::Update()
 		
 		break;
 	case DISABLED:
+		App->audio->ChangeVolume();
+
 		// Do nothing bc this module is """""Disabled""""
 		break;
 	}

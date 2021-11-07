@@ -36,6 +36,8 @@ public:
 	void PlayPtsFx();
 	void insertTextBcVisualBug();
 
+	void ChangeMusic();
+
 public:
 
 	// -------- HUD -----------------------------
@@ -109,6 +111,9 @@ public:
 	SDL_Texture* flipper;
 	SDL_Texture* flipper2;
 
+	// Bumper
+	SDL_Texture* bumperTexture;
+
 	// Fonts
 	char textScore[100];
 
@@ -126,6 +131,10 @@ public:
 	Animation springExplosionAnim;
 
 	bool expl = false;
+
+	// Bumper
+
+	Animation bumperAnim;
 
 	// BouncePads
 
@@ -149,7 +158,16 @@ public:
 	uint ptsFx3;
 	uint bounceFx;
 
+	uint bumperfx;
+	uint bumperMovefx;
+	uint bumperStopfx;
+
+	uint pausefx;
+	uint flipperfx;
+
 	int music;
+	bool lastMusic;
+	bool lastMusicLastFrame;
 
 	// Spring
 	uint springChargeFx;
