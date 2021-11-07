@@ -17,8 +17,9 @@
 ### Debug Mode:
 
     - F1: Toggle Debug Mode (Also show colliders)
-    - 1: Generate a ball at mouse position
     - Mouse: Left click to grab a physic object and move it (if the object is not static)
+    - 1: Generate a ball at mouse position (doesn't take live if lost)
+    - 2: Get a life
 
 ## Game Description:
 
