@@ -10,7 +10,7 @@
     - A / Left Arrow: Left flipper.
     - D / Right Arrow: Right flipper.
     - S / Down Arrow: Kicker.
-    - Enter: Continue.
+    - Space: Continue.
     - P (While playing): Pause.
     - R (When Gameover): Restart.
 
