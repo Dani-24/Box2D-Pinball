@@ -231,6 +231,8 @@ update_status ModuleSceneIntro::Update()
 		}
 
 		// --- Ball Generator ---
+
+		// DEBUG ###################
 		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 		{
 			LOG("Creating 8ball at: X = %d Y = %d", App->input->GetMouseX(), App->input->GetMouseY());
@@ -239,7 +241,18 @@ update_status ModuleSceneIntro::Update()
 
 			// If Box2D detects a collision with this last generated circle, it will automatically callback the function ModulePhysics::BeginContact()
 			balls.getLast()->data->listener = this;
+			balls.getLast()->extraBall = true;
 		}
+
+		LOG("Lives = %d", lives);
+
+		if (lastFrameLives != lives) {
+			
+			LOG("Creating 8ball at kicker")
+			balls.add(App->physics->CreateCircle(510, 650, N / 2));
+			balls.getLast()->data->listener = this;
+		}
+		lastFrameLives = lives;
 
 		// DEBUG ##############################################################################################
 		if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN){
@@ -556,6 +569,15 @@ void ModuleSceneIntro::CreateBG() {
 	tableroParticles = App->textures->Load("pinball/sprites/background/particulasBG.png");
 
 	// BG Collider Chains
+
+	int cuenco[10] = {
+		-50, 0,
+		-50, 400,
+		-100, 400,
+		-150, 400,
+		-150, 0
+	};
+
 	int tableroExterno[96] = {
 	492, 760,
 	531, 760,
@@ -758,6 +780,8 @@ void ModuleSceneIntro::CreateBG() {
 	tableroColliders[9] = App->physics->CreateSolidChain(0, 0, tableroCurvaDer, 36);
 	tableroColliders[10] = App->physics->CreateSolidChain(0, 0, tableroInicioRailes, 48);
 
+	cuencoSolid = App->physics->CreateSolidChain(0, 0, cuenco, 10);
+
 	// Set Scroll X distance
 	scrollerBG[0] = 0;
 	scrollerBG[1] = 552;
@@ -871,7 +895,7 @@ void ModuleSceneIntro::CreateSensors() {
 	// --- Sensors that just do what a sensor do ---
 
 	// Losing a ball sensor
-	loseSensor = App->physics->CreateRectangleSensor(223, 820, 100, 100);
+	loseSensor = App->physics->CreateRectangleSensor(223, 900, 100, 100);
 
 }
 
@@ -949,6 +973,8 @@ bool ModuleSceneIntro::CleanUp()
 	App->physics->world->DestroyBody(leftPlat->body);
 	App->physics->world->DestroyBody(rightPlat->body);
 	App->physics->world->DestroyBody(bumperTop->body);
+
+	App->physics->world->DestroyBody(cuencoSolid->body);
 
 	App->qfonts->UnloadFont();
 	App->physics->Disable();

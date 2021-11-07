@@ -43,6 +43,7 @@ public:
 
 	int score;
 	int lives;
+	int lastFrameLives;
 	bool pause;
 	int lastFrameScore;
 
@@ -50,6 +51,7 @@ public:
 	p2List<PhysBody*> balls;
 
 	PhysBody* tableroColliders[11];
+	PhysBody* cuencoSolid;
 
 	// Spring
 	PhysBody* springTop;

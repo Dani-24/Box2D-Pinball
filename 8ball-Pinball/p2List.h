@@ -12,6 +12,7 @@ struct p2List_item
 	tdata                 data;
 	p2List_item<tdata>*   next;
 	p2List_item<tdata>*   prev;
+	bool extraBall;
 
 	inline p2List_item(const tdata& _data)
 	{

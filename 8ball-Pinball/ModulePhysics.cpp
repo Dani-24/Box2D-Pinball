@@ -537,10 +537,11 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		// Losing a ball
 		if (physA == App->scene_intro->loseSensor && physB == c->data) {
 			// Delete the ball and -1 live
+			if (c->extraBall != true) {
+				App->scene_intro->lives -= 1;
+			}
 
-			App->scene_intro->lives -= 1;
 		}
-
 		// Next ball, plz
 		c = c->next;
 	}
