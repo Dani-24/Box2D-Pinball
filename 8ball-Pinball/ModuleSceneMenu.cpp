@@ -63,7 +63,7 @@ update_status ModuleSceneMenu::Update()
 		break;
 	case GAMEOVER:
 		// --- Update ---
-		App->audio->ChangeVolume(0);
+		App->audio->ChangeVolume(10);
 		if (playGOFx == true) {
 			App->audio->PlayFx(gameOverFx);
 			playGOFx = false;

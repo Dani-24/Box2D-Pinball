@@ -37,6 +37,11 @@ public:
 
 	SDL_Texture* metro;
 
+	SDL_Texture* scrollerTexture;
+	float scroller[2];
+
+	float partScroll[2];
+
 	// Animation
 	Animation octoAnim;
 	Animation metroAnim;

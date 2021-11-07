@@ -26,6 +26,11 @@ bool ModuleSceneTitle::Start()
 
 	currentState = MENU;
 
+	scroller[0] = 0;
+	scroller[1] = -1500;
+	partScroll[0] = 0;
+	partScroll[1] = 552;
+
 	// Load Textures
 
 	bg = App->textures->Load("pinball/sprites/background/tableroBG.png");
@@ -37,6 +42,7 @@ bool ModuleSceneTitle::Start()
 	cursorY = 425;
 
 	metro = App->textures->Load("pinball/sprites/metro.png");
+	scrollerTexture = App->textures->Load("pinball/sprites/background/bgScroller.png");
 
 	// Load Sprite Animations
 
@@ -90,7 +96,23 @@ update_status ModuleSceneTitle::Update()
 {
 	// Print BG
 	App->renderer->Blit(bg, 0, 0);
-	App->renderer->Blit(bgPart, 0, 0);
+
+	// BG particle Scrolling:
+	for (int i = 0; i < 2; i++) {
+		partScroll[i] -= 0.3f;
+		if (partScroll[i] < -552) {
+			partScroll[i] = 552;
+		}
+		App->renderer->Blit(bgPart, partScroll[i], 0);
+	}
+	// BG Scrolling:
+	for (int i = 0; i < 2; i++) {
+		scroller[i] += 0.4f;
+		if (scroller[i] > 1500) {
+			scroller[i] = -1500;
+		}
+		App->renderer->Blit(scrollerTexture, scroller[i], 0);
+	}
 
 	switch (currentState)
 	{
@@ -247,6 +269,7 @@ bool ModuleSceneTitle::CleanUp()
 	App->textures->Unload(bgPart);
 	App->textures->Unload(cursor);
 	App->textures->Unload(metro);
+	App->textures->Unload(scrollerTexture);
 
 	octoling = bg = bgPart = cursor = nullptr;
 	octoAnim.DeleteAnim();
