@@ -119,6 +119,7 @@ public:
 	char textScore[100];
 
 	// Cumber
+	SDL_Texture* cumber;
 	SDL_Texture* dialogTexture;
 
 	// -------- Animation --------
@@ -150,6 +151,7 @@ public:
 	bool pd1 = false, pd2 = false, pd3 = false, pd4 = false;
 
 	// CqCumber
+	Animation cumberAnim;
 	Animation* currentDialog;
 
 	Animation dialog1, dialog2, dialog3, dialog4, dialog5, dialog6, dialog7, dialog8, dialog9, dialog10, dialog11, dialog12;
@@ -157,7 +159,6 @@ public:
 	int contDialog;
 	bool gameInit;
 	int wDialog = 0;
-
 
 	// -------- FX --------
 	uint collision1Fx;

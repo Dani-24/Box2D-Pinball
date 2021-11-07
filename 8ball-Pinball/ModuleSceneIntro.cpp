@@ -61,6 +61,18 @@ bool ModuleSceneIntro::Start()
 
 	// The best sea cumber:
 
+	cumber = App->textures->Load("pinball/sprites/cumber.png");
+	for (int i = 0; i < 30; i++) {
+		if (i < 5) {
+			cumberAnim.PushBack({0, i*56 , 110 , 56});
+		}
+		else {
+			cumberAnim.PushBack({ 0, 0 , 110 , 56 });
+		}
+	}
+	cumberAnim.loop = true;
+	cumberAnim.speed = 0.2f;
+
 	dialogTexture = App->textures->Load("pinball/sprites/cumberText.png");
 	contDialog = 0;
 
@@ -521,6 +533,10 @@ update_status ModuleSceneIntro::Update()
 	// Dialogs
 	SDL_Rect diaRect = currentDialog->GetCurrentFrame();
 	App->renderer->Blit(dialogTexture, 283 , 8, &diaRect);
+
+	cumberAnim.Update();
+	SDL_Rect cumRect = cumberAnim.GetCurrentFrame();
+	App->renderer->Blit(cumber, 440, 4, &cumRect);
 
 	// """Camera filter""" and changing music ---
 	if (lives == 1) {
@@ -1050,6 +1066,7 @@ bool ModuleSceneIntro::CleanUp()
 	bounceAnimB2.DeleteAnim();
 	redBgAnim.DeleteAnim();
 
+	cumberAnim.DeleteAnim();
 	dialog1.DeleteAnim();
 	dialog2.DeleteAnim();
 	dialog3.DeleteAnim();
@@ -1078,6 +1095,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(bumperTexture);
 	App->textures->Unload(bgRed);
 	App->textures->Unload(dialogTexture);
+	App->textures->Unload(cumber);
 
 	// Free fx:
 	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = spawnFx
