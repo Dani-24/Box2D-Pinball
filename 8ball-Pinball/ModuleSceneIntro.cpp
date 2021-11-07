@@ -157,12 +157,6 @@ update_status ModuleSceneIntro::PreUpdate()
 			App->scene_menu->currentState = DISABLED;
 		}
 	}
-	if (lives == 1) {
-		lastMusic = true;
-	}
-	else {
-		lastMusic = false;
-	}
 
 	return UPDATE_CONTINUE;
 }
@@ -424,6 +418,17 @@ update_status ModuleSceneIntro::Update()
 		App->qfonts->drawText(char_type, 150, 15);
 	}
 
+	// """Camera filter""" and changing music ---
+	if (lives == 1) {
+		lastMusic = true;
+		redBgAnim.Update();
+		SDL_Rect redRect = redBgAnim.GetCurrentFrame();
+		App->renderer->Blit(bgRed, 0, 0, &redRect);
+	}
+	else {
+		lastMusic = false;
+	}
+
 	// --- Raycast ------------------------------------------------------
 
 	// The target point of the raycast is the mouse current position (will change over game time)
@@ -568,15 +573,21 @@ void ModuleSceneIntro::CreateBG() {
 	tableroNoBG = App->textures->Load("pinball/sprites/background/tableroSinBG.png");
 	tableroParticles = App->textures->Load("pinball/sprites/background/particulasBG.png");
 
-	// BG Collider Chains
+	// Red effect
+	bgRed = App->textures->Load("pinball/sprites/background/bgRed.png");
 
-	int cuenco[10] = {
-		-50, 0,
-		-50, 400,
-		-100, 400,
-		-150, 400,
-		-150, 0
-	};
+	for (int i = 0; i < 50; i++) {
+		if (i < 9) {
+			redBgAnim.PushBack({ i * 552, 0, 552, 768 });
+		}
+		else {
+			redBgAnim.PushBack({ 0, 0, 0, 0 });
+		}
+	}
+	redBgAnim.loop = true;
+	redBgAnim.speed = 0.4f;
+
+	// BG Collider Chains
 
 	int tableroExterno[96] = {
 	492, 760,
@@ -780,8 +791,6 @@ void ModuleSceneIntro::CreateBG() {
 	tableroColliders[9] = App->physics->CreateSolidChain(0, 0, tableroCurvaDer, 36);
 	tableroColliders[10] = App->physics->CreateSolidChain(0, 0, tableroInicioRailes, 48);
 
-	cuencoSolid = App->physics->CreateSolidChain(0, 0, cuenco, 10);
-
 	// Set Scroll X distance
 	scrollerBG[0] = 0;
 	scrollerBG[1] = 552;
@@ -928,6 +937,7 @@ bool ModuleSceneIntro::CleanUp()
 	bounceAnim2.DeleteAnim();
 	bounceAnimB.DeleteAnim();
 	bounceAnimB2.DeleteAnim();
+	redBgAnim.DeleteAnim();
 
 	// Clean Textures
 	App->textures->Unload(ball);
@@ -942,6 +952,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(flipper);
 	App->textures->Unload(flipper2);
 	App->textures->Unload(bumperTexture);
+	App->textures->Unload(bgRed);
 
 	// Clean fx:
 	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = flipperfx = bumperfx = bumperMovefx = bumperStopfx = pausefx = 0;
@@ -973,8 +984,6 @@ bool ModuleSceneIntro::CleanUp()
 	App->physics->world->DestroyBody(leftPlat->body);
 	App->physics->world->DestroyBody(rightPlat->body);
 	App->physics->world->DestroyBody(bumperTop->body);
-
-	App->physics->world->DestroyBody(cuencoSolid->body);
 
 	App->qfonts->UnloadFont();
 	App->physics->Disable();

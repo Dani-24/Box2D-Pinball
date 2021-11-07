@@ -101,8 +101,8 @@ public:
 	SDL_Texture* tableroBG;
 	SDL_Texture* tableroNoBG;
 	SDL_Texture* tableroParticles;
-
 	float scrollerBG[2];
+	SDL_Texture* bgRed;
 
 	// Bounce Pads
 	SDL_Texture* bouncePad;
@@ -121,6 +121,9 @@ public:
 	p2List<char[100]> textDialogs;
 
 	// -------- Animation --------
+
+	// BG
+	Animation redBgAnim;
 
 	// Ball
 	Animation ballLightAnim;

@@ -34,7 +34,7 @@ bool ModuleSceneTitle::Start()
 	octoling = App->textures->Load("pinball/sprites/octoling.png");
 	cursor = App->textures->Load("pinball/sprites/cursor.png");
 	cursorX = 350;
-	cursorY = 500;
+	cursorY = 425;
 
 	metro = App->textures->Load("pinball/sprites/metro.png");
 
@@ -81,10 +81,6 @@ bool ModuleSceneTitle::Start()
 
 	App->qfonts->LoadFont("pinball/font/Paintball.ttf");
 
-	strcpy_s(textPlay, "Play");
-	strcpy_s(textSettings, "Github");
-	strcpy_s(textScores, "Scores");
-
 	strcpy_s(githubLink, "https://github.com/Dani-24/Box2D-Pinball");
 
 	return true;
@@ -107,29 +103,29 @@ update_status ModuleSceneTitle::Update()
 				cursorY += 75;
 				App->audio->PlayFx(selectfx);
 			}
-			if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN && cursorY != 500) {
+			if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN && cursorY != 425) {
 				cursorY -= 75;
 				App->audio->PlayFx(selectfx);
 			}
 
 			// State and Scene management
-			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 650) {
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 575) {
 				App->audio->PlayFx(acceptfx);
 				// Open Website
 				LOG("Opening Link : %s", githubLink);
 				SDL_OpenURL(githubLink);
 			}
-			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 575) {
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 500) {
 				currentState = SCORES;
 				App->audio->PlayFx(scorefx);
 			}
-			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 500) {
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 425) {
 				metroMoving = true;
 				App->audio->PlayFx(metroFx);
 				App->audio->PlayFx(acceptfx);
 				App->fade->FadeToBlack(this, (Module*)App->scene_intro, 102);
 			}
-			if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN) {
+			if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 650) {
 				App->audio->PlayFx(backfx);
 				return UPDATE_STOP;
 			}
@@ -140,9 +136,10 @@ update_status ModuleSceneTitle::Update()
 		App->renderer->Blit(cursor, cursorX, cursorY);
 
 		// Fonts
-		App->qfonts->drawText(textPlay, 242, 500);
-		App->qfonts->drawText(textScores, 225, 575);
-		App->qfonts->drawText(textSettings, 225, 650);
+		App->qfonts->drawText("Play", 242, 425);
+		App->qfonts->drawText("Scores", 225, 500);
+		App->qfonts->drawText("Github", 225, 575);
+		App->qfonts->drawText("Exit", 242, 650);
 
 		break;
 	case SCORES:
@@ -261,9 +258,6 @@ bool ModuleSceneTitle::CleanUp()
 	App->qfonts->UnloadFont();
 	App->qfonts->CleanUp();
 
-	for (int i = 0; i < 10; i++) {
-		textPlay[i] = textSettings[i] = textScores[i] = NULL;
-	}
 	for (int j = 0; j < 100; j++) {
 		githubLink[j] = scorePosition[j] = NULL;
 	}

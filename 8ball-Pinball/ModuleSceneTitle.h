@@ -54,12 +54,6 @@ public:
 	int increase = 0;
 
 	// Font
-	char textPlay[10];
-	
-	char textSettings[10];
-
-	char textScores[10];
-
 	char githubLink[100];
 
 	char scorePosition[100];
