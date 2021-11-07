@@ -25,8 +25,6 @@ bool ModuleSceneMenu::Start()
 
 	// Load Textures
 
-	prueba = App->textures->Load("pinball/sprites/octoling.png");
-	gO = App->textures->Load("pinball/sprites/cursor.png");
 
 	// Load Sprite Animations
 
@@ -45,7 +43,7 @@ update_status ModuleSceneMenu::Update()
 	{
 	case PAUSE:
 		// --- DO stuff ---
-		App->audio->ChangeVolume(10);
+		App->audio->ChangeVolume(20);
 
 
 		// unpause
@@ -55,7 +53,6 @@ update_status ModuleSceneMenu::Update()
 		}
 		
 		// --- Draw the stuff ---
-		App->renderer->Blit(prueba, 0, 230);
 
 		//App->qfonts->drawText("GAME PAUSED", 242, 500);
 
@@ -80,9 +77,7 @@ update_status ModuleSceneMenu::Update()
 		}
 
 		// --- Draw ---
-		App->renderer->Blit(gO, 0, 230);
 
-		//App->qfonts->drawText("GAME OVER", 242, 500);
 		
 		break;
 	case DISABLED:
@@ -98,8 +93,6 @@ bool ModuleSceneMenu::CleanUp()
 {
 	LOG("Unloading menu scene");
 
-	App->textures->Unload(prueba);
-	App->textures->Unload(gO);
 
 	return true;
 }

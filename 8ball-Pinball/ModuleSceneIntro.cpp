@@ -1118,6 +1118,10 @@ bool ModuleSceneIntro::CleanUp()
 	dialog11.DeleteAnim();
 	dialog12.DeleteAnim();
 
+	livesAnim1.DeleteAnim();
+	livesAnim2.DeleteAnim();
+	livesAnim3.DeleteAnim();
+
 	// Clean Textures
 	App->textures->Unload(ball);
 	App->textures->Unload(spring);
@@ -1134,6 +1138,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(bgRed);
 	App->textures->Unload(dialogTexture);
 	App->textures->Unload(cumber);
+	App->textures->Unload(liveTexture);
 
 	// Free fx:
 	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = spawnFx = deathfx

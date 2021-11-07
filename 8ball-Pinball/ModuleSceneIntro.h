@@ -182,7 +182,7 @@ public:
 	uint bounceFx;
 
 	uint bumperfx;
-	uint bumperMovefx;
+	uint bumperMovefx; // Not used bc i don't have more time
 	uint bumperStopfx;
 
 	uint pausefx;

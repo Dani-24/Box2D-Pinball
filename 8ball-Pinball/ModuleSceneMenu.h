@@ -28,9 +28,6 @@ public:
 
 	// Textures
 
-	SDL_Texture* prueba;
-
-	SDL_Texture* gO;
 
 	// Animation
 
