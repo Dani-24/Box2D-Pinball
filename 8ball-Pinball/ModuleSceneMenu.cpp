@@ -65,7 +65,7 @@ update_status ModuleSceneMenu::Update()
 		// --- Update ---
 		App->audio->ChangeVolume(10);
 		if (playGOFx == true) {
-			App->audio->PlayFx(gameOverFx);
+			//App->audio->PlayFx(gameOverFx);	// it doesn't fit there without animations :c
 			playGOFx = false;
 		}
 

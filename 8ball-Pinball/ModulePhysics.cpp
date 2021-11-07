@@ -492,12 +492,12 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		// Side Kickers
 		if (physA == App->scene_intro->rightSideKicker && physB == c->data) {
 			c->data->body->ApplyForceToCenter(b2Vec2(0, -500), 1);
-
+			App->audio->PlayFx(App->scene_intro->sideKickerFx);
 			App->scene_intro->score += 50;
 		}
 		if (physA == App->scene_intro->leftSideKicker && physB == c->data) {
 			c->data->body->ApplyForceToCenter(b2Vec2(0, -500), 1);
-
+			App->audio->PlayFx(App->scene_intro->sideKickerFx);
 			App->scene_intro->score += 50;
 		}
 

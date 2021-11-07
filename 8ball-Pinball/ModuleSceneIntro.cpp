@@ -525,6 +525,11 @@ update_status ModuleSceneIntro::Update()
 
 	App->renderer->Blit(bumperTexture, bumperMidX-20, bumperMidY-20, &bumpRect);
 
+	// Side kickers
+
+	App->renderer->Blit(sideKicker, 26, 720);
+	App->renderer->Blit(sideKicker, 388, 720);
+
 	// --- Fonts ---
 
 	// Score int -> const char*
@@ -1012,6 +1017,10 @@ void ModuleSceneIntro::CreateSensors() {
 	rightSideKicker = App->physics->CreateRectangleSensor(42, 755, 40, 10);
 	leftSideKicker = App->physics->CreateRectangleSensor(404, 755, 40, 10);
 
+	sideKicker = App->textures->Load("pinball/sprites/sideKicker.png");
+
+	sideKickerFx = App->audio->LoadFx("pinball/audio/fx/sideKick.wav");
+
 	// Pads
 	leftPad = App->physics->CreateRectangleSensor(0, 0, 34, 5);
 	rightPad = App->physics->CreateRectangleSensor(0, 0, 34, 5);
@@ -1139,9 +1148,10 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(liveTexture);
 	App->textures->Unload(tunel);
 	App->textures->Unload(kicker);
+	App->textures->Unload(sideKicker);
 
 	// Free fx:
-	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = spawnFx = deathfx
+	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = spawnFx = deathfx = sideKickerFx
 	= flipperfx = bumperfx = bumperMovefx = bumperStopfx = pausefx = cumberfx1 = cumberfx2 = cumberfx3 = cumberfx4 = cumberfx5 = 0;
 
 	// Clean physics

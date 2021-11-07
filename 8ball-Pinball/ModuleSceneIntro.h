@@ -125,6 +125,9 @@ public:
 	// Bumper
 	SDL_Texture* bumperTexture;
 
+	// Side kickers
+	SDL_Texture* sideKicker;
+
 	// Fonts
 	char textScore[100];
 
@@ -180,7 +183,7 @@ public:
 	uint collision4Fx;
 	uint collision5Fx;
 	uint spawnFx;
-
+	uint sideKickerFx;
 	uint kickerInitFx;
 	uint kickerBurstFx;
 
