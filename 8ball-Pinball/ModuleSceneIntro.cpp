@@ -523,6 +523,8 @@ update_status ModuleSceneIntro::Update()
 	SDL_Rect bumpRect = bumperAnim.GetCurrentFrame();
 	App->renderer->Blit(bumperTexture, bumperTopX-20, bumperTopY-20, &bumpRect);
 
+	App->renderer->Blit(bumperTexture, bumperMidX-20, bumperMidY-20, &bumpRect);
+
 	// --- Fonts ---
 
 	// Score int -> const char*
@@ -959,7 +961,7 @@ void ModuleSceneIntro::CreateFlippers() {
 	int x2 = 295;
 	int y2 = 700;
 
-	int w = 52;
+	int w = 51;
 	int h = 10;
 
 	// --- Left flipper ---
@@ -1064,17 +1066,22 @@ void ModuleSceneIntro::CreateSensors() {
 }
 
 void ModuleSceneIntro::CreateBumpers() {
+	// Top bumper
 	bumperTopX = 375;
 	bumperTopY = 190;
 	bumperTop = App->physics->CreateCircularBumper(bumperTopX, bumperTopY, 20);
 
+	// Animation and texture
 	bumperTexture = App->textures->Load("pinball/sprites/bumper.png");
-
 	bumperAnim.PushBack({0, 0, 40, 40});
 	bumperAnim.PushBack({ 40, 0, 40, 40 });
 	bumperAnim.speed = 0.005f;
 	bumperAnim.loop = true;
 
+	// Mid bumper
+	bumperMidX = 90;
+	bumperMidY = 415;
+	bumperMid = App->physics->CreateCircularBumper(bumperMidX, bumperMidY, 20);
 }
 
 bool ModuleSceneIntro::CleanUp()
@@ -1164,6 +1171,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->physics->world->DestroyBody(leftPlat->body);
 	App->physics->world->DestroyBody(rightPlat->body);
 	App->physics->world->DestroyBody(bumperTop->body);
+	App->physics->world->DestroyBody(bumperMid->body);
 
 	App->qfonts->UnloadFont();
 	App->physics->Disable();

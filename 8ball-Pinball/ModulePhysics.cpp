@@ -533,6 +533,10 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 			App->scene_intro->score += 500;
 			App->audio->PlayFx(App->scene_intro->bumperfx);
 		}
+		if (physA == App->scene_intro->bumperMid && physB == c->data) {
+			App->scene_intro->score += 500;
+			App->audio->PlayFx(App->scene_intro->bumperfx);
+		}
 
 		// Losing a ball
 		if (physA == App->scene_intro->loseSensor && physB == c->data) {

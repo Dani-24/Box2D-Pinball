@@ -79,9 +79,13 @@ public:
 
 	// Bumpers
 	PhysBody* bumperTop;
+	PhysBody* bumperMid;
 
 	float bumperTopX;
 	float bumperTopY;
+	float bumperMidX;
+	float bumperMidY;
+
 	int count;
 	bool dir;
 
