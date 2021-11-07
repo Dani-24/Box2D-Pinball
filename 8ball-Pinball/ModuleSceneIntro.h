@@ -36,6 +36,7 @@ public:
 	void PlayPtsFx();
 
 	void ChangeMusic();
+	void CumberFx();
 
 public:
 
@@ -51,7 +52,6 @@ public:
 	p2List<PhysBody*> balls;
 
 	PhysBody* tableroColliders[11];
-	PhysBody* cuencoSolid;
 
 	// Spring
 	PhysBody* springTop;
@@ -118,7 +118,8 @@ public:
 	// Fonts
 	char textScore[100];
 
-	p2List<char[100]> textDialogs;
+	// Cumber
+	SDL_Texture* dialogTexture;
 
 	// -------- Animation --------
 
@@ -148,12 +149,23 @@ public:
 	Animation bounceAnimB2;
 	bool pd1 = false, pd2 = false, pd3 = false, pd4 = false;
 
+	// CqCumber
+	Animation* currentDialog;
+
+	Animation dialog1, dialog2, dialog3, dialog4, dialog5, dialog6, dialog7, dialog8, dialog9, dialog10, dialog11, dialog12;
+
+	int contDialog;
+	bool gameInit;
+	int wDialog = 0;
+
+
 	// -------- FX --------
 	uint collision1Fx;
 	uint collision2Fx;
 	uint collision3Fx;
 	uint collision4Fx;
 	uint collision5Fx;
+	uint spawnFx;
 
 	uint kickerInitFx;
 	uint kickerBurstFx;
@@ -176,6 +188,10 @@ public:
 	// Spring
 	uint springChargeFx;
 	uint springReleaseFx;
+
+	// Cumber
+
+	uint cumberfx1, cumberfx2, cumberfx3, cumberfx4, cumberfx5; // I was going to call this cumFx but it doesn't sound too much family friendly
 
 	// -------- Raycast --------
 	p2Point<int> ray;

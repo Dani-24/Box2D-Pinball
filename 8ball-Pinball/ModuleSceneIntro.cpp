@@ -46,6 +46,8 @@ bool ModuleSceneIntro::Start()
 	lives = 3;
 	lastMusic = false;
 
+	srand(SDL_GetTicks()); // Set random generator
+
 	// --- Set camera position ---
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
@@ -56,6 +58,27 @@ bool ModuleSceneIntro::Start()
 	CreateFlippers();
 	CreateSensors();
 	CreateBumpers();
+
+	// The best sea cumber:
+
+	dialogTexture = App->textures->Load("pinball/sprites/cumberText.png");
+	contDialog = 0;
+
+	dialog1.PushBack({ 0, 0, 146, 50 });
+	dialog2.PushBack({ 0, 50, 146, 50 });
+	dialog3.PushBack({ 0, 100, 146, 50 });
+	dialog4.PushBack({ 0, 150, 146, 50 });
+	dialog5.PushBack({ 0, 200, 146, 50 });
+	dialog6.PushBack({ 0, 250, 146, 50 });
+	dialog7.PushBack({ 0, 300, 146, 50 });
+	dialog8.PushBack({ 0, 350, 146, 50 });
+	dialog9.PushBack({ 0, 400, 146, 50 });
+	dialog10.PushBack({ 0, 450, 146, 50 });
+	dialog11.PushBack({ 0, 500, 146, 50 });
+	dialog12.PushBack({ 0, 550, 146, 50 });
+
+	dialog1.loop = false;
+	gameInit = true;
 
 	// --- Load Audio ---
 
@@ -68,27 +91,51 @@ bool ModuleSceneIntro::Start()
 	collision3Fx = App->audio->LoadFx("pinball/audio/fx/collider3.wav");
 	collision4Fx = App->audio->LoadFx("pinball/audio/fx/collider4.wav");
 	collision5Fx = App->audio->LoadFx("pinball/audio/fx/collider5.wav");
-
 	kickerInitFx = App->audio->LoadFx("pinball/audio/fx/kickerInit.wav");
 	kickerBurstFx = App->audio->LoadFx("pinball/audio/fx/kickerBurst.wav");
-
 	ptsFx2 = App->audio->LoadFx("pinball/audio/fx/pts2.wav");
 	ptsFx3 = App->audio->LoadFx("pinball/audio/fx/pts3.wav");
-
 	bounceFx = App->audio->LoadFx("pinball/audio/fx/bouncePad.wav");
-	
 	bumperfx = App->audio->LoadFx("pinball/audio/fx/bumper.wav");
 	bumperMovefx = App->audio->LoadFx("pinball/audio/fx/bounceMove.wav");
 	bumperStopfx = App->audio->LoadFx("pinball/audio/fx/bounceStop.wav");
 	pausefx = App->audio->LoadFx("pinball/audio/fx/pause.wav");
 	flipperfx = App->audio->LoadFx("pinball/audio/fx/flipper.wav");
 
+	cumberfx1 = App->audio->LoadFx("pinball/audio/fx/cumber1.wav");
+	cumberfx2 = App->audio->LoadFx("pinball/audio/fx/cumber2.wav");
+	cumberfx3 = App->audio->LoadFx("pinball/audio/fx/cumber3.wav");
+	cumberfx4 = App->audio->LoadFx("pinball/audio/fx/cumber4.wav");
+	cumberfx5 = App->audio->LoadFx("pinball/audio/fx/cumber5.wav");
+
+	spawnFx = App->audio->LoadFx("pinball/audio/fx/spawn.wav");
+
 	// Fonts
 	App->qfonts->Init();
 
 	App->qfonts->LoadFont("pinball/font/Paintball.ttf");
 
+	// Play sfx for the initial dialog
+	currentDialog = &dialog3;
+	CumberFx();
+
 	return ret;
+}
+
+void ModuleSceneIntro::CumberFx() {
+	int killMePls = rand() % 3;
+	switch (killMePls)
+	{
+	case 0:
+		App->audio->PlayFx(cumberfx1);
+		break;
+	case 1:
+		App->audio->PlayFx(cumberfx2);
+		break;
+	case 2:
+		App->audio->PlayFx(cumberfx3);
+		break;
+	}
 }
 
 void ModuleSceneIntro::ChangeMusic() {
@@ -97,7 +144,6 @@ void ModuleSceneIntro::ChangeMusic() {
 	}
 	else {
 		// Randomize Music
-		srand(SDL_GetTicks());
 		music = rand() % 3;
 
 		switch (music)
@@ -120,11 +166,16 @@ void ModuleSceneIntro::PauseGame() {
 		pause = true;
 		App->scene_menu->currentState = PAUSE;
 		App->audio->PlayFx(pausefx);
+
+		currentDialog = &dialog9;
+		contDialog = 0;
+		CumberFx();
 	}
 }
 
 void ModuleSceneIntro::UnPauseGame() {
 	pause = false;
+	contDialog = 1000;
 }
 
 update_status ModuleSceneIntro::PreUpdate() 
@@ -145,6 +196,8 @@ update_status ModuleSceneIntro::PreUpdate()
 		pause = true;
 		// Lives = -1 , idk why but if i let lives in 0 even disabling this module this if sends another Gameover to the scene menu and kboom
 		lives = -1;
+		currentDialog = &dialog4;
+		CumberFx();
 	}
 	if (lives == -1) {
 		// This should be in lives == 0 if but since i have to put lives=-1 this shit go there or it doesn't Update()
@@ -163,6 +216,32 @@ update_status ModuleSceneIntro::PreUpdate()
 
 update_status ModuleSceneIntro::Update()
 {
+	LOG("Cont %d || wDialog = %d",contDialog, wDialog);
+	contDialog++;
+	if (contDialog >= 1000) {
+		contDialog = 0;
+		wDialog = rand() % 4;
+		switch (wDialog)
+		{
+		case 0:
+			currentDialog = &dialog5;
+			CumberFx();
+			break;
+		case 1:
+			currentDialog = &dialog7;
+			App->audio->PlayFx(cumberfx4);
+			break;
+		case 2:
+			currentDialog = &dialog10;
+			CumberFx();
+			break;
+		case 3:
+			currentDialog = &dialog11;
+			App->audio->PlayFx(cumberfx5);
+			break;
+		}
+	}
+
 	if (pause != true) {
 		// --- Bumpers Movement ---
 
@@ -211,6 +290,10 @@ update_status ModuleSceneIntro::Update()
 
 			// Fx
 			App->audio->PlayFx(kickerBurstFx);
+
+			if (currentDialog == &dialog6) {
+				contDialog = 1000;
+			}
 		}
 
 		// --- Flippers ---
@@ -236,15 +319,32 @@ update_status ModuleSceneIntro::Update()
 			// If Box2D detects a collision with this last generated circle, it will automatically callback the function ModulePhysics::BeginContact()
 			balls.getLast()->data->listener = this;
 			balls.getLast()->extraBall = true;
+
+			App->audio->PlayFx(spawnFx);
 		}
 
 		LOG("Lives = %d", lives);
 
 		if (lastFrameLives != lives) {
-			
 			LOG("Creating 8ball at kicker")
 			balls.add(App->physics->CreateCircle(510, 650, N / 2));
 			balls.getLast()->data->listener = this;
+			
+			App->audio->PlayFx(spawnFx);
+
+			if (gameInit == true) {
+				gameInit = false;
+			}
+			else {
+
+				if (currentDialog == &dialog12) {
+					contDialog = 1000;
+				}
+				else {
+					currentDialog = &dialog6;
+					CumberFx();
+				}
+			}
 		}
 		lastFrameLives = lives;
 
@@ -418,12 +518,23 @@ update_status ModuleSceneIntro::Update()
 		App->qfonts->drawText(char_type, 150, 15);
 	}
 
+	// Dialogs
+	SDL_Rect diaRect = currentDialog->GetCurrentFrame();
+	App->renderer->Blit(dialogTexture, 283 , 8, &diaRect);
+
 	// """Camera filter""" and changing music ---
 	if (lives == 1) {
 		lastMusic = true;
-		redBgAnim.Update();
-		SDL_Rect redRect = redBgAnim.GetCurrentFrame();
-		App->renderer->Blit(bgRed, 0, 0, &redRect);
+		if (pause == false) {
+			redBgAnim.Update();
+			SDL_Rect redRect = redBgAnim.GetCurrentFrame();
+			App->renderer->Blit(bgRed, 0, 0, &redRect);
+		}
+		contDialog = 0;
+		if (currentDialog != &dialog12) {
+			currentDialog = &dialog12;
+			CumberFx();
+		}
 	}
 	else {
 		lastMusic = false;
@@ -939,6 +1050,19 @@ bool ModuleSceneIntro::CleanUp()
 	bounceAnimB2.DeleteAnim();
 	redBgAnim.DeleteAnim();
 
+	dialog1.DeleteAnim();
+	dialog2.DeleteAnim();
+	dialog3.DeleteAnim();
+	dialog4.DeleteAnim();
+	dialog5.DeleteAnim();
+	dialog6.DeleteAnim();
+	dialog7.DeleteAnim();
+	dialog8.DeleteAnim();
+	dialog9.DeleteAnim();
+	dialog10.DeleteAnim();
+	dialog11.DeleteAnim();
+	dialog12.DeleteAnim();
+
 	// Clean Textures
 	App->textures->Unload(ball);
 	App->textures->Unload(spring);
@@ -953,9 +1077,11 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(flipper2);
 	App->textures->Unload(bumperTexture);
 	App->textures->Unload(bgRed);
+	App->textures->Unload(dialogTexture);
 
-	// Clean fx:
-	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = flipperfx = bumperfx = bumperMovefx = bumperStopfx = pausefx = 0;
+	// Free fx:
+	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = spawnFx
+	= flipperfx = bumperfx = bumperMovefx = bumperStopfx = pausefx = cumberfx1 = cumberfx2 = cumberfx3 = cumberfx4 = cumberfx5 = 0;
 
 	// Clean physics
 
