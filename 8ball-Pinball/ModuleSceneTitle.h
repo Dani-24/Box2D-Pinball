@@ -28,6 +28,8 @@ public:
 	p2List<int> scores;
 
 	// Textures
+	SDL_Texture* titleTexture;
+
 	SDL_Texture* cursor;
 	int cursorX, cursorY;
 

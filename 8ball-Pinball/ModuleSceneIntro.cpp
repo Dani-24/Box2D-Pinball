@@ -347,7 +347,7 @@ update_status ModuleSceneIntro::Update()
 			App->audio->PlayFx(spawnFx);
 		}
 
-		LOG("Lives = %d", lives);
+		//LOG("Lives = %d", lives);
 
 		if (lastFrameLives != lives) {
 			LOG("Creating 8ball at kicker")

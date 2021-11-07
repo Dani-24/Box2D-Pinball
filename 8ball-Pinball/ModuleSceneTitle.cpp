@@ -43,6 +43,7 @@ bool ModuleSceneTitle::Start()
 
 	metro = App->textures->Load("pinball/sprites/metro.png");
 	scrollerTexture = App->textures->Load("pinball/sprites/background/bgScroller.png");
+	titleTexture = App->textures->Load("pinball/sprites/title.png");
 
 	// Load Sprite Animations
 
@@ -68,7 +69,7 @@ bool ModuleSceneTitle::Start()
 	metroAnim.loop = true;
 
 	metroX = 75;
-	metroY = 0;
+	metroY = 20;
 	metroMoving = false;
 
 	// Load Audio
@@ -163,6 +164,9 @@ update_status ModuleSceneTitle::Update()
 		App->qfonts->drawText("Github", 225, 575);
 		App->qfonts->drawText("Exit", 242, 650);
 
+		// Title
+		App->renderer->Blit(titleTexture, 50, 110);
+
 		break;
 	case SCORES:
 		// Return
@@ -175,13 +179,13 @@ update_status ModuleSceneTitle::Update()
 
 		// --- UPDATE ---
 
-		// Debug lifehacks
+		// DEBUG lifehacks ################
 
-		if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
+		/*if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN) {
 			scores.add(69);
 			scores.add(420);
 			scores.add(777666);
-		}
+		}*/
 
 		// --- PRINT ---
 
@@ -270,6 +274,7 @@ bool ModuleSceneTitle::CleanUp()
 	App->textures->Unload(cursor);
 	App->textures->Unload(metro);
 	App->textures->Unload(scrollerTexture);
+	App->textures->Unload(titleTexture);
 
 	octoling = bg = bgPart = cursor = nullptr;
 	octoAnim.DeleteAnim();

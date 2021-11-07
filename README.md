@@ -23,6 +23,14 @@
 
 ## Game Description:
 
+This game is a splatoon themed pinball made with physics in SDL2.
+
+All the art in this game has been done by myself (Except the graffitis and Icons displayed on: pause/gameover background, title cursor and train). 
+
+Audio has been ripped from splatoon games.
+
+
+Nintendo don't denounce me pls ^^.
 
 
 ## Link to the Github project:
@@ -31,6 +39,8 @@ https://github.com/Dani-24/Box2D-Pinball
 
 ## Link to the references:
 Game Text Font : [Project Paintball](http://fizzystack.web.fc2.com/paintball.html)
+
+Splatoon™ 2: Octo Expansion: (Link)[https://www.nintendo.com/games/detail/splatoon-2-switch/]
 
 ## Additional comments
 This game has been done thanks to [SDL](https://www.libsdl.org/index.php) and [Box2D](https://box2d.org/)

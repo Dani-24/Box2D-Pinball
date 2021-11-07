@@ -61,7 +61,7 @@ IDI_ICON1               ICON                    "icon1.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,5,0,0
+ FILEVERSION 1,0,0,0
  PRODUCTVERSION 1,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Dani-24"
             VALUE "FileDescription", "8 Ball Pinball By Dani24"
-            VALUE "FileVersion", "0.5.0.0"
+            VALUE "FileVersion", "1.0.0.0"
             VALUE "InternalName", "8-Ball.exe"
             VALUE "LegalCopyright", "Copyright (C) 2021"
             VALUE "OriginalFilename", "8-Ball.exe"
