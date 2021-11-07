@@ -45,7 +45,6 @@ public:
 	float partScroll[2];
 
 	// Animation
-	Animation octoAnim;
 	Animation metroAnim;
 
 	int metroX, metroY;

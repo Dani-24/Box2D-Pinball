@@ -122,8 +122,6 @@ bool ModuleSceneIntro::Start()
 	ptsFx3 = App->audio->LoadFx("pinball/audio/fx/pts3.wav");
 	bounceFx = App->audio->LoadFx("pinball/audio/fx/bouncePad.wav");
 	bumperfx = App->audio->LoadFx("pinball/audio/fx/bumper.wav");
-	bumperMovefx = App->audio->LoadFx("pinball/audio/fx/bounceMove.wav");
-	bumperStopfx = App->audio->LoadFx("pinball/audio/fx/bounceStop.wav");
 	pausefx = App->audio->LoadFx("pinball/audio/fx/pause.wav");
 	flipperfx = App->audio->LoadFx("pinball/audio/fx/flipper.wav");
 
@@ -1152,7 +1150,7 @@ bool ModuleSceneIntro::CleanUp()
 
 	// Free fx:
 	collision1Fx = collision2Fx = collision3Fx = collision4Fx = collision5Fx = springChargeFx = springReleaseFx = spawnFx = deathfx = sideKickerFx
-	= flipperfx = bumperfx = bumperMovefx = bumperStopfx = pausefx = cumberfx1 = cumberfx2 = cumberfx3 = cumberfx4 = cumberfx5 = 0;
+	= flipperfx = bumperfx = pausefx = cumberfx1 = cumberfx2 = cumberfx3 = cumberfx4 = cumberfx5 = 0;
 
 	// Clean physics
 

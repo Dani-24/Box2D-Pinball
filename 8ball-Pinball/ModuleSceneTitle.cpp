@@ -36,7 +36,6 @@ bool ModuleSceneTitle::Start()
 	bg = App->textures->Load("pinball/sprites/background/tableroBG.png");
 	bgPart = App->textures->Load("pinball/sprites/background/particulasBG.png");
 
-	octoling = App->textures->Load("pinball/sprites/octoling.png");
 	cursor = App->textures->Load("pinball/sprites/cursor.png");
 	cursorX = 170;
 	cursorY = 400;
@@ -48,14 +47,6 @@ bool ModuleSceneTitle::Start()
 	// Load Sprite Animations
 
 	int N = 0;
-	for (int i = 0; i < 30; i++) {
-		octoAnim.PushBack({ N, 0, 540, 540 });
-		N += 540;
-	}
-	octoAnim.speed = 0.25f;
-	octoAnim.loop = true;
-
-	N = 0;
 	for (int i = 0; i < 24; i++) {
 		if (i >= 14) {
 			metroAnim.PushBack({ 0, 0, 400, 70 });
@@ -268,7 +259,6 @@ bool ModuleSceneTitle::CleanUp()
 {
 	LOG("Unloading title scene");
 
-	App->textures->Unload(octoling);
 	App->textures->Unload(bg);
 	App->textures->Unload(bgPart);
 	App->textures->Unload(cursor);
@@ -276,9 +266,7 @@ bool ModuleSceneTitle::CleanUp()
 	App->textures->Unload(scrollerTexture);
 	App->textures->Unload(titleTexture);
 
-	octoling = bg = bgPart = cursor = nullptr;
-	octoAnim.DeleteAnim();
-
+	bg = bgPart = cursor = nullptr;
 	metroAnim.DeleteAnim();
 
 	scorefx = acceptfx = selectfx = backfx = cursorX = cursorY = NULL;
