@@ -38,8 +38,8 @@ bool ModuleSceneTitle::Start()
 
 	octoling = App->textures->Load("pinball/sprites/octoling.png");
 	cursor = App->textures->Load("pinball/sprites/cursor.png");
-	cursorX = 350;
-	cursorY = 425;
+	cursorX = 170;
+	cursorY = 400;
 
 	metro = App->textures->Load("pinball/sprites/metro.png");
 	scrollerTexture = App->textures->Load("pinball/sprites/background/bgScroller.png");
@@ -121,33 +121,33 @@ update_status ModuleSceneTitle::Update()
 			// --- UPDATE ---
 
 			// Cursor Movement
-			if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN && cursorY != 650) {
+			if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN && cursorY != 625) {
 				cursorY += 75;
 				App->audio->PlayFx(selectfx);
 			}
-			if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN && cursorY != 425) {
+			if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN && cursorY != 400) {
 				cursorY -= 75;
 				App->audio->PlayFx(selectfx);
 			}
 
 			// State and Scene management
-			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 575) {
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 550) {
 				App->audio->PlayFx(acceptfx);
 				// Open Website
 				LOG("Opening Link : %s", githubLink);
 				SDL_OpenURL(githubLink);
 			}
-			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 500) {
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 475) {
 				currentState = SCORES;
 				App->audio->PlayFx(scorefx);
 			}
-			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 425) {
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 400) {
 				metroMoving = true;
 				App->audio->PlayFx(metroFx);
 				App->audio->PlayFx(acceptfx);
 				App->fade->FadeToBlack(this, (Module*)App->scene_intro, 102);
 			}
-			if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 650) {
+			if (App->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && cursorY == 625) {
 				App->audio->PlayFx(backfx);
 				return UPDATE_STOP;
 			}
