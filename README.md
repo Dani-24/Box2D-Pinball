@@ -1,4 +1,4 @@
-# 8-ball Box2D-Pinball
+# 8-ball Pinball
 
 ## Made by :
 
