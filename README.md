@@ -1,5 +1,25 @@
 # 8-ball Pinball
 
+<div id="header" align="center">
+  <p>
+  <a href="https://github.com/Dani-24/Box2D-Pinball/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/Dani-24/Box2D-Pinball" alt="contributors" />
+  </a>
+  <a href="">
+    <img src="https://img.shields.io/github/last-commit/Dani-24/Box2D-Pinball" alt="last update" />
+  </a>
+  <a href="https://github.com/Dani-24/Box2D-Pinball/network/members">
+    <img src="https://img.shields.io/github/forks/Dani-24/Box2D-Pinball" alt="forks" />
+  </a>
+  <a href="https://github.com/Dani-24/Box2D-Pinball/stargazers">
+    <img src="https://img.shields.io/github/stars/Dani-24/Box2D-Pinball" alt="stars" />
+  </a>
+  <a href="https://github.com/Dani-24/Box2D-Pinball/issues/">
+    <img src="https://img.shields.io/github/issues/Dani-24/Box2D-Pinball" alt="open issues" />
+  </a>
+</p>
+</div>
+
 ## Made by :
 
 - Dani Toledo Rodríguez ([Dani-24](https://github.com/Dani-24))
