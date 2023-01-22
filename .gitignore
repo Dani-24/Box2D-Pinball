@@ -6,7 +6,7 @@
 # User-specific files
 *.rsuser
 *.suo
-*.user
+.user
 *.userosscache
 *.sln.docstates
 
@@ -348,5 +348,54 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-
-Box2D/
+ToasterEngine-Code/Engine_Output/imgui.ini
+ToasterEngine-Code/Debug Citm/vc142.idb
+ToasterEngine-Code/Debug Citm/ToasterEngine-v2.res
+ToasterEngine-Code/Debug Citm/Toaster.tlog/Toaster.lastbuildstate
+ToasterEngine-Code/Debug Citm/Toaster.tlog/rc.write.1.tlog
+ToasterEngine-Code/Debug Citm/Toaster.tlog/rc.read.1.tlog
+ToasterEngine-Code/Debug Citm/Toaster.tlog/rc.command.1.tlog
+ToasterEngine-Code/Debug Citm/Toaster.tlog/link.write.1.tlog
+ToasterEngine-Code/Debug Citm/Toaster.tlog/link.read.1.tlog
+ToasterEngine-Code/Debug Citm/Toaster.tlog/link.command.1.tlog
+ToasterEngine-Code/Debug Citm/Toaster.tlog/CL.write.1.tlog
+ToasterEngine-Code/Debug Citm/Toaster.tlog/CL.read.1.tlog
+ToasterEngine-Code/Debug Citm/Toaster.tlog/CL.command.1.tlog
+ToasterEngine-Code/Debug Citm/Toaster Engine ඞ/Engine_Output.exe.recipe
+ToasterEngine-Code/Debug Citm/Toaster Engine ඞ/Engine_Output.exe
+ToasterEngine-Code/Debug Citm/Toaster Engine ඞ.vcxproj.FileListAbsolute.txt
+ToasterEngine-Code/Toaster/vc142.idb
+ToasterEngine-Code/Toaster/ToasterEngine-v2.res
+ToasterEngine-Code/Toaster/Toaster.tlog/Toaster.lastbuildstate
+ToasterEngine-Code/Toaster/Toaster.tlog/rc.write.1.tlog
+ToasterEngine-Code/Toaster/Toaster.tlog/rc.read.1.tlog
+ToasterEngine-Code/Toaster/Toaster.tlog/rc.command.1.tlog
+ToasterEngine-Code/Toaster/Toaster.tlog/link.write.1.tlog
+ToasterEngine-Code/Toaster/Toaster.tlog/link.read.1.tlog
+ToasterEngine-Code/Toaster/Toaster.tlog/link.command.1.tlog
+ToasterEngine-Code/Toaster/Toaster.tlog/CL.write.1.tlog
+ToasterEngine-Code/Toaster/Toaster.tlog/CL.read.1.tlog
+ToasterEngine-Code/Toaster/Toaster.tlog/CL.command.1.tlog
+ToasterEngine-Code/Toaster/Toaster Engine ඞ/Engine_Output.exe.recipe
+ToasterEngine-Code/Toaster/Toaster Engine ඞ/Engine_Output.exe
+ToasterEngine-Code/Toaster/Toaster Engine ඞ.vcxproj.FileListAbsolute.txt
+ToasterEngine-Code/Debug Citm/Toaster.tlog/unsuccessfulbuild
+ToasterEngine-Code/Engine_Output/imgui.ini
+ToasterEngine-Code/Toaster/Toaster.tlog/unsuccessfulbuild
+ToasterEngine-Code/Builds/Toaster/vc142.idb
+ToasterEngine-Code/Builds/Toaster/ToasterEngine-v2.res
+ToasterEngine-Code/Builds/Toaster/Toaster.tlog/Toaster.lastbuildstate
+ToasterEngine-Code/Builds/Toaster/Toaster.tlog/rc.write.1.tlog
+ToasterEngine-Code/Builds/Toaster/Toaster.tlog/rc.read.1.tlog
+ToasterEngine-Code/Builds/Toaster/Toaster.tlog/rc.command.1.tlog
+ToasterEngine-Code/Builds/Toaster/Toaster.tlog/link.write.1.tlog
+ToasterEngine-Code/Builds/Toaster/Toaster.tlog/link.read.1.tlog
+ToasterEngine-Code/Builds/Toaster/Toaster.tlog/link.command.1.tlog
+ToasterEngine-Code/Builds/Toaster/Toaster.tlog/CL.write.1.tlog
+ToasterEngine-Code/Builds/Toaster/Toaster.tlog/CL.read.1.tlog
+ToasterEngine-Code/Builds/Toaster/Toaster.tlog/CL.command.1.tlog
+ToasterEngine-Code/Builds/Toaster/Toaster Engine ඞ/Engine_Output.exe.recipe
+ToasterEngine-Code/Builds/Toaster/Toaster Engine ඞ/Engine_Output.exe
+ToasterEngine-Code/Builds/Toaster/Toaster Engine ඞ.vcxproj.FileListAbsolute.txt
+ToasterEngine-Code/Engine_Output/imgui.ini
+ToasterEngine-Code/Builds/Toaster/Toaster.tlog/unsuccessfulbuild
